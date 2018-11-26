@@ -11,12 +11,12 @@ class Clock implements IModule {
     return this._bpm;
   }
   public set bpm(beatsPerMinute: number) {
-    if(beatsPerMinute != parseInt(beatsPerMinute) ||
-    beatsPerMinute < BEATS_MIN || beatsPerMinute > BEATS_MAX) {
+    if(beatsPerMinute != Math.floor(beatsPerMinute) ||
+    beatsPerMinute < Clock.BEATS_MIN || beatsPerMinute > Clock.BEATS_MAX) {
       console.log("error while assigning the clock bpm value");
     }
     else {
-      _bpm = beatsPerMinute;
+      this._bpm = beatsPerMinute;
     }
   }
 
@@ -30,15 +30,15 @@ class Clock implements IModule {
     this._riseCount = 0;
   }
 
-  private function inc() {
-    _riseCount++;  _riseCount = _riseCount % bpm;
+  private inc(): void {
+    this._riseCount++;  this._riseCount = this._riseCount % this.bpm;
   }
 
-  public function start() {
-    _th = setInterval(inc, 60.0/bpm);
+  public start(): void {
+    this._th = setInterval(this.inc, 60.0/this.bpm);
   }
-  public function stop() {
-    clearInterval(_th);
+  public stop(): void {
+    clearInterval(this._th);
   }
 
 }
