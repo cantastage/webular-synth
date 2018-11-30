@@ -1,3 +1,6 @@
 enum WaveShapes {
-  Sinusoid, Square, Triangle, Sawtooth
+  Sinusoid,
+  Square,
+  Triangle,
+  Sawtooth
 }
