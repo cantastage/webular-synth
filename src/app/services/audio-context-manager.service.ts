@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {AudioContext} from 'angular-audio-context';
 
 /**
  * This service provides access to a common audio context shared by all synth modules.

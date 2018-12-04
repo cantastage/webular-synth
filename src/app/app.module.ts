@@ -7,13 +7,11 @@ import { SynthModuleContainerComponent } from './synth-module-container/synth-mo
 import { AudioContextModule } from 'angular-audio-context';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MoogLadderFilterComponent } from './synth-modules/moog-ladder-filter/moog-ladder-filter.component';
-import { AudioContextManagerService } from './services/audio-context-manager.service';
 @NgModule({
   declarations: [
     AppComponent,
     SynthModuleContainerComponent,
     MoogLadderFilterComponent,
-    AudioContextManagerService
   ],
   imports: [
     BrowserModule,
@@ -21,7 +19,8 @@ import { AudioContextManagerService } from './services/audio-context-manager.ser
     AudioContextModule.forRoot('balanced'),
     DragDropModule
   ],
-  providers: [],
+  providers: [
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
