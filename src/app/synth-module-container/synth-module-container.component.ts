@@ -14,7 +14,7 @@ export class SynthModuleContainerComponent implements OnInit {
 
   ngOnInit() {
     this.ctxManager.audioContext.audioWorklet
-    .addModule('../audio-processors/moog-ladder-filter.js')
+    .addModule('audio-processors/moog-ladder-filter.js')
     .then(() => console.log('filter module added!'));
   }
 
