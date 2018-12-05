@@ -11,6 +11,7 @@ export class MoogLadderFilterComponent implements OnInit {
   private _osc: any;
   private _scriptNode: any;
   public cutoff_freq: number;
+  public Q: number;
 
   constructor(private contextManager: AudioContextManagerService) {
   }
@@ -21,29 +22,20 @@ export class MoogLadderFilterComponent implements OnInit {
 
     this._scriptNode = this.contextManager.audioContext.createScriptProcessor(2048, 1, 1);
     this.cutoff_freq = 5500;
+    this.Q = 0.5;
   }
 
   public onCutoffChange(arg: any): void {
-    // this.cutoff_freq = arg; // something similar
-    console.log(arg);
+    this.cutoff_freq = arg.target.value;
   }
 
+  public onResonanceChange(arg: any): void {
+    this.Q = arg.target.value;
+  }
 }
 
 
 /*
-cutoff = document.querySelector("#cutoff");
-cutoff.oninput = function(){
-  console.log(cutoff_freq);
-
-}
-
-var Q = 0.5;
-resonance = document.querySelector("#resonance");
-resonance.oninput = function(){
-  Q = this.value;
-}
-
 
 var out0, out1, in0, in1;
 out0 = out1 = in0 = in1 = 0;
