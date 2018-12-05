@@ -8,7 +8,6 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
   styleUrls: ['./moog-ladder-filter.component.scss']
 })
 export class MoogLadderFilterComponent implements OnInit {
-  
   private _osc: any;
   private _scriptNode: any;
   public cutoff_freq: number;
@@ -27,7 +26,7 @@ export class MoogLadderFilterComponent implements OnInit {
     this._osc.type = 'square';
 
     this._scriptNode = this.contextManager.audioContext.createScriptProcessor(2048, 1, 1);
-    this._scriptNode.onaudioprocess = this.process;
+    this._scriptNode.onaudioprocess = ($event) => { this.process($event); };
     this.cutoff_freq = 5500;
     this.Q = 0.5;
 
@@ -44,7 +43,7 @@ export class MoogLadderFilterComponent implements OnInit {
     this.Q = arg.target.value;
   }
 
-  private process(audioData) {
+  private process(audioData: any): void {
     const input = audioData.inputBuffer.getChannelData(0);
     const output = audioData.outputBuffer.getChannelData(0);
 
