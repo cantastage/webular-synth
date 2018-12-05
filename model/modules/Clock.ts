@@ -1,23 +1,23 @@
-//SINGLETON
+// SINGLETON
 class Clock implements IModule {
   public static readonly BEATS_MIN: number = 55;
   public static readonly BEATS_MAX: number = 255;
 
-  private _bpm: number; //integer between MIN MAX
+  private _bpm: number; // integer between MIN MAX
   private _th: any;
-  private _riseCount: number; //clock rising edge count
+  private _riseCount: number; // clock rising edge count
 
   public get bpm() {
     return this._bpm;
   }
   public set bpm(beatsPerMinute: number) {
     if (
-      beatsPerMinute != Math.floor(beatsPerMinute) ||
+      beatsPerMinute !== Math.floor(beatsPerMinute) ||
       beatsPerMinute < Clock.BEATS_MIN ||
       beatsPerMinute > Clock.BEATS_MAX
     ) {
-      //should throw an exception
-      console.log("error while assigning the clock bpm value");
+      // should throw an exception
+      console.log('error while assigning the clock bpm value');
     } else {
       this._bpm = beatsPerMinute;
     }

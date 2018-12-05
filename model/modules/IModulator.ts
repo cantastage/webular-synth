@@ -1,14 +1,14 @@
 interface IModulator extends IModule {
-  //modulates which field?!
+  // modulates which field?!
   /*
     for the chain-of-responsability-pattern, the modulator knows the modulated.
     it is responsability of the modulator to alter a certain parameter of the modulated.
     the annotation @configurable(true) on the modulable properties is useful?
     */
-  //possible solution?
-  //holds trace of the module it's attached to
+  // possible solution?
+  // holds trace of the module it's attached to
   modulatedModule: ISoundGenerator;
-  //but also of the field/property it can modify
+  // but also of the field/property it can modify
   modulatedParameter: IModulableParameterFromMod;
 }
 

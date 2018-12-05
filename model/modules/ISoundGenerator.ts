@@ -5,15 +5,15 @@ function sealed(constructor: Function) {
   Object.seal(constructor.prototype);
 }
 
-//all the following generics?!?! would say no...
-//field of any concrete SoundGenerator (eg. Oscillator)
+// all the following generics?!?! would say no...
+// field of any concrete SoundGenerator (eg. Oscillator)
 interface IModulableParameterFromGen {
-  value: number; //must implement: public get value(), public set value(val: number)
-  readonly modulatedValue: number; //must implement: public get modulatedValue()
+  value: number; // must implement: public get value(), public set value(val: number)
+  readonly modulatedValue: number; // must implement: public get modulatedValue()
 }
-//field of any concrete Modulator (eg. LFO)
+// field of any concrete Modulator (eg. LFO)
 interface IModulableParameterFromMod {
-  modulateBy(factor: number): void; //must implement: public modulateBy(factor: number): void
+  modulateBy(factor: number): void; // must implement: public modulateBy(factor: number): void
 }
 
 @sealed
@@ -26,10 +26,10 @@ class ModulableParameter implements IModulableParameterFromGen, IModulableParame
     return this._value;
   }
   public set value(val: number) {
-    if (this._checkDelegate(val) || this._checkDelegate == null) { //if no check is present assign however
+    if (this._checkDelegate(val) || this._checkDelegate == null) { // if no check is present assign however
       this._value = val;
     } else {
-      throw new Error("error while assigning the numerical value");
+      throw new Error('error while assigning the numerical value');
     }
   }
 
@@ -44,7 +44,7 @@ class ModulableParameter implements IModulableParameterFromGen, IModulableParame
   }
 
   public modulateBy(factor: number): void {
-    //constraints on the factor?
+    // constraints on the factor?
     this._lastModulationFactor = factor;
   }
 }
