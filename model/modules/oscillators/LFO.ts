@@ -1,5 +1,7 @@
 class LFO implements IModulator {
-  modulatedModule: ISoundGenerator;  modulatedParameter: IModulableParameterFromMod;
+  modulatedModule: ISoundGenerator;
+  modulatedParameter: IModulableParameterFromMod;
+
   start(): void {
     throw new Error('Method not implemented.');
   }

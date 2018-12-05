@@ -16,8 +16,7 @@ class Clock implements IModule {
       beatsPerMinute < Clock.BEATS_MIN ||
       beatsPerMinute > Clock.BEATS_MAX
     ) {
-      // should throw an exception
-      console.log('error while assigning the clock bpm value');
+      throw new Error('error while assigning the clock bpm value');
     } else {
       this._bpm = beatsPerMinute;
     }
