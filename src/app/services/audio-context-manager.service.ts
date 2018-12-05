@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import {AudioContext} from 'angular-audio-context';
 
 /**
  * This service provides access to a common audio context shared by all synth modules.
@@ -9,13 +8,15 @@ import {AudioContext} from 'angular-audio-context';
   providedIn: 'root'
 })
 export class AudioContextManagerService {
+private _ctx: AudioContext;
 
-  constructor(private ctx: AudioContext) { }
+  constructor() { this._ctx = new AudioContext(); }
 
   /**
    * Getter for the audio context.
    */
-  get audioContext(): AudioContext {
-    return this.ctx;
+  public get audioContext(): AudioContext {
+    return this._ctx;
   }
+
 }

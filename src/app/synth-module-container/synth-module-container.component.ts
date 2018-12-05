@@ -13,18 +13,19 @@ export class SynthModuleContainerComponent implements OnInit {
   constructor(private ctxManager: AudioContextManagerService) { }
 
   ngOnInit() {
+    /*
     this.ctxManager.audioContext.audioWorklet
     .addModule('audio-processors/moog-ladder-filter.js')
-    .then(() => console.log('filter module added!'));
+    .then(() => console.log('filter module added!'));*/
   }
 
 
 
 }
 
-export class MyWorkletNode extends AudioWorkletNode {
-  constructor(context) {
-    super(context, 'moog-ladder-filter');
-  }
-}
+// export class MyWorkletNode extends AudioWorkletNode {
+//   constructor(context) {
+//     super(context, 'moog-ladder-filter');
+//   }
+// }
 
