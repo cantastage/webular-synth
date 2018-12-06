@@ -8,6 +8,11 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class AudioContextManagerService {
+  // se lo gestiamo così, per evitare InvalidStateError è necessario che:
+  // ASSOLUTAMENTE NESSUN'ALTRA istanza di AudioContext sia previamente creata da qualche parte
+  // la crea qualcuno? angular? altro? il suono non esce perchè la seconda istanza
+  // (che non dovrebbe comunque potersi creare)
+  // vuole inserirsi sulla risorsa speaker occupata dalla prima istanza
   private _ctx: AudioContext;
 
   constructor() { this._ctx = new AudioContext(); }
