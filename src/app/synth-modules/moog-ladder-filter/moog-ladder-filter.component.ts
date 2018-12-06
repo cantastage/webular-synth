@@ -66,12 +66,7 @@ export class MoogLadderFilterComponent implements OnInit {
     let outnow = 0; // declared here for optimization
     for (let sample = 0; sample < input.length; sample++) {
       // BIQUAD IMPLEMENTATION
-      // outnow = b0 / a0 * input[sample] + b1 / a0 * this.in0 + b2 / a0 * this.in1 - a1 / a0 * this.out0 - a2 / a0 * this.out1;
-      outnow = b0 / a0 * input[sample];
-      outnow += b1 / a0 * this.in0;
-      outnow += b2 / a0 * this.in1;
-      outnow -= a1 / a0 * this.out0;
-      outnow -= a2 / a0 * this.out1;
+      outnow = b0 / a0 * input[sample] + b1 / a0 * this.in0 + b2 / a0 * this.in1 - a1 / a0 * this.out0 - a2 / a0 * this.out1;
       this.out1 = this.out0;
       this.out0 = outnow;
       this.in1 = this.in0;
