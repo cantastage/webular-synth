@@ -19,4 +19,7 @@ export class AudioContextManagerService {
     return this._ctx;
   }
 
+  public getSoundChain(): void {
+  }
+
 }

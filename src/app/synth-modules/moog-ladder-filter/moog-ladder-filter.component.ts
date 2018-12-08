@@ -7,7 +7,7 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
   styleUrls: ['./moog-ladder-filter.component.scss']
 })
 export class MoogLadderFilterComponent implements OnInit {
-  private _osc: any;
+  private _osc: OscillatorNode;
   private _scriptNode: ScriptProcessorNode;
   public cutoff_freq: number;
   public Q: number;
@@ -24,6 +24,7 @@ export class MoogLadderFilterComponent implements OnInit {
   ngOnInit() {
     this._osc = this.contextManager.audioContext.createOscillator();
     this._osc.type = 'square';
+    this._osc.start();
 
     this._scriptNode = this.contextManager.audioContext.createScriptProcessor(2048, 1, 1);
     this._scriptNode.onaudioprocess = ($event) => {
@@ -33,7 +34,7 @@ export class MoogLadderFilterComponent implements OnInit {
     this.Q = 0.5;
 
 
-    this._osc.connect(this._scriptNode);
+    // this._osc.connect(this._scriptNode);
     this._scriptNode.connect(this.contextManager.audioContext.destination);
     // this._osc.connect(this.contextManager.audioContext.destination);
     // this._osc.start();
@@ -77,10 +78,24 @@ export class MoogLadderFilterComponent implements OnInit {
   }
 
   play(): void {
-    this._osc.start();
+    // this._osc.start();
+    this._osc.connect(this._scriptNode);
   }
 
   stop(): void {
-    this._osc.stop();
+    // this._osc.stop();
+    this._osc.disconnect(this._scriptNode);
+  }
+
+  // deleteNode(): void {
+  //   this._osc.disconnect(this._scriptNode);
+  // }
+
+  connectScriptNode(): void {
+    this._scriptNode.connect(this.contextManager.audioContext.destination);
+  }
+
+  disconnectScriptNode(): void {
+    this._scriptNode.disconnect(this.contextManager.audioContext.destination);
   }
 }
