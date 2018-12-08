@@ -38,7 +38,7 @@ class Clock implements IModule {
   }
 
   public start(): void {
-    this._th = setInterval(this.inc, 60.0 / this.bpm);
+    this._th = setInterval(this.inc, 60.0 / this.bpm * 1000);
   }
   public stop(): void {
     clearInterval(this._th);
