@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { ModuleComponent } from 'src/app/interfaces/module.component';
 
 @Component({
   selector: 'app-moog-ladder-filter',
   templateUrl: './moog-ladder-filter.component.html',
   styleUrls: ['./moog-ladder-filter.component.scss']
 })
-export class MoogLadderFilterComponent implements OnInit {
+export class MoogLadderFilterComponent implements OnInit, ModuleComponent {
+  @Input() data: any;
   private _osc: OscillatorNode;
   private _scriptNode: ScriptProcessorNode;
   public cutoff_freq: number;

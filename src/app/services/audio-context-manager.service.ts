@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ModuleItem } from '../model/module-item';
 
 /**
  * This service provides access to a common audio context shared by all synth modules.
@@ -14,16 +15,14 @@ export class AudioContextManagerService {
 
   constructor() {
     this._ctx = new AudioContext();
-   }
+    // this.modules = [new ModuleItem(MoogLadderFilterComponent, { name: 'filter' })];
+  }
 
   /**
    * Getter for the audio context.
    */
   public get audioContext(): AudioContext {
     return this._ctx;
-  }
-
-  public getSoundChain(): void {
   }
 
   /**
@@ -34,6 +33,4 @@ export class AudioContextManagerService {
   public updateConnections(): void {
 
   }
-
-
 }

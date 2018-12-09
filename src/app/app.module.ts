@@ -8,13 +8,16 @@ import { SynthModuleContainerComponent } from './synth-module-container/synth-mo
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MoogLadderFilterComponent } from './synth-modules/moog-ladder-filter/moog-ladder-filter.component';
 import { PolyphonicOscComponent } from './synth-modules/polyphonic-osc/polyphonic-osc.component';
+import { AddModuleDirective } from './directives/add-module.directive';
 @NgModule({
   declarations: [
     AppComponent,
     SynthModuleContainerComponent,
     MoogLadderFilterComponent,
     PolyphonicOscComponent,
+    AddModuleDirective,
   ],
+  entryComponents: [MoogLadderFilterComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
