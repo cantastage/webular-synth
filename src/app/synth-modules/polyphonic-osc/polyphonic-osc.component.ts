@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { ModuleComponent } from 'src/app/interfaces/module.component';
 
 @Component({
   selector: 'app-polyphonic-osc',
@@ -10,7 +11,8 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
  * Represents a polyphonic oscilattor component.
  * NB for now it's only monophonic.
  */
-export class PolyphonicOscComponent implements OnInit {
+export class PolyphonicOscComponent implements OnInit, ModuleComponent {
+  @Input() data: any;
   private osc: OscillatorNode;
 
 

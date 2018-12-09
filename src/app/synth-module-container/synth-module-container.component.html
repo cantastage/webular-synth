@@ -27,8 +27,12 @@
 </div>
  -->
 
- <button type="button" (click)="loadComponent()">Load Component</button>
- <div class="add-module-example">
+<button type="button" (click)="loadComponent()">Load Component</button>
+<!-- <div class="add-module-example">
    <h3>New modules</h3>
    <ng-template appAddModule></ng-template>
- </div>
+ </div> -->
+<div cdkDropList cdkDropListOrientation="horizontal" #connectedModules="cdkDropList" [cdkDropListData]="Sound Chain"
+  [cdkDropListConnectedTo]="[unconnectedModules]" class="example-list" (cdkDropListDropped)="drop($event)">
+  <ng-template appAddModule *ngFor="let module of modules"></ng-template>
+</div>
