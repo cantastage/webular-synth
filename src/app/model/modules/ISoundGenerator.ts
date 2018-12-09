@@ -1,10 +1,5 @@
 interface ISoundGenerator extends IModule {}
 
-function sealed(constructor: Function) {
-  Object.seal(constructor);
-  Object.seal(constructor.prototype);
-}
-
 // all the following generics?!?! would say no...
 // field of any concrete SoundGenerator (eg. Oscillator)
 interface IModulableParameterFromGen {
