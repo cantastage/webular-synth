@@ -1,3 +1,3 @@
 function isInteger(x: number): boolean {
-    return x !== Math.floor(x);
+    return x === Math.floor(x);
 }

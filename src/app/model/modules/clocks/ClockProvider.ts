@@ -1,9 +1,14 @@
+interface IClock extends IModule, IObservable {
+  bpm: number;
+  BEATS_MIN(): number;
+  BEATS_MAX(): number;
+}
 @sealed
 class Clock implements IClock {
   private static readonly BEATS_MIN: number = 55;
-  public static readonly BEATS_MAX: number = 255;
+  private static readonly BEATS_MAX: number = 255;
 
-  private _bpm: number; // integer between MIN MAX
+  private _bpm: number;
   private _observers: IObserver[];
   private _isRunning: boolean;
   private _th: any;
@@ -31,7 +36,7 @@ class Clock implements IClock {
     }
   }
 
-  constructor(bpm: number) {
+  public constructor(bpm: number) {
     this.bpm = bpm;
     this._observers = new Array();
     this._isRunning = false;
@@ -73,13 +78,15 @@ class Clock implements IClock {
   }
 }
 
-// SINGLETON
-export class ClockProvider {
-  private static _hiddenClock: Clock;
-  public static retrieveInstance(): IClock {
+export class ClockProvider { // singleton pattern
+  private static _hiddenClock: IClock;
+  private static initialize(): void {
     if (!this._hiddenClock) {
       this._hiddenClock = new Clock(120);
     }
+  }
+  public static retrieveInstance(): IClock {
+    this.initialize();
     return this._hiddenClock;
   }
 }

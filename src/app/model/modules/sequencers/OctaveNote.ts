@@ -1,20 +1,21 @@
-import { ReferralNotes } from './ReferralNotes';
+import { ReferralNotesProvider } from './ReferralNotesProvider';
+import { IReferralNote } from './IReferralNote';
 
-export class OctaveNote {
+export class OctaveNote implements ICache {
     public static readonly OCTAVE_MIN = 1;
     public static readonly OCTAVE_MAX = 5;
 
-    private _note4: ReferralNotes;
+    private _note4: IReferralNote;
     private _octave: number;
 
     private _associatedFrequency: number; // for caching
 
-    public get note4(): ReferralNotes {
+    public get note4(): IReferralNote {
         return this._note4;
     }
-    public set note4(note4: ReferralNotes) {
+    public set note4(note4: IReferralNote) {
         this._note4 = note4;
-        this.updateAssociatedFrequency();
+        this._updateCache();
     }
     public get octave(): number {
         return this._octave;
@@ -24,17 +25,17 @@ export class OctaveNote {
             throw new Error('error while assigning the octave value');
         }
         this._octave = octave;
-        this.updateAssociatedFrequency();
+        this._updateCache();
     }
     public get associatedFrequency(): number {
         return this._associatedFrequency;
     }
 
-    private updateAssociatedFrequency(): void {
-        this._associatedFrequency = parseFloat(ReferralNotes[this.note4]) * (2 ** (this.octave - 4));
+    public _updateCache(): void {
+        this._associatedFrequency = this.note4.referralFrequency() * (2 ** (this.octave - 4));
     }
 
-    public constructor(note4: ReferralNotes, octave: number) {
+    public constructor(note4: IReferralNote, octave: number) {
         this.note4 = note4;
         this.octave = octave;
     }

@@ -1,18 +1,19 @@
-import { SD, ReferralNotes } from './ReferralNotes';
+import { ReferralNotesProvider } from './ReferralNotesProvider';
+import { IReferralNote, SD } from './IReferralNote';
 import { Tonality } from './Tonality';
 
-export class Scale {
-    private _key: ReferralNotes;
+export class Scale implements ICache {
+    private _key: IReferralNote;
     private _tonality: Tonality;
 
-    private _diatonicNotes: ReferralNotes[]; // for caching
+    private _diatonicNotes: IReferralNote[]; // for caching
 
-    public get key(): ReferralNotes {
+    public get key(): IReferralNote {
         return this._key;
     }
-    public set key(key: ReferralNotes) {
+    public set key(key: IReferralNote) {
         this._key = key;
-        this.updateDiatonicNotes();
+        this._updateCache();
     }
     public get tonality(): Tonality {
         return this._tonality;
@@ -22,29 +23,30 @@ export class Scale {
             throw new Error('error while assigning the tonality value');
         }
         this._tonality = tonality;
-        this.updateDiatonicNotes();
+        this._updateCache();
     }
-    public get diatonicNotes(): ReferralNotes[] {
+    public get diatonicNotes(): IReferralNote[] {
         return this._diatonicNotes;
     }
 
-    private updateDiatonicNotes(): void {
+    public _updateCache(): void {
         if (!this.diatonicNotes) {
-            this._diatonicNotes = new Array<ReferralNotes>();
+            this._diatonicNotes = new Array<IReferralNote>();
         }
         this.diatonicNotes.splice(0, this.diatonicNotes.length); // clear all
         this.diatonicNotes.push(this.key);
         let incrementalStep = 0;
+        // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         this.tonality.pattern.forEach(element => {
             incrementalStep += element;
-            const nextfreq = parseFloat(ReferralNotes[this.key]) * (SD ** incrementalStep);
-            const nextnote = (): ReferralNotes => {
-                let nextnotehp: ReferralNotes; let nextfreqhp: number;
-                Object.keys(ReferralNotes).forEach(element2 => {
-                    nextnotehp = ReferralNotes[element2]; nextfreqhp = parseFloat(ReferralNotes[nextnotehp]);
+            const nextfreq = this.key.referralFrequency() * (SD ** incrementalStep);
+            const nextnote = (): IReferralNote => {
+                let nextnotehp: IReferralNote; let nextfreqhp: number;
+                ReferralNotesProvider.retrieveInstances().forEach(element2 => {
+                    nextnotehp = element2; nextfreqhp = nextnotehp.referralFrequency();
                     for (let k = 0; k < 10; k++) { // overdimensioned, maybe 2 (covering 5 octaves) is ok?
                         if (Math.floor(nextfreq) === Math.floor(nextfreqhp * (2 ** k)) ||
-                            Math.floor(nextfreq) === Math.floor(nextnotehp / (2 ** k))) {
+                            Math.floor(nextfreq) === Math.floor(nextfreqhp / (2 ** k))) {
                             return nextnotehp;
                         }
                     }
@@ -55,7 +57,7 @@ export class Scale {
         });
     }
 
-    public constructor(key: ReferralNotes, tonality: Tonality) {
+    public constructor(key: IReferralNote, tonality: Tonality) {
         this.key = key;
         this.tonality = tonality;
     }
