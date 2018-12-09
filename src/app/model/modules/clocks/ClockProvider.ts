@@ -1,8 +1,5 @@
-interface IClock extends IModule, IObservable {
-  bpm: number;
-  BEATS_MIN(): number;
-  BEATS_MAX(): number;
-}
+import { IClock } from './IClock';
+
 @sealed
 class Clock implements IClock {
   private static readonly BEATS_MIN: number = 55;
