@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { extend } from 'webdriver-js-extender';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 
 @Component({
@@ -9,16 +8,17 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
 })
 export class MoogLadderFilterComponent implements OnInit {
   private _osc: any;
-  private _scriptNode: any;
+  private _scriptNode: ScriptProcessorNode;
   public cutoff_freq: number;
   public Q: number;
+  // private resonance: any;
 
-  private in0: any;
-  private in1: any;
-  private out0: any;
-  private out1: any;
+  private in0 = 0;
+  private in1 = 0;
+  private out0 = 0;
+  private out1 = 0;
 
-  constructor(private contextManager: AudioContextManagerService) {
+  constructor(public contextManager: AudioContextManagerService) {
   }
 
   ngOnInit() {
@@ -26,13 +26,17 @@ export class MoogLadderFilterComponent implements OnInit {
     this._osc.type = 'square';
 
     this._scriptNode = this.contextManager.audioContext.createScriptProcessor(2048, 1, 1);
-    this._scriptNode.onaudioprocess = ($event) => { this.process($event); };
+    this._scriptNode.onaudioprocess = ($event) => {
+      this.process($event);
+    };
     this.cutoff_freq = 5500;
     this.Q = 0.5;
 
+
     this._osc.connect(this._scriptNode);
     this._scriptNode.connect(this.contextManager.audioContext.destination);
-    this._osc.start();
+    // this._osc.connect(this.contextManager.audioContext.destination);
+    // this._osc.start();
   }
 
   public onCutoffChange(arg: any): void {
@@ -59,14 +63,24 @@ export class MoogLadderFilterComponent implements OnInit {
     const a1 = -2 * Math.cos(cutoff_omega);
     const a2 = 1 - alpha;
 
+    let outnow = 0; // declared here for optimization
     for (let sample = 0; sample < input.length; sample++) {
       // BIQUAD IMPLEMENTATION
-      const outnow = b0 / a0 * input[sample] + b1 / a0 * this.in0 + b2 / a0 * this.in1 - a1 / a0 * this.out0 - a2 / a0 * this.out1;
+      outnow = b0 / a0 * input[sample] + b1 / a0 * this.in0 + b2 / a0 * this.in1 - a1 / a0 * this.out0 - a2 / a0 * this.out1;
       this.out1 = this.out0;
       this.out0 = outnow;
       this.in1 = this.in0;
       this.in0 = input[sample];
       output[sample] = outnow;
     }
+    // console.log(this.cutoff_freq);
+  }
+
+  play(): void {
+    this._osc.start();
+  }
+
+  stop(): void {
+    this._osc.stop();
   }
 }
