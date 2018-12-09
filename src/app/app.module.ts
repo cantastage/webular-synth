@@ -7,11 +7,13 @@ import { SynthModuleContainerComponent } from './synth-module-container/synth-mo
 // import { AudioContextModule } from 'angular-audio-context';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MoogLadderFilterComponent } from './synth-modules/moog-ladder-filter/moog-ladder-filter.component';
+import { PolyphonicOscComponent } from './synth-modules/polyphonic-osc/polyphonic-osc.component';
 @NgModule({
   declarations: [
     AppComponent,
     SynthModuleContainerComponent,
     MoogLadderFilterComponent,
+    PolyphonicOscComponent,
   ],
   imports: [
     BrowserModule,
