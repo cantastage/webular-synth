@@ -1,9 +1,10 @@
 import { IReferralNote, NoteNames, EnharmonicNames, A4, SD } from './IReferralNote';
 
 @sealed
-class ReferralNote implements IReferralNote {
+class ReferralNote implements IReferralNote, ICache {
     private _referralNote: NoteNames;
 
+    // cache fields depending on private ones
     private _enharmonicName: EnharmonicNames;
     private _referralFrequency: number;
 
@@ -12,10 +13,7 @@ class ReferralNote implements IReferralNote {
     }
     public setReferralNote(referralNote: NoteNames) { // creepy, but unavoidable
         this._referralNote = referralNote;
-        // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        const tmp = EnharmonicNames[NoteNames[referralNote]];
-        this._enharmonicName = tmp ? tmp : EnharmonicNames[EnharmonicNames.nd];
-        this._referralFrequency = A4 * (SD ** (referralNote - 9));
+        this._updateCache();
     }
     public enharmonicName(): EnharmonicNames {
         return this._enharmonicName;
@@ -23,13 +21,19 @@ class ReferralNote implements IReferralNote {
     public referralFrequency(): number {
         return this._referralFrequency;
     }
+    _updateCache(): void {
+        // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        const tmp = EnharmonicNames[NoteNames[this.referralNote()]];
+        this._enharmonicName = tmp ? tmp : EnharmonicNames[EnharmonicNames.nd];
+        this._referralFrequency = A4 * (SD ** (this.referralNote() - 9));
+    }
 
     public constructor(referralNote: NoteNames) {
         this.setReferralNote(referralNote);
     }
 }
 
-export class ReferralNotesProvider { // fly-weitght pattern
+export class ReferralNotesProvider { // fly-weight pattern
     private static _referralNotes: IReferralNote[];
     private static initialize() {
         if (!this._referralNotes) {

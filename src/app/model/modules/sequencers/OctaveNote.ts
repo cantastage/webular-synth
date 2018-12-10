@@ -1,4 +1,3 @@
-import { ReferralNotesProvider } from './ReferralNotesProvider';
 import { IReferralNote } from './IReferralNote';
 
 export class OctaveNote implements ICache {
@@ -8,12 +7,16 @@ export class OctaveNote implements ICache {
     private _note4: IReferralNote;
     private _octave: number;
 
-    private _associatedFrequency: number; // for caching
+    // cache field depending on private ones
+    private _associatedFrequency: number;
 
     public get note4(): IReferralNote {
         return this._note4;
     }
     public set note4(note4: IReferralNote) {
+        if (note4 == null) {
+            throw new Error('error while assigning the note4 value');
+        }
         this._note4 = note4;
         this._updateCache();
     }

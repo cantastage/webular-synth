@@ -18,7 +18,7 @@ export enum NoteNames {
 
 export enum EnharmonicNames {
     'nd' = -1,
-    'B#' = 0,
+    'B#' = 0, // EnharmonicName of the i-th corrispondent NoteName
     'C#' = 1,
     'D#' = 3,
     'Fb' = 4,

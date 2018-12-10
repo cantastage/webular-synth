@@ -1,3 +1,4 @@
+@sealed
 export class Tonality {
     private _name: string;
     private _pattern: number[];
@@ -18,7 +19,7 @@ export class Tonality {
         let validPattern = pattern != null;
         if (validPattern) {
             pattern.forEach(element => {
-                if (!isInteger(element)) {
+                if (!isInteger(element) || (element !== 1 && element !== 2)) {
                     validPattern = false;
                     return false; // DOES THIS WORK AS BREAK?!?!
                 }

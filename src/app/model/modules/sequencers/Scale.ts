@@ -6,12 +6,16 @@ export class Scale implements ICache {
     private _key: IReferralNote;
     private _tonality: Tonality;
 
-    private _diatonicNotes: IReferralNote[]; // for caching
+    // cache field depending on private ones
+    private _diatonicNotes: IReferralNote[];
 
     public get key(): IReferralNote {
         return this._key;
     }
     public set key(key: IReferralNote) {
+        if (key == null) {
+            throw new Error('error while assigning the key value');
+        }
         this._key = key;
         this._updateCache();
     }
