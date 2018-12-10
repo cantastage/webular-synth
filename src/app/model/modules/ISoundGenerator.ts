@@ -1,18 +1,21 @@
-interface ISoundGenerator extends IModule {}
+import {IModule} from './IModule';
+import { sealed } from '../../system2/utilities/ClassDecorators';
+
+export interface ISoundGenerator extends IModule {}
 
 // all the following generics?!?! would say no...
 // field of any concrete SoundGenerator (eg. Oscillator)
-interface IModulableParameterFromGen {
+export interface IModulableParameterFromGen {
   value: number; // must implement: public get value(), public set value(val: number)
   readonly modulatedValue: number; // must implement: public get modulatedValue()
 }
 // field of any concrete Modulator (eg. LFO)
-interface IModulableParameterFromMod {
+export interface IModulableParameterFromMod {
   modulateBy(factor: number): void; // must implement: public modulateBy(factor: number): void
 }
 
 @sealed
-class ModulableParameter implements IModulableParameterFromGen, IModulableParameterFromMod {
+export class ModulableParameter implements IModulableParameterFromGen, IModulableParameterFromMod {
   private _value: number;
   private readonly _checkDelegate: Predicate<number>;
   private _lastModulationFactor: number;

@@ -1,3 +1,3 @@
-interface IObserver {
+export interface IObserver {
     update(): void;
 }

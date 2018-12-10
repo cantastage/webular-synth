@@ -1,4 +1,7 @@
-class Filter implements IModule {
+import { IModule } from './IModule';
+import { ModulableParameter } from './ISoundGenerator';
+
+export class Filter implements IModule {
     private _cutoff: ModulableParameter;
     private _resonance: ModulableParameter;
 

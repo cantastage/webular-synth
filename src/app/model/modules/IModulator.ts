@@ -1,4 +1,7 @@
-interface IModulator extends IModule {
+import { IModule } from './IModule';
+import { ISoundGenerator, IModulableParameterFromMod } from './ISoundGenerator';
+
+export interface IModulator extends IModule {
   // modulates which field?!
   /*
     for the chain-of-responsability-pattern, the modulator knows the modulated.

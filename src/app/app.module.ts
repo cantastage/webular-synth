@@ -7,11 +7,15 @@ import { SynthModuleContainerComponent } from './synth-module-container/synth-mo
 // import { AudioContextModule } from 'angular-audio-context';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MoogLadderFilterComponent } from './synth-modules/moog-ladder-filter/moog-ladder-filter.component';
+import { ClockComponent } from './synth-modules/clock/clock.component';
+import { SequencerComponent } from './synth-modules/sequencer/sequencer.component';
 @NgModule({
   declarations: [
     AppComponent,
     SynthModuleContainerComponent,
     MoogLadderFilterComponent,
+    ClockComponent,
+    SequencerComponent,
   ],
   imports: [
     BrowserModule,

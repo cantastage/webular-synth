@@ -30,7 +30,7 @@ export enum EnharmonicNames {
 }
 
 export interface IReferralNote {
-    referralNote(): NoteNames;
-    enharmonicName(): EnharmonicNames;
+    referralNote(): string;
+    enharmonicName(): string;
     referralFrequency(): number;
 }

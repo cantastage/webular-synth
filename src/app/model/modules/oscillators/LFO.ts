@@ -1,3 +1,6 @@
+import { IModulator } from '../IModulator';
+import { ISoundGenerator, IModulableParameterFromMod } from '../ISoundGenerator';
+
 class LFO implements IModulator {
   modulatedModule: ISoundGenerator;
   modulatedParameter: IModulableParameterFromMod;

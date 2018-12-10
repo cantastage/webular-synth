@@ -1,4 +1,4 @@
-enum WaveShapes {
+export enum WaveShapes {
   Sinusoid,
   Square,
   Triangle,

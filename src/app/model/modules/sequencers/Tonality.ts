@@ -1,3 +1,6 @@
+import { sealed } from '../../../system2/utilities/ClassDecorators';
+import { isInteger } from '../../../system2/utilities/NumericalExtensions';
+
 @sealed
 export class Tonality {
     private _name: string;

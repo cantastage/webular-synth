@@ -1,3 +1,4 @@
+import { ICache } from '../../../system2/utilities/ICache';
 import { ReferralNotesProvider } from './ReferralNotesProvider';
 import { IReferralNote, SD } from './IReferralNote';
 import { Tonality } from './Tonality';
@@ -17,7 +18,9 @@ export class Scale implements ICache {
             throw new Error('error while assigning the key value');
         }
         this._key = key;
-        this._updateCache();
+        if (this.tonality) {
+            this._updateCache();
+        }
     }
     public get tonality(): Tonality {
         return this._tonality;
@@ -27,7 +30,9 @@ export class Scale implements ICache {
             throw new Error('error while assigning the tonality value');
         }
         this._tonality = tonality;
-        this._updateCache();
+        if (this.key) {
+            this._updateCache();
+        }
     }
     public get diatonicNotes(): IReferralNote[] {
         return this._diatonicNotes;

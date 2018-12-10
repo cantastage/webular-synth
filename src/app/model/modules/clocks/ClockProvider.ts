@@ -1,4 +1,7 @@
+import { sealed } from '../../../system2/utilities/ClassDecorators';
+import { isInteger } from '../../../system2/utilities/NumericalExtensions';
 import { IClock } from './IClock';
+import { IObserver } from '../../../system2/patterns/observer/IObserver';
 
 @sealed
 class Clock implements IClock {
@@ -29,7 +32,7 @@ class Clock implements IClock {
       // partial stop with no isRunning modification
       clearInterval(this._th);
       // partial restart with no isRunning modification
-      this._th = setInterval(this.callback, 60.0 / this.bpm * 1000);
+      this._th = setInterval(this.callback.bind(this), 60.0 / this.bpm * 1000);
     }
   }
 
@@ -57,13 +60,13 @@ class Clock implements IClock {
       element.update();
     });
   }
-  private callback() {
-    this.notify();
+  private callback(clockCtx) {
+    clockCtx.notify();
   }
 
   public start(): void {
     if (!this._isRunning) {
-      this._th = setInterval(this.callback, 60.0 / this.bpm * 1000);
+      this._th = setInterval(this.callback.bind(null, this), 60.0 / this.bpm * 1000);
       this._isRunning = true;
     }
   }

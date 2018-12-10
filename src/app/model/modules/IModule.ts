@@ -1,4 +1,4 @@
-interface IModule {
+export interface IModule {
     start(): void;
     stop(): void;
 }

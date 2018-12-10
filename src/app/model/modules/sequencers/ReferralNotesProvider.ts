@@ -1,4 +1,6 @@
+import { sealed } from '../../../system2/utilities/ClassDecorators';
 import { IReferralNote, NoteNames, EnharmonicNames, A4, SD } from './IReferralNote';
+import { ICache } from '../../../system2/utilities/ICache';
 
 @sealed
 class ReferralNote implements IReferralNote, ICache {
@@ -8,24 +10,36 @@ class ReferralNote implements IReferralNote, ICache {
     private _enharmonicName: EnharmonicNames;
     private _referralFrequency: number;
 
-    public referralNote(): NoteNames {
+    private referralNoteKey(): string {
+        return NoteNames[this._referralNote];
+    }
+    private referralNoteValue(): number {
         return this._referralNote;
+    }
+    public referralNote(): string {
+        return this.referralNoteKey();
     }
     public setReferralNote(referralNote: NoteNames) { // creepy, but unavoidable
         this._referralNote = referralNote;
         this._updateCache();
     }
-    public enharmonicName(): EnharmonicNames {
+    private enharmonicNameKey(): string {
+        return EnharmonicNames[this._enharmonicName];
+    }
+    private enharmonicNameValue(): number {
         return this._enharmonicName;
+    }
+    public enharmonicName(): string {
+        return this.enharmonicNameKey();
     }
     public referralFrequency(): number {
         return this._referralFrequency;
     }
     _updateCache(): void {
         // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        const tmp = EnharmonicNames[NoteNames[this.referralNote()]];
-        this._enharmonicName = tmp ? tmp : EnharmonicNames[EnharmonicNames.nd];
-        this._referralFrequency = A4 * (SD ** (this.referralNote() - 9));
+        this._enharmonicName = String(EnharmonicNames[this.referralNoteValue()]) !== 'undefined' ?
+            this.referralNoteValue() : EnharmonicNames.nd;
+        this._referralFrequency = A4 * (SD ** (this.referralNoteValue() - 9));
     }
 
     public constructor(referralNote: NoteNames) {
@@ -38,9 +52,11 @@ export class ReferralNotesProvider { // fly-weight pattern
     private static initialize() {
         if (!this._referralNotes) {
             this._referralNotes = new Array<IReferralNote>();
+            // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             Object.keys(NoteNames).forEach(element => {
-                // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                this._referralNotes.push(new ReferralNote(NoteNames[element]));
+                if (isNaN(parseInt(element, 10))) { // only enum string identifiers
+                    this._referralNotes.push(new ReferralNote(NoteNames[element]));
+                }
             });
         }
     }
@@ -52,7 +68,7 @@ export class ReferralNotesProvider { // fly-weight pattern
         this.initialize();
         let ret: IReferralNote;
         this._referralNotes.forEach(element => {
-            if (element.referralNote() === id) {
+            if (element.referralNote() === NoteNames[id]) {
                 ret = element;
             }
         });

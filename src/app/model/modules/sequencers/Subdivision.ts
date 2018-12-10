@@ -1,4 +1,5 @@
 import { OctaveNote } from './OctaveNote';
+import { isInteger } from '../../../system2/utilities/NumericalExtensions';
 
 export class Subdivision {
     public static readonly NOTE_COUNT = 8;

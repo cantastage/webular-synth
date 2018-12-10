@@ -1,7 +1,10 @@
+import { ICache } from '../../../system2/utilities/ICache';
 import { IReferralNote } from './IReferralNote';
+import { isInteger } from '../../../system2/utilities/NumericalExtensions';
 
 export class OctaveNote implements ICache {
     public static readonly OCTAVE_MIN = 1;
+    public static readonly OCTAVE_DEFAULT = 4;
     public static readonly OCTAVE_MAX = 5;
 
     private _note4: IReferralNote;

@@ -1,3 +1,6 @@
+import { ISoundGenerator } from '../ISoundGenerator';
+import { WaveShapes } from './WaveShapes';
+
 class Oscillator implements ISoundGenerator {
   private _waveShape: WaveShapes; // wave shape from the enum
   private _level: number; // volume level as percentage
