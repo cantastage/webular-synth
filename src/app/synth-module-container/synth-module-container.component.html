@@ -1,38 +1,42 @@
-<!-- <div class="example-container">
-  <h2>To do</h2>
+<div class="example-container">
+  <h2>Synth Modules</h2>
 
-  <div
-    cdkDropList
-    #todoList="cdkDropList"
-    [cdkDropListData]="todo"
-    [cdkDropListConnectedTo]="[doneList]"
-    class="example-list"
-    (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+  <div cdkDropList cdkDropListOrientation="horizontal" #connectedList="cdkDropList" [cdkDropListData]="connectedModules"
+    [cdkDropListConnectedTo]="[unconnectedList]" class="example-list" (cdkDropListDropped)="drop($event)">
+    <div class="example-box" *ngFor="let item of connectedModules" cdkDrag>{{item}}</div>
   </div>
 </div>
 
-<div class="example-container">
+<!-- <div class="example-container">
   <h2>Done</h2>
 
   <div
     cdkDropList
-    #doneList="cdkDropList"
+    #unconnectedList="cdkDropList"
     [cdkDropListData]="done"
-    [cdkDropListConnectedTo]="[todoList]"
+    [cdkDropListConnectedTo]="[connectedList]"
     class="example-list"
     (cdkDropListDropped)="drop($event)">
     <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
   </div>
-</div>
- -->
+</div> -->
+
 
 <button type="button" (click)="loadComponent()">Load Component</button>
-<!-- <div class="add-module-example">
-   <h3>New modules</h3>
-   <ng-template appAddModule></ng-template>
- </div> -->
-<div cdkDropList cdkDropListOrientation="horizontal" #connectedModules="cdkDropList" [cdkDropListData]="Sound Chain"
+<div class="add-module-example">
+  <h3>New modules</h3>
+  <div cdkDropList cdkDropListOrientation="horizontal" #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules"
+    [cdkDropListConnectedTo]="[connectedList]" class="example-list" (cdkDropListDropped)="drop($event)">
+    <div cdkDrag>
+      <ng-template appAddModule></ng-template>
+    </div>
+    
+  </div>
+
+</div>
+
+
+<!-- <div cdkDropList cdkDropListOrientation="horizontal" #connectedModules="cdkDropList" [cdkDropListData]="Sound Chain"
   [cdkDropListConnectedTo]="[unconnectedModules]" class="example-list" (cdkDropListDropped)="drop($event)">
   <ng-template appAddModule *ngFor="let module of modules"></ng-template>
-</div>
+</div> -->

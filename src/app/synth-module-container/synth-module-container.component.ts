@@ -16,25 +16,14 @@ import { ModuleManagerService } from '../services/module-manager.service';
  */
 export class SynthModuleContainerComponent implements OnInit {
   // @Input() modules: ModuleItem[]; // synth modules injected by the contextManagerService
+  // @Input() connectedModules: Array<AudioNode>;
+  // @Input() unconnectedModules: Array<AudioNode>;
+  // private connectedModules: Array<AudioNode> = new Array<AudioNode>();
+  // private unconnectedModules: Array<AudioNode> = new Array<AudioNode>();
+  private connectedModules: Array<any> = new Array<any>(0);
+  private unconnectedModules: Array<any> = new Array<any>(0);
   @ViewChild(AddModuleDirective) appAddModule: AddModuleDirective;
   private modules: ModuleItem[];
-
-
-  // private proc: MyWorkletNode;
-  // todo = [
-  //   'Get to work',
-  //   'Pick up groceries',
-  //   'Go home',
-  //   'Fall asleep'
-  // ];
-
-  // done = [
-  //   'Get up',
-  //   'Brush teeth',
-  //   'Take a shower',
-  //   'Check e-mail',
-  //   'Walk dog'
-  // ];
 
 
   constructor(
@@ -46,23 +35,23 @@ export class SynthModuleContainerComponent implements OnInit {
     this.modules = this.moduleManager.getModules();
   }
 
-  // drop(event: CdkDragDrop<string[]>) {
-  //   if (event.previousContainer === event.container) {
-  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-  //   } else {
-  //     transferArrayItem(event.previousContainer.data,
-  //       event.container.data,
-  //       event.previousIndex,
-  //       event.currentIndex);
-  //   }
-  // }
+  drop(event: CdkDragDrop<string[]>): void {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+    }
+  }
 
   loadComponent(): void {
     const adItem = this.modules[0]; // chooses first element to load
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(adItem.component);
 
     const viewContainerRef = this.appAddModule.viewContainerRef;
-    viewContainerRef.clear();
+    // viewContainerRef.clear();  // NB uncomment to have only one component at a time
 
     const componentRef = viewContainerRef.createComponent(componentFactory);
     (<ModuleComponent>componentRef.instance).data = adItem.data;
