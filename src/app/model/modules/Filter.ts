@@ -1,16 +1,16 @@
-import { IModule } from './IModule';
+// import { IModule } from '../../services/IModule';
 import { ModulableParameter } from './ISoundGenerator';
 
-export class Filter implements IModule {
+export class Filter /*implements IModule*/ {
     private _cutoff: ModulableParameter;
     private _resonance: ModulableParameter;
 
-    start(): void {
-      throw new Error('Method not implemented.');
-    }
-    stop(): void {
-      throw new Error('Method not implemented.');
-    }
+    // start(): void {
+    //   throw new Error('Method not implemented.');
+    // }
+    // stop(): void {
+    //   throw new Error('Method not implemented.');
+    // }
 }
 
 /*

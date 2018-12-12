@@ -1,5 +1,10 @@
-import { IModule } from '../IModule';
+import { Scale } from './Scale';
+import { Measure } from './Measure';
 
-export interface ISequencer extends IModule {
+// import { IModule } from '../../../services/IModule';
 
+export interface ISequencer /*extends IModule*/ {
+    scale: Scale;
+    measure: Measure;
+    // should add midiChannel: number;
 }

@@ -1,6 +1,5 @@
 import { ICache } from '../../../system2/utilities/ICache';
 import { IReferralNote } from './IReferralNote';
-import { isInteger } from '../../../system2/utilities/NumericalExtensions';
 
 export class OctaveNote implements ICache {
     public static readonly OCTAVE_MIN = 1;
@@ -27,7 +26,7 @@ export class OctaveNote implements ICache {
         return this._octave;
     }
     public set octave(octave: number) {
-        if (!isInteger(octave) || octave < OctaveNote.OCTAVE_MIN || octave > OctaveNote.OCTAVE_MAX) {
+        if (!Number.isInteger(Number(octave)) || octave < OctaveNote.OCTAVE_MIN || octave > OctaveNote.OCTAVE_MAX) {
             throw new Error('error while assigning the octave value');
         }
         this._octave = octave;

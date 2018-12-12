@@ -1,6 +1,4 @@
 import { Component, OnInit, OnChanges } from '@angular/core';
-import { IClock } from '../../model/modules/clocks/IClock';
-import { ClockProvider } from '../../model/modules/clocks/ClockProvider';
 
 import { ISequencer } from '../../model/modules/sequencers/ISequencer';
 import { Sequencer } from '../../model/modules/sequencers/Sequencer';
@@ -12,6 +10,7 @@ import { Tonality } from '../../model/modules/sequencers/Tonality';
 import { Subdivision } from '../../model/modules/sequencers/Subdivision';
 import { OctaveNote } from '../../model/modules/sequencers/OctaveNote';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
+import { ClockManagerService } from 'src/app/services/clock-manager.service';
 
 @Component({
   selector: 'app-sequencer',
@@ -19,22 +18,29 @@ import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
   styleUrls: ['./sequencer.component.scss']
 })
 export class SequencerComponent implements OnInit, IObserver, OnChanges {
-  // DECIDE WHETHER IS THE COMPONENT OR THE OBJECT IN THE MODEL TO BE THE OBSERVER
-  // AND IF IT'S THE CASE TO ADAPT THE CLOCK COHERENTLY
-  public static readonly tonalities: Tonality[] = [
-    new Tonality('Major', [2, 2, 1, 2, 2, 2, 1]),
-    new Tonality('Minor', [2, 1, 2, 2, 1, 2, 2])
-  ];
-
-  private _clock: IClock;
   private _sequencer: ISequencer;
+  private _referralNotes: IReferralNote[];
+  private _tonalities: Tonality[];
+  private _metrics: number[];
 
-  constructor() { }
+  constructor(private clockManager: ClockManagerService) { }
 
   ngOnInit() {
-    this._clock = ClockProvider.retrieveInstance(); // already started by the clock component
-    const referralNote: IReferralNote = ReferralNotesProvider.retrieveInstance(NoteNames.C);
-    const scale: Scale = new Scale(referralNote, SequencerComponent.tonalities[0]);
+    this._referralNotes = ReferralNotesProvider.retrieveInstances();
+    this._tonalities = [
+      new Tonality('Major', [2, 2, 1, 2, 2, 2, 1]),
+      new Tonality('Minor', [2, 1, 2, 2, 1, 2, 2])
+    ];
+    this._metrics = function(): number[] {
+      const ret: number[] = new Array<number>();
+      for (let i = Measure.METRIC_MIN; i <= Measure.METRIC_MAX; i++) {
+        ret.push(i);
+      }
+      return ret;
+    }();
+
+    const referralNote: IReferralNote = this._referralNotes[0];
+    const scale: Scale = new Scale(referralNote, this._tonalities[0]);
 
     const notes: OctaveNote[] = new Array<OctaveNote>();
     scale.diatonicNotes.forEach(element => {
@@ -45,7 +51,7 @@ export class SequencerComponent implements OnInit, IObserver, OnChanges {
       subdivisions.push(new Subdivision(notes, 0, 0));
     }
     this._sequencer = new Sequencer(scale, new Measure(subdivisions));
-    // this._clock.attach(this);
+    // this.clockManager.attach(this);
   }
 
   update(): void {

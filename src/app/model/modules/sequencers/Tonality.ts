@@ -1,5 +1,4 @@
 import { sealed } from '../../../system2/utilities/ClassDecorators';
-import { isInteger } from '../../../system2/utilities/NumericalExtensions';
 
 @sealed
 export class Tonality {
@@ -22,7 +21,7 @@ export class Tonality {
         let validPattern = pattern != null;
         if (validPattern) {
             pattern.forEach(element => {
-                if (!isInteger(element) || (element !== 1 && element !== 2)) {
+                if (!Number.isInteger(Number(element)) || (element !== 1 && element !== 2)) {
                     validPattern = false;
                     return false; // DOES THIS WORK AS BREAK?!?!
                 }

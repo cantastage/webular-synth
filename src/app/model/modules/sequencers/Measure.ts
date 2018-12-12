@@ -1,5 +1,4 @@
 import { Subdivision } from './Subdivision';
-import { isInteger } from '../../../system2/utilities/NumericalExtensions';
 
 export class Measure {
     public static readonly METRIC_MIN = 4;
@@ -12,7 +11,7 @@ export class Measure {
     //     return this._metric;
     // }
     // public set metric(metric: number) {
-    //     if (!isInteger(metric) || metric < Measure.METRIC_MIN || metric > Measure.METRIC_MAX) {
+    //     if (!Number.isInteger(Number(metric)) || metric < Measure.METRIC_MIN || metric > Measure.METRIC_MAX) {
     //         throw new Error('error while assigning the metric value');
     //     }
     //     this._metric = metric;

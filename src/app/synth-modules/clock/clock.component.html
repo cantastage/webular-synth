@@ -1,2 +1,2 @@
 
-<input id="bpm" type="text" value="{{ this._clock.bpm }}"/>
+<input id="bpm" type="text" value="{{this.clockManager.bpm}}" (change)="bpmChange($event)" />

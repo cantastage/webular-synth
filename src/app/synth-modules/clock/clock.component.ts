@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IClock } from '../../model/modules/clocks/IClock';
-import { ClockProvider } from '../../model/modules/clocks/ClockProvider';
+import { ClockManagerService } from 'src/app/services/clock-manager.service';
 
 @Component({
   selector: 'app-clock',
@@ -8,13 +7,15 @@ import { ClockProvider } from '../../model/modules/clocks/ClockProvider';
   styleUrls: ['./clock.component.scss']
 })
 export class ClockComponent implements OnInit {
-  private _clock: IClock;
 
-  constructor() { }
+  constructor(private clockManager: ClockManagerService) { }
 
   ngOnInit() {
-    this._clock = ClockProvider.retrieveInstance();
-    this._clock.start();
+    this.clockManager.start();
   }
 
+  bpmChange(sender: any): void {
+    // eventual checks
+    this.clockManager.bpm = sender.target.value;
+  }
 }

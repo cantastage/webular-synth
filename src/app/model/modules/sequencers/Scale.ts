@@ -45,23 +45,30 @@ export class Scale implements ICache {
         this.diatonicNotes.splice(0, this.diatonicNotes.length); // clear all
         this.diatonicNotes.push(this.key);
         let incrementalStep = 0;
-        // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         this.tonality.pattern.forEach(element => {
             incrementalStep += element;
             const nextfreq = this.key.referralFrequency() * (SD ** incrementalStep);
+
             const nextnote = (): IReferralNote => {
                 let nextnotehp: IReferralNote; let nextfreqhp: number;
-                ReferralNotesProvider.retrieveInstances().forEach(element2 => {
-                    nextnotehp = element2; nextfreqhp = nextnotehp.referralFrequency();
-                    for (let k = 0; k < 10; k++) { // overdimensioned, maybe 2 (covering 5 octaves) is ok?
+                let found = false;
+                for (let i = 0; i < ReferralNotesProvider.retrieveInstances().length; i++) {
+                    nextnotehp = ReferralNotesProvider.retrieveInstances()[i];
+                    nextfreqhp = nextnotehp.referralFrequency();
+                    for (let k = 0; k < 10 && !found; k++) { // overdimensioned, maybe 2 (covering 5 octaves) is ok?
                         if (Math.floor(nextfreq) === Math.floor(nextfreqhp * (2 ** k)) ||
                             Math.floor(nextfreq) === Math.floor(nextfreqhp / (2 ** k))) {
-                            return nextnotehp;
+                            found = true; // exits from the foreach, occurrence found
+                            break;
                         }
                     }
-                });
+                    if (found) {
+                        break;
+                    }
+                }
                 return nextnotehp;
             };
+
             this.diatonicNotes.push(nextnote());
         });
     }

@@ -1,5 +1,4 @@
 import { OctaveNote } from './OctaveNote';
-import { isInteger } from '../../../system2/utilities/NumericalExtensions';
 
 export class Subdivision {
     public static readonly NOTE_COUNT = 8;
@@ -36,7 +35,7 @@ export class Subdivision {
         return this._velocity;
     }
     public set velocity(velocity: number) {
-        if (!isInteger(velocity) || velocity < Subdivision.VELOCITY_MIN || velocity > Subdivision.VELOCITY_MAX) {
+        if (!Number.isInteger(Number(velocity)) || velocity < Subdivision.VELOCITY_MIN || velocity > Subdivision.VELOCITY_MAX) {
             throw new Error('error while assigning the velocity value');
         }
         this._velocity = velocity;

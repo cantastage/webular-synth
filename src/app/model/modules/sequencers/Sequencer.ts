@@ -5,7 +5,6 @@ import { Measure } from './Measure';
 export class Sequencer implements ISequencer {
     private _scale: Scale;
     private _measure: Measure;
-    private _cnt: number;
 
     public get scale(): Scale {
         return this._scale;
@@ -29,13 +28,5 @@ export class Sequencer implements ISequencer {
     public constructor(scale: Scale, measure: Measure) {
         this.scale = scale;
         this.measure = measure;
-        this._cnt = 0;
-    }
-
-    public start(): void {
-        // HERE NOTHING TODO
-    }
-    public stop(): void {
-        // HERE NOTHING TODO
     }
 }

@@ -1,14 +1,39 @@
 <div id="sequencer">
   <div id="selector">
-    <select id="key">
-    </select>
-    <select id="tonality">
-    </select>
-    <select id="metric">
-    </select>
+    <table>
+      <tbody>
+        <tr>
+          <td>key</td>
+          <td>tonality</td>
+          <td>metric</td>
+          <td>midiCh</td>
+        </tr>
+        <tr>
+            <td><select id="key">
+              <option *ngFor="let referralNote of _referralNotes">{{referralNote.referralNote()}}</option>
+            </select></td>
+            <td><select id="tonality">
+                <option *ngFor="let tonality of _tonalities">{{tonality.name}}</option>
+            </select></td>
+            <td><select id="metric">
+                <option *ngFor="let metric of _metrics">{{metric}}</option>
+            </select></td>
+            <td><select id="midiCh">
+              <!-- TO ADD -->
+            </select></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+
   <table class="wborderedcells">
     <tbody id="measure">
+      <tr *ngFor="let diatonicNote of _sequencer.scale.diatonicNotes">
+        <td>{{diatonicNote.referralNote()}}</td>
+        <td *ngFor="let subdivision of _sequencer.measure.subdivisions; let i = index;">
+          <input class="inputcell" value="{{subdivision.notes[i].octave}}"/>
+        </td>
+      </tr>
     </tbody>
   </table>
   <table class="wborderedcells">
