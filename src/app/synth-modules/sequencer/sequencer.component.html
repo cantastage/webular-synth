@@ -9,14 +9,14 @@
           <td>midiCh</td>
         </tr>
         <tr>
-            <td><select id="key">
-              <option *ngFor="let referralNote of _referralNotes">{{referralNote.referralNote()}}</option>
+            <td><select id="key" (change)="keyChange($event)">
+              <option *ngFor="let referralNote of _referralNotes;">{{referralNote.referralNote()}}</option>
             </select></td>
-            <td><select id="tonality">
-                <option *ngFor="let tonality of _tonalities">{{tonality.name}}</option>
+            <td><select id="tonality" (change)="tonalityChange($event)">
+                <option *ngFor="let tonality of _tonalities;">{{tonality.name}}</option>
             </select></td>
-            <td><select id="metric">
-                <option *ngFor="let metric of _metrics">{{metric}}</option>
+            <td><select id="metric" (change)="metricChange($event)">
+                <option *ngFor="let metric of _metrics;">{{metric}}</option>
             </select></td>
             <td><select id="midiCh">
               <!-- TO ADD -->
@@ -28,20 +28,30 @@
 
   <table class="wborderedcells">
     <tbody id="measure">
-      <tr *ngFor="let diatonicNote of _sequencer.scale.diatonicNotes">
-        <td>{{diatonicNote.referralNote()}}</td>
-        <td *ngFor="let subdivision of _sequencer.measure.subdivisions; let i = index;">
-          <input class="inputcell" value="{{subdivision.notes[i].octave}}"/>
+      <tr *ngFor="let diatonicNote of _sequencer.scale.diatonicNotes; let notei = index;" class="notei_{{notei}}">
+        <!-- RISOLVERE QUESTIONE NOMI -->
+        <td class="notei_{{notei}}">{{diatonicNote.referralNote()}}</td>
+        <td #subdivisionColumns *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;" class="subdivisioni_{{subdivisioni}}">
+          <input class="inputcell subdivisioni_{{subdivisioni}} notei_{{notei}}" id="subdivisioni_{{subdivisioni}}_notei_{{notei}}"
+          value="{{subdivision.octaves[subdivisioni]}}" (change)="gridChange($event)"/>
         </td>
       </tr>
-    </tbody>
-  </table>
-  <table class="wborderedcells">
-    <tbody id="duration">
-    </tbody>
-  </table>
-  <table class="wborderedcells">
-    <tbody id="velocity">
+
+      <tr>
+        <td>duration</td>
+        <td *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;" class="subdivisioni_{{subdivisioni}}">
+            <input class="inputcell subdivisioni_{{subdivisioni}} duration" id="subdivisioni_{{subdivisioni}}_duration"
+            value="{{subdivision.duration}}" (change)="durationChange($event)"/>
+        </td>
+      </tr>
+
+      <tr>
+        <td>velocity</td>
+        <td *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;" class="subdivisioni_{{subdivisioni}}">
+            <input class="inputcell subdivisioni_{{subdivisioni}} velocity" id="subdivisioni_{{subdivi}}_velocity"
+            value="{{subdivision.velocity}}" (change)="velocityChange($event)"/>
+        </td>
+      </tr>
     </tbody>
   </table>
 </div>

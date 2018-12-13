@@ -1,14 +1,13 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 
 import { ISequencer } from '../../model/modules/sequencers/ISequencer';
 import { Sequencer } from '../../model/modules/sequencers/Sequencer';
 import { Measure } from '../../model/modules/sequencers/Measure';
 import { Scale } from '../../model/modules/sequencers/Scale';
 import { ReferralNotesProvider } from '../../model/modules/sequencers/ReferralNotesProvider';
-import { NoteNames, IReferralNote } from '../../model/modules/sequencers/IReferralNote';
+import { IReferralNote } from '../../model/modules/sequencers/IReferralNote';
 import { Tonality } from '../../model/modules/sequencers/Tonality';
 import { Subdivision } from '../../model/modules/sequencers/Subdivision';
-import { OctaveNote } from '../../model/modules/sequencers/OctaveNote';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 
@@ -17,11 +16,15 @@ import { ClockManagerService } from 'src/app/services/clock-manager.service';
   templateUrl: './sequencer.component.html',
   styleUrls: ['./sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit, IObserver, OnChanges {
-  private _sequencer: ISequencer;
+export class SequencerComponent implements OnInit, IObserver {
   private _referralNotes: IReferralNote[];
   private _tonalities: Tonality[];
   private _metrics: number[];
+  private _octaves: number[];
+
+  private _sequencer: ISequencer;
+  private _subdivisionCounter: number;
+  @ViewChildren('subdivisionColumns') subdivisionColumns;
 
   constructor(private clockManager: ClockManagerService) { }
 
@@ -38,28 +41,81 @@ export class SequencerComponent implements OnInit, IObserver, OnChanges {
       }
       return ret;
     }();
+    this._octaves = new Array<number>();
+    for (let i = 0; i < Subdivision.NOTE_COUNT; i++) {
+      this._octaves.push(Subdivision.OCTAVE_DEFAULT);
+    }
 
     const referralNote: IReferralNote = this._referralNotes[0];
     const scale: Scale = new Scale(referralNote, this._tonalities[0]);
 
-    const notes: OctaveNote[] = new Array<OctaveNote>();
-    scale.diatonicNotes.forEach(element => {
-      notes.push(new OctaveNote(element, OctaveNote.OCTAVE_DEFAULT));
-    });
     const subdivisions: Subdivision[] = new Array<Subdivision>();
     for (let i = 0; i < Measure.METRIC_MIN; i++) {
-      subdivisions.push(new Subdivision(notes, 0, 0));
+      subdivisions.push(new Subdivision(this._octaves, 0, 0));
     }
     this._sequencer = new Sequencer(scale, new Measure(subdivisions));
-    // this.clockManager.attach(this);
-  }
 
+    this._subdivisionCounter = 0;
+    this.clockManager.attach(this);
+  }
+  private highLightSubdivision(n: number) {
+    // this.subdivisionColumns contains each of 8xMetric td cells
+    const vectorialized = this.subdivisionColumns.toArray();
+    for (let i = 0; i < vectorialized.length; i++) {
+      if ((i % this._sequencer.measure.subdivisions.length) !== n) { // remove light
+        vectorialized[i].nativeElement.classList.remove('greencolumn');
+      } else {
+        vectorialized[i].nativeElement.classList.add('greencolumn'); // add light
+      }
+    }
+  }
+  // IObserver member
   update(): void {
-    // UPDATE THE VIEW AND THE MODEL IF NECESSARY
-    console.log('halo');
+    this.highLightSubdivision(this._subdivisionCounter);
+    // OUTPUT AUDIO MESSAGE
+    this._subdivisionCounter = (this._subdivisionCounter + 1) % this._sequencer.measure.subdivisions.length;
   }
-
-  ngOnChanges(changes: import('../../../../node_modules/@angular/core/src/metadata/lifecycle_hooks').SimpleChanges): void {
-    throw new Error('Method not implemented.');
+  // UI configuration alteration
+  keyChange(eventArg: any): void {
+    this._sequencer.scale.key = ReferralNotesProvider.retrieveInstance(eventArg.target.value);
+  }
+  tonalityChange(eventArg: any): void {
+    let selected: Tonality;
+    for (let i = 0; i < this._tonalities.length; i++) {
+      if (this._tonalities[i].name === eventArg.target.value) {
+        selected = this._tonalities[i];
+        break;
+      }
+    }
+    this._sequencer.scale.tonality = selected;
+  }
+  metricChange(eventArg: any): void {
+    const m = Number(eventArg.target.value);
+    while (this._sequencer.measure.subdivisions.length !== m) {
+      if (this._sequencer.measure.subdivisions.length > m) {
+        this._sequencer.measure.subdivisions.pop();
+      } else {
+        this._sequencer.measure.subdivisions.push(new Subdivision(this._octaves, 0, 0));
+      }
+    }
+  }
+  // UI octave alteration
+  gridChange(eventArg: any) {
+    const tmp = eventArg.target.id.split('_');
+    const subdivisioni = Number(tmp[1]);
+    const notei = Number(tmp[3]);
+    this._sequencer.measure.subdivisions[subdivisioni].octaves[notei] = Number(eventArg.target.value);
+  }
+  // UI duration alteration
+  durationChange(eventArg: any) {
+    const tmp = eventArg.target.id.split('_');
+    const subdivisioni = Number(tmp[1]);
+    this._sequencer.measure.subdivisions[subdivisioni].duration = Number(eventArg.target.value);
+  }
+  // UI velocity alteration
+  velocityChange(eventArg: any) {
+    const tmp = eventArg.target.id.split('_');
+    const subdivisioni = Number(tmp[1]);
+    this._sequencer.measure.subdivisions[subdivisioni].velocity = Number(eventArg.target.value);
   }
 }

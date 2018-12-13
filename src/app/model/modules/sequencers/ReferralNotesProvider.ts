@@ -64,14 +64,15 @@ export class ReferralNotesProvider { // fly-weight pattern
         this.initialize();
         return this._referralNotes;
     }
-    public static retrieveInstance(id: NoteNames): IReferralNote {
+    public static retrieveInstance(id: string): IReferralNote {
         this.initialize();
         let ret: IReferralNote;
-        this._referralNotes.forEach(element => {
-            if (element.referralNote() === NoteNames[id]) {
-                ret = element;
+        for (let i = 0; i < this._referralNotes.length; i++) {
+            if (this._referralNotes[i].referralNote() === id) {
+                ret = this._referralNotes[i];
+                break;
             }
-        });
+        }
 
         return ret;
     }

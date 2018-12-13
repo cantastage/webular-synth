@@ -1,7 +1,6 @@
-import { OctaveNote } from './OctaveNote';
-
 export class Subdivision {
     public static readonly NOTE_COUNT = 8;
+    public static readonly OCTAVE_DEFAULT = 4;
 
     public static readonly DURATION_MIN = 0;
     public static readonly DURATION_MAX = 1;
@@ -9,18 +8,18 @@ export class Subdivision {
     public static readonly VELOCITY_MIN = 0;
     public static readonly VELOCITY_MAX = 127;
 
-    private _notes: OctaveNote[];
+    private _octaves: number[];
     private _duration: number;
     private _velocity: number;
 
-    public get notes(): OctaveNote[] {
-        return this._notes;
+    public get octaves(): number[] {
+        return this._octaves;
     }
-    public set notes(notes: OctaveNote[]) {
-        if (notes == null || notes.length !== Subdivision.NOTE_COUNT) {
-            throw new Error('error while assigning the notes values');
+    public set octaves(octaves: number[]) {
+        if (!octaves || octaves.length !== Subdivision.NOTE_COUNT) {
+            throw new Error('error while assigning the octaves values');
         }
-        this._notes = notes;
+        this._octaves = octaves;
     }
     public get duration(): number {
         return this._duration;
@@ -41,8 +40,8 @@ export class Subdivision {
         this._velocity = velocity;
     }
 
-    public constructor(notes: OctaveNote[], duration: number, velocity: number) {
-        this.notes = notes;
+    public constructor(octaves: number[], duration: number, velocity: number) {
+        this.octaves = octaves;
         this.duration = duration;
         this.velocity = velocity;
     }

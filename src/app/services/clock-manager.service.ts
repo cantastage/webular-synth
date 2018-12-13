@@ -34,7 +34,7 @@ export class ClockManagerService implements IModule, IClock, IObservable {
       // partial stop with no isRunning modification
       clearInterval(this._th);
       // partial restart with no isRunning modification
-      this._th = setInterval(this.callback.bind(this), 60.0 / this.bpm * 1000);
+      this._th = setInterval(this.callback.bind(null, this), 60.0 / this.bpm * 1000);
     }
   }
 
@@ -68,6 +68,8 @@ export class ClockManagerService implements IModule, IClock, IObservable {
     let i;
     if (observer == null || (i = this._observers.indexOf(observer)) < 0) {
       throw new Error('observer null or not found');
+    } else {
+      this._observers.splice(i, 1);
     }
   }
   public notify(): void {
