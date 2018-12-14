@@ -29,6 +29,15 @@ export class SequencerComponent implements OnInit, IObserver {
 
   constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService) { }
 
+  private startCount() {
+    this._subdivisionCounter = 0;
+    this.clockManager.attach(this);
+  }
+  private restartCount() {
+    this.clockManager.detach(this);
+    this._subdivisionCounter = 0;
+    this.clockManager.attach(this);
+  }
   ngOnInit() {
     this._referralNotes = ReferralNotesProvider.retrieveInstances();
     this._tonalities = [
@@ -56,8 +65,7 @@ export class SequencerComponent implements OnInit, IObserver {
     }
     this._sequencer = new Sequencer(scale, new Measure(subdivisions));
 
-    this._subdivisionCounter = 0;
-    this.clockManager.attach(this);
+    this.startCount();
   }
   private highLightSubdivision(n: number) {
     // this.subdivisionColumns contains each of 8xMetric td cells
@@ -113,6 +121,7 @@ export class SequencerComponent implements OnInit, IObserver {
         this._sequencer.measure.subdivisions.push(new Subdivision(new Array<number>().concat(this._duplicableOctaves), 0, 0));
       }
     }
+    this.restartCount();
   }
   // UI octave alteration
   gridChange(eventArg: any) {
