@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ModuleItem } from '../model/module-item';
 
 /**
  * This service provides access to a common audio context shared by all synth modules.
@@ -14,8 +15,13 @@ export class AudioContextManagerService {
   // (che non dovrebbe comunque potersi creare)
   // vuole inserirsi sulla risorsa speaker occupata dalla prima istanza
   private _ctx: AudioContext;
+  private soundChain: Array<AudioNode> = new Array<AudioNode>(0); // stores all the nodes in the audiochain
+  private disconnectedNodes: Array<AudioNode> = new Array<AudioNode>(0);
 
-  constructor() { this._ctx = new AudioContext(); }
+  constructor() {
+    this._ctx = new AudioContext();
+    // this.modules = [new ModuleItem(MoogLadderFilterComponent, { name: 'filter' })];
+  }
 
   /**
    * Getter for the audio context.
@@ -24,4 +30,12 @@ export class AudioContextManagerService {
     return this._ctx;
   }
 
+  /**
+   * Updates connections when moving a synth module inside the chain
+   * maybe can return a boolean or a number
+   * @TODO establish if needs parameters (index of the moved element)
+   */
+  public updateConnections(): void {
+
+  }
 }

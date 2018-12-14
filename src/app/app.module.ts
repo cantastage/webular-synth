@@ -17,6 +17,7 @@ import { SequencerComponent } from './synth-modules/sequencer/sequencer.componen
     ClockComponent,
     SequencerComponent,
   ],
+  entryComponents: [MoogLadderFilterComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
