@@ -72,9 +72,9 @@ export class ClockManagerService implements IModule, IClock, IObservable {
       this._observers.splice(i, 1);
     }
   }
-  public notify(): void {
+  public notify(arg: any): void {
     this._observers.forEach(element => {
-      element.update();
+      element.update(arg);
     });
   }
   private callback(ctx) {

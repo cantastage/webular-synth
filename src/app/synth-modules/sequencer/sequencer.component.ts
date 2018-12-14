@@ -10,6 +10,7 @@ import { Tonality } from '../../model/modules/sequencers/Tonality';
 import { Subdivision } from '../../model/modules/sequencers/Subdivision';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
+import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
 
 @Component({
   selector: 'app-sequencer',
@@ -20,13 +21,13 @@ export class SequencerComponent implements OnInit, IObserver {
   private _referralNotes: IReferralNote[];
   private _tonalities: Tonality[];
   private _metrics: number[];
-  private _octaves: number[];
+  private _duplicableOctaves: number[];
 
   private _sequencer: ISequencer;
   private _subdivisionCounter: number;
   @ViewChildren('subdivisionColumns') subdivisionColumns;
 
-  constructor(private clockManager: ClockManagerService) { }
+  constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService) { }
 
   ngOnInit() {
     this._referralNotes = ReferralNotesProvider.retrieveInstances();
@@ -41,9 +42,9 @@ export class SequencerComponent implements OnInit, IObserver {
       }
       return ret;
     }();
-    this._octaves = new Array<number>();
+    this._duplicableOctaves = new Array<number>();
     for (let i = 0; i < Subdivision.NOTE_COUNT; i++) {
-      this._octaves.push(Subdivision.OCTAVE_DEFAULT);
+      this._duplicableOctaves.push(Subdivision.OCTAVE_DEFAULT);
     }
 
     const referralNote: IReferralNote = this._referralNotes[0];
@@ -51,7 +52,7 @@ export class SequencerComponent implements OnInit, IObserver {
 
     const subdivisions: Subdivision[] = new Array<Subdivision>();
     for (let i = 0; i < Measure.METRIC_MIN; i++) {
-      subdivisions.push(new Subdivision(this._octaves, 0, 0));
+      subdivisions.push(new Subdivision(new Array<number>().concat(this._duplicableOctaves), 0, 0));
     }
     this._sequencer = new Sequencer(scale, new Measure(subdivisions));
 
@@ -72,7 +73,21 @@ export class SequencerComponent implements OnInit, IObserver {
   // IObserver member
   update(): void {
     this.highLightSubdivision(this._subdivisionCounter);
-    // OUTPUT AUDIO MESSAGE
+    const currentSubdivision = this._sequencer.measure.subdivisions[this._subdivisionCounter];
+    if (currentSubdivision.duration !== 0 && currentSubdivision.velocity !== 0) {
+      let currentReferralFreq, currentOctave, currentResultingFreq;
+      // SEND AUDIO/MIDI MESSAGE
+      for (let i = 0; i < this._sequencer.scale.diatonicNotes.length; i++) {
+        currentReferralFreq = this._sequencer.scale.diatonicNotes[i].referralFrequency();
+        currentOctave = currentSubdivision.octaves[i];
+        if (currentOctave !== 0) {
+          currentResultingFreq = currentReferralFreq * (2 ** (currentOctave - 4));
+          this.midiManager.sendRawNote(1, currentResultingFreq,
+            60 / this.clockManager.bpm * currentSubdivision.duration * 1000,
+            currentSubdivision.velocity);
+        }
+      }
+    }
     this._subdivisionCounter = (this._subdivisionCounter + 1) % this._sequencer.measure.subdivisions.length;
   }
   // UI configuration alteration
@@ -95,7 +110,7 @@ export class SequencerComponent implements OnInit, IObserver {
       if (this._sequencer.measure.subdivisions.length > m) {
         this._sequencer.measure.subdivisions.pop();
       } else {
-        this._sequencer.measure.subdivisions.push(new Subdivision(this._octaves, 0, 0));
+        this._sequencer.measure.subdivisions.push(new Subdivision(new Array<number>().concat(this._duplicableOctaves), 0, 0));
       }
     }
   }

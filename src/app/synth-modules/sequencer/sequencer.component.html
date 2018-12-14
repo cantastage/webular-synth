@@ -33,7 +33,7 @@
         <td class="notei_{{notei}}">{{diatonicNote.referralNote()}}</td>
         <td #subdivisionColumns *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;" class="subdivisioni_{{subdivisioni}}">
           <input class="inputcell subdivisioni_{{subdivisioni}} notei_{{notei}}" id="subdivisioni_{{subdivisioni}}_notei_{{notei}}"
-          value="{{subdivision.octaves[subdivisioni]}}" (change)="gridChange($event)"/>
+          value="{{subdivision.octaves[notei]}}" (change)="gridChange($event)"/>
         </td>
       </tr>
 
