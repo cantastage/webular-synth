@@ -24,6 +24,7 @@ export class SynthModuleContainerComponent implements OnInit {
   private unconnectedModules: Array<any> = new Array<any>(0);
   @ViewChild(AddModuleDirective) appAddModule: AddModuleDirective;
   private modules: ModuleItem[];
+  private isNewComponentCreated: boolean;
 
 
   constructor(
@@ -32,6 +33,7 @@ export class SynthModuleContainerComponent implements OnInit {
     private moduleManager: ModuleManagerService) { }
 
   ngOnInit() {
+    this.isNewComponentCreated = false;
     this.modules = this.moduleManager.getModules();
   }
 
@@ -51,7 +53,7 @@ export class SynthModuleContainerComponent implements OnInit {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(adItem.component);
 
     const viewContainerRef = this.appAddModule.viewContainerRef;
-    // viewContainerRef.clear();  // NB uncomment to have only one component at a time
+    viewContainerRef.clear();  // NB uncomment to have only one component at a time
 
     const componentRef = viewContainerRef.createComponent(componentFactory);
     (<ModuleComponent>componentRef.instance).data = adItem.data;
