@@ -1,0 +1,40 @@
+h3{
+    color:red;
+}
+.container{
+    width: 144px;
+    overflow: hidden;
+    border: 7px solid #FAFAFA;
+    padding: 20px;
+    box-shadow: 0px 0px 4px rgba(0,0,0,0.5);
+    background: #272727;
+    float:left;
+    margin:40px;
+}
+.info.bpm{
+    font-size: 2em;
+    border: 1px solid #555555;
+    width: 141px;
+    margin-top: 22px;
+    box-shadow: inset 0px 0px 11px rgba(0,0,0,1);
+    background: #c3dac9;
+    text-align: center;
+    font-family: monospace;
+    border-radius: 7px;
+    color: #333333;
+}
+knob{
+    background-size:contain;
+    margin-left: 20px;
+    width:100px;
+    height:100px;
+    display:block;
+}
+knob.skin1{
+    background: url('ng2-knob/skins/skin1_back.svg');
+    background-size: contain;    
+}
+knob.skin1 /deep/ .knob{
+    background: url('ng2-knob/skins/skin1_front.svg');
+    background-size: contain;    
+}

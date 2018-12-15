@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { KnobModule} from 'ng2-knob'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,7 +9,8 @@ import { SynthModuleContainerComponent } from './synth-module-container/synth-mo
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MoogLadderFilterComponent } from './synth-modules/moog-ladder-filter/moog-ladder-filter.component';
 import { OscillatorComponent } from './synth-modules/oscillator/oscillator.component';
-import { KnobComponent } from './synth-module/sub-components/knob/knob.component';
+import { KnobComponent } from './synth-modules/sub-components/knob/knob.component';
+import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,7 +23,9 @@ import { KnobComponent } from './synth-module/sub-components/knob/knob.component
     BrowserModule,
     AppRoutingModule,
     // AudioContextModule.forRoot('balanced'),
-    DragDropModule
+    DragDropModule,
+    FormsModule,
+    KnobModule,
   ],
   providers: [
   ],
