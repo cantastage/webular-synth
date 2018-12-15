@@ -6,7 +6,9 @@
   vertical-align: top;
 }
 
-.example-list {
+.example-list, .synth-module-box { // MERGE CONFLICT?!
+  width: 400px;
+  height: 280px;
   border: solid 1px #ccc;
   min-height: 60px;
   background: white;
