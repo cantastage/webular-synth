@@ -1,16 +1,31 @@
-// import { IModule } from '../../services/IModule';
-import { ModulableParameter } from './ISoundGenerator';
+import { Component, OnInit } from '@angular/core';
+import { Filter } from 'src/app/model/modules/filter/Filter';
+import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { IFilter } from 'src/app/model/modules/filter/IFilter';
 
-export class Filter /*implements IModule*/ {
-    private _cutoff: ModulableParameter;
-    private _resonance: ModulableParameter;
+@Component({
+  selector: 'app-filter',
+  templateUrl: './filter.component.html',
+  styleUrls: ['./filter.component.scss']
+})
+export class FilterComponent implements OnInit {
+  private _filter: IFilter;
 
-    // start(): void {
-    //   throw new Error('Method not implemented.');
-    // }
-    // stop(): void {
-    //   throw new Error('Method not implemented.');
-    // }
+  constructor(private contextManager: AudioContextManagerService) { }
+
+  ngOnInit() {
+    this._filter = new Filter(Filter.FREQUENCY_DEFAULT, Filter.RESONANCE_DEFAULT);
+  }
+
+  frequencyChange(ctx: FilterComponent, newValue: number): void {
+    // eventual checks
+    ctx._filter.frequency = Number(newValue);
+  }
+
+  resonanceChange(ctx: FilterComponent, newValue: number): void {
+    // eventual checks
+    ctx._filter.resonance = Number(newValue) / 10;
+  }
 }
 
 /*
@@ -119,4 +134,3 @@ analyser.connect(context.destination);
 osc1.start();
 
 */
-

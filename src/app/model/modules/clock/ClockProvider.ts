@@ -3,13 +3,17 @@ import { IClock } from './IClock';
 
 @sealed
 class Clock implements IClock {
-  private static readonly BEATS_MIN: number = 55;
-  private static readonly BEATS_MAX: number = 255;
+  public static readonly BEATS_MIN: number = 55;
+  public static readonly BEATS_DEFAULT: number = 120;
+  public static readonly BEATS_MAX: number = 255;
 
   private _bpm: number;
 
   public BEATS_MIN() {
     return Clock.BEATS_MIN;
+  }
+  public BEATS_DEFAULT(): number {
+    return Clock.BEATS_DEFAULT;
   }
   public BEATS_MAX() {
     return Clock.BEATS_MAX;
@@ -35,7 +39,7 @@ export class ClockProvider { // singleton pattern
   private static _hiddenClock: IClock;
   private static initialize(): void {
     if (!this._hiddenClock) {
-      this._hiddenClock = new Clock(120);
+      this._hiddenClock = new Clock(Clock.BEATS_DEFAULT);
     }
   }
   public static retrieveInstance(): IClock {

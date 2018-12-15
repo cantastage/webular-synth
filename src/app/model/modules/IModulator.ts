@@ -1,4 +1,3 @@
-// import { IModule } from '../../services/IModule';
 import { ISoundGenerator, IModulableParameterFromMod } from './ISoundGenerator';
 
 export interface IModulator /*extends IModule*/ {

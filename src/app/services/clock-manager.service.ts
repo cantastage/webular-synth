@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { IObservable } from '../system2/patterns/observer/IObservable';
 import { IObserver } from '../system2/patterns/observer/IObserver';
-import { IClock } from '../model/modules/clocks/IClock';
-import { ClockProvider } from '../model/modules/clocks/ClockProvider';
-import { IModule } from './IModule';
+import { IClock } from '../model/modules/clock/IClock';
+import { ClockProvider } from '../model/modules/clock/ClockProvider';
+import { IStartable } from './IStartable';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClockManagerService implements IModule, IClock, IObservable {
+export class ClockManagerService implements IStartable, IClock, IObservable {
   private _clock: IClock;
 
   private _observers: IObserver[];
@@ -17,6 +17,9 @@ export class ClockManagerService implements IModule, IClock, IObservable {
 
   public BEATS_MIN() {
     return this._clock.BEATS_MIN();
+  }
+  public BEATS_DEFAULT(): number {
+    return this._clock.BEATS_DEFAULT();
   }
   public BEATS_MAX() {
     return this._clock.BEATS_MAX();

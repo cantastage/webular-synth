@@ -1,0 +1,7 @@
+<app-knob-ext [_min]="this._filter.FREQUENCY_MIN()" [_max]="this._filter.FREQUENCY_MAX()"
+  [_value]="this._filter.frequency" [_measureUnit]="'Hz'"
+  [_change]="this.frequencyChange.bind(null, this)"></app-knob-ext>
+
+<app-knob-ext [_min]="this._filter.RESONANCE_MIN() * 10" [_max]="this._filter.RESONANCE_MAX() * 10"
+  [_value]="this._filter.resonance" [_measureUnit]=""
+  [_change]="this.resonanceChange.bind(null, this)"></app-knob-ext>

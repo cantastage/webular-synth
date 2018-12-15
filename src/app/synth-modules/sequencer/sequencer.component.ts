@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 
-import { ISequencer } from '../../model/modules/sequencers/ISequencer';
-import { Sequencer } from '../../model/modules/sequencers/Sequencer';
-import { Measure } from '../../model/modules/sequencers/Measure';
-import { Scale } from '../../model/modules/sequencers/Scale';
-import { ReferralNotesProvider } from '../../model/modules/sequencers/ReferralNotesProvider';
-import { IReferralNote } from '../../model/modules/sequencers/IReferralNote';
-import { Tonality } from '../../model/modules/sequencers/Tonality';
-import { Subdivision } from '../../model/modules/sequencers/Subdivision';
+import { ISequencer } from '../../model/modules/sequencer/ISequencer';
+import { Sequencer } from '../../model/modules/sequencer/Sequencer';
+import { Measure } from '../../model/modules/sequencer/Measure';
+import { Scale } from '../../model/modules/sequencer/Scale';
+import { ReferralNotesProvider } from '../../model/modules/sequencer/ReferralNotesProvider';
+import { IReferralNote } from '../../model/modules/sequencer/IReferralNote';
+import { Tonality } from '../../model/modules/sequencer/Tonality';
+import { Subdivision } from '../../model/modules/sequencer/Subdivision';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';

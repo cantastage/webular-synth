@@ -1,7 +1,7 @@
-// import {IModule} from '../../services/IModule';
 import { sealed } from '../../system2/utilities/ClassDecorators';
 
-export interface ISoundGenerator /*extends IModule*/ {}
+// tslint:disable-next-line:no-empty-interface
+export interface ISoundGenerator {}
 
 // all the following generics?!?! would say no...
 // field of any concrete SoundGenerator (eg. Oscillator)

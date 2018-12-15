@@ -11,6 +11,7 @@ import { SequencerComponent } from './synth-modules/sequencer/sequencer.componen
 import { AddModuleDirective } from './directives/add-module.directive';
 import { KnobExtComponent } from './synth-modules/sub-components/knob-ext/knob-ext.component';
 import { FormsModule } from '@angular/forms';
+import { FilterComponent } from './synth-modules/filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { FormsModule } from '@angular/forms';
     SequencerComponent,
     AddModuleDirective,
     KnobExtComponent,
+    FilterComponent,
   ],
   entryComponents: [],
   imports: [

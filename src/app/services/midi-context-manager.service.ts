@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import * as NavigatorBridge from '../audio-processors/navigator-bridge.js';
-import { A4, SD } from '../model/modules/sequencers/IReferralNote.js';
+import { A4, SD } from '../model/modules/sequencer/IReferralNote.js';
 import { IObservable } from '../system2/patterns/observer/IObservable.js';
 import { IObserver } from '../system2/patterns/observer/IObserver.js';
 
