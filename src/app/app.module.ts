@@ -9,8 +9,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ClockComponent } from './synth-modules/clock/clock.component';
 import { SequencerComponent } from './synth-modules/sequencer/sequencer.component';
 import { AddModuleDirective } from './directives/add-module.directive';
-import { KnobComponent } from './synth-modules/sub-components/knob/knob.component';
+import { KnobExtComponent } from './synth-modules/sub-components/knob-ext/knob-ext.component';
 import { FormsModule } from '@angular/forms';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,7 +19,7 @@ import { FormsModule } from '@angular/forms';
     ClockComponent,
     SequencerComponent,
     AddModuleDirective,
-    KnobComponent,
+    KnobExtComponent,
   ],
   entryComponents: [],
   imports: [
@@ -26,7 +27,7 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule,
     DragDropModule,
     FormsModule,
-    KnobModule,
+    KnobModule
   ],
   providers: [
   ],

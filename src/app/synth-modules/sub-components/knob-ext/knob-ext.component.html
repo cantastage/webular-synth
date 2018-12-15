@@ -1,0 +1,6 @@
+<div class="container">
+    <div class="info">{{myknob1.meterValue}} {{this._measureUnit}}</div>
+    <knob class="skin2" #myknob1 [min]="this._min" [max]="this._max" [value]="this._value"
+        [endDegree]="140" [startDegree]="220" [intensive]="false"
+        (change)="this._change($event)"></knob>
+</div>

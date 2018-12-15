@@ -13,8 +13,8 @@ export class ClockComponent implements OnInit {
     this.clockManager.start();
   }
 
-  bpmChange(sender: any): void {
+  bpmChange(ctx: any, newValue: number): void {
     // eventual checks
-    this.clockManager.bpm = Number(sender.target.value);
+    ctx.clockManager.bpm = Number(newValue);
   }
 }

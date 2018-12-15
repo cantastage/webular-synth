@@ -1,2 +1,3 @@
-
-<input id="bpm" type="text" value="{{this.clockManager.bpm}}" (change)="bpmChange($event)" />
+<app-knob-ext [_min]="this.clockManager.BEATS_MIN()" [_max]="this.clockManager.BEATS_MAX()"
+    [_value]="this.clockManager.bpm" [_measureUnit]="'bpm'"
+    [_change]="this.bpmChange.bind(null, this)"></app-knob-ext>
