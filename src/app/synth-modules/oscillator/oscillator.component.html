@@ -20,24 +20,19 @@
   <div class = "button" id = "tri">
     TRI
   </div>
-  <div id = "volume-knob">
-    <div class = "dial">
-    </div>
-  </div>
+  <knob class = "skin1" #myKnob id ="volumeKnob" [min]="0" [max]="127" [value]="80" [startDegree]="-120"  [endDegree]="120" (change) = "onVolumeChange(myKnob.meterValue)">
+    
+  </knob>
   <div id="label-volume">
     VOLUME
   </div>
   
-  <div class = "tune-knob" id = "coarse-tune">
-    <div class = "dial">
-    </div>
+  <knob class = "skin1" id ="coarseKnob" [min]="10" [max]="200" [value]="80" [startDegree]="-120"  [endDegree]="120">
   
-  </div>
-  <div class = "tune-knob" id = "fine-tune">
-    <div class = "dial">
-    </div>
+  </knob>
+  <knob class = "skin1" #fineKnob id ="fineKnob" [min]="10" [max]="200" [value]="80" [startDegree]="-120"  [endDegree]="120">
   
-  </div>
+  </knob>
   <div id = "label-coarse">
     COARSE
   </div>

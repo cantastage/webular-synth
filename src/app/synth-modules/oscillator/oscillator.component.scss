@@ -6,44 +6,6 @@
     border-radius: 5px;
   }
   
-  .tune-knob{
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    border: 1px solid black;
-    border-radius: 50%;
-    display: inline-flex;
-    margin-top: 2.5%;
-    
-  }
-  
-  #coarse-tune{
-    position: absolute;
-    left: 80%;
-    top: 65%;
-    transform: translateX(-50%);
-  }
-  
-  #fine-tune{
-    position: absolute;
-    left: 20%;
-    top: 65%;
-    transform: translateX(-50%);
-  }
-  
-  #volume-knob{
-    position: absolute;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 80px;
-    border: 1px solid black;
-    border-radius: 50%;
-    display: inline-block;
-    top: 35%;
-    left: 50%;
-    
-  }
-  
   #label-fine{
     width: 50px;
     text-align: center;
@@ -71,17 +33,7 @@
     top: 68%;
     
   }
-  
-  .dial{
-    width: 2px;
-    height: 10px;
-    position: relative;
-    background-color: black;
-    left: 50%;
-    transform: translateX(-50%);
-    
-  }
-  
+
   .button{
     border: 1px solid black;
     border-radius: 5px;
@@ -159,3 +111,56 @@
     margin-left: 50px;
     margin-top: 100px;
   }
+
+  knob{
+
+    position: absolute;
+    transform: translateX(-50%);
+    //width: 80px;
+    //height: 80px;
+    //border: 1px solid black;
+    //border-radius: 50%;
+    display: inline-block;
+    //top: 35%;
+    //left: 50%;
+
+    background-size:contain;
+    //margin-left: 600px;
+    //width:100px;
+    //height:100px;
+    //display:block;
+}
+knob.skin1{
+    background: url('ng2-knob/skins/skin1_back.svg');
+    background-size: contain;    
+}
+knob.skin1 /deep/ .knob{
+    background: url('ng2-knob/skins/skin1_front.svg');
+    background-size: contain;    
+}
+
+#volumeKnob{
+  width: 80px;
+  height: 80px;
+  top: 35%;
+  left: 50%;
+
+}
+
+#coarseKnob{
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  left: 80%;
+  transform: translateX(-50%);
+  top: 65%;
+}
+
+#fineKnob{
+  position: absolute;
+  height: 50px;
+  width: 50px;
+  left: 20%;
+  top: 65%;
+  transform: translateX(-50%);
+}

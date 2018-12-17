@@ -1,54 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
+import { Voice } from 'src/app/synth-modules/oscillator/voice';
 
 @Component({
   selector: 'app-oscillator',
   templateUrl: './oscillator.component.html',
   styleUrls: ['./oscillator.component.scss']
 })
+
 export class OscillatorComponent implements OnInit {
 
-  constructor(private contextManager: AudioContextManagerService) {  }
+  public c: AudioContext;
+  public active_voices: any;
+  public frequency: any;
+  public waveForm: any;
+  public midiData: any;
+  //public Voice: any;
+  constructor(private contextManager: AudioContextManagerService) {   }
 
   ngOnInit() {
-    const g = this.contextManager.audioContext.createGain();
+    this.active_voices = [];
+    this.c = this.contextManager.audioContext;
+    const g = this.c.createGain();
     let active = 0;
-    let waveForm = "sine";
-    g.gain.setValueAtTime(0.5, this.contextManager.audioContext.currentTime);
-    document.querySelectorAll(".button").forEach(function(){console.log("dio cane")});
+    this.waveForm = "sine";
+    let fixedVel = 100;
+    g.gain.setValueAtTime(0.5, this.c.currentTime);
 
-
-  var Voice = (function(c) {
-  
-    function Voice(freq){
-      this.freq = freq;
-      this.oscillators = [];
-    };
-  
-  
-    Voice.prototype.start = function() {
-      var osc = this.contextManager.audioContext.createOscillator();
-      osc.type = waveForm;
-      osc.frequency.value = this.freq;
-      g.gain.value = 0.5; //velocity * 4/ 127;
-      osc.connect(g);
-      g.connect(this.contextManager.audioContext.destination);
-      osc.start();
-    
-      this.oscillators.push(osc);
-  
-    };
-  
-    Voice.prototype.stop = function() {
-      this.oscillators.forEach(function(oscillator, _) {
-        oscillator.stop();
-      });
-    };
-  
-    return Voice;
-    })(this.contextManager.audioContext);
-
-    let active_voices = {};
   
     function toggleWave(button){
       button.onclick = selectWaveform;
@@ -58,13 +37,13 @@ export class OscillatorComponent implements OnInit {
       console.log("called");
       var type = data.target.id;
       switch(type){
-        case("sin"): waveForm = "sine"; active = 0; break;
-        case("sqr"): waveForm = "square"; active = 1; break;
-        case("saw"): waveForm = "sawtooth"; active = 2; break;
-        case("tri"): waveForm = "triangle"; active = 3; break;
+        case("sin"): this.waveForm = "sine"; active = 0; break;
+        case("sqr"): this.waveForm = "square"; active = 1; break;
+        case("saw"): this.waveForm = "sawtooth"; active = 2; break;
+        case("tri"): this.waveForm = "triangle"; active = 3; break;
       };
      
-    render();
+      render();
     };
 
     function render(){
@@ -90,12 +69,70 @@ export class OscillatorComponent implements OnInit {
     
     render();
 
+    this.checkMidi();
   }
 
+  public noteOn(midiNote, velocity){
+    this.frequency = 440 * Math.pow(2, (midiNote-69)/12);
+    const note = new Voice(this.c);
+    this.active_voices[midiNote] = note;
+    note.playNote(this.frequency);
+  }
 
+  public noteOff(midiNote, _){
+    this.active_voices[midiNote].stopNote();
+    delete this.active_voices[midiNote];
+  }
 
+  public checkMidi(){
+    if (navigator["requestMIDIAccess"]) {
+      navigator["requestMIDIAccess"]({
+          sysex: false
+      }).then(this.onMIDISuccess.bind(this), this.onMIDIFailure.bind(this));
+    } else {
+      alert("No MIDI support in your browser.");
+    }
+  }
 
+  public onMIDISuccess(midiAccess){
+    console.log(midiAccess);
+    let midi;
+    midi = midiAccess; 
+    var inputs = midi.inputs.values();
+    for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
+      console.log(input.value);
+      input.value.onmidimessage = this.onMIDIMessage.bind(this);
+    }
+  }
 
+  public onMIDIFailure(error) {
+    console.log("No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " + error);
+  }
 
+  public onMIDIMessage(event) {
+    console.log("message")
+    
+    this.midiData = event.data; 
+    let channel = this.midiData[0] & 0xf;
+    let type = this.midiData[0] & 0xf0;
+    let note = this.midiData[1];
+    let velocity = this.midiData[2];
+    
+    switch (type) {
+      case 144: // noteOn message 
+          this.noteOn(note, velocity);
+          break;
+      case 128: // noteOff message 
+          this.noteOff(note, velocity);
+          break;
+    }
+      
+  }
+
+  public onVolumeChange(value){
+    console.log(value);
+    //this.maxVelocity = value;
+    this.noteOn(66,100);
+  }
 
 }
