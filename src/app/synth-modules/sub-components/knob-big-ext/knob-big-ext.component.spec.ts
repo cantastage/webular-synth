@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KnobExtComponent } from './knob-ext.component';
+import { KnobBigExtComponent } from './knob-big-ext.component';
 
-describe('KnobExtComponent', () => {
-  let component: KnobExtComponent;
-  let fixture: ComponentFixture<KnobExtComponent>;
+describe('KnobBigExtComponent', () => {
+  let component: KnobBigExtComponent;
+  let fixture: ComponentFixture<KnobBigExtComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ KnobExtComponent ]
+      declarations: [ KnobBigExtComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(KnobExtComponent);
+    fixture = TestBed.createComponent(KnobBigExtComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

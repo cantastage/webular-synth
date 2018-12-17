@@ -9,7 +9,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ClockComponent } from './synth-modules/clock/clock.component';
 import { SequencerComponent } from './synth-modules/sequencer/sequencer.component';
 import { AddModuleDirective } from './directives/add-module.directive';
-import { KnobExtComponent } from './synth-modules/sub-components/knob-ext/knob-ext.component';
+import { KnobBigExtComponent } from './synth-modules/sub-components/knob-big-ext/knob-big-ext.component';
+import { KnobLilExtComponent } from './synth-modules/sub-components/knob-lil-ext/knob-lil-ext.component';
 import { FormsModule } from '@angular/forms';
 import { FilterComponent } from './synth-modules/filter/filter.component';
 
@@ -20,7 +21,8 @@ import { FilterComponent } from './synth-modules/filter/filter.component';
     ClockComponent,
     SequencerComponent,
     AddModuleDirective,
-    KnobExtComponent,
+    KnobBigExtComponent,
+    KnobLilExtComponent,
     FilterComponent,
   ],
   entryComponents: [],

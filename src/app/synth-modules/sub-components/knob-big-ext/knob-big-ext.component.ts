@@ -2,17 +2,17 @@ import { Component, OnInit, Input, EventEmitter } from '@angular/core';
 import { KnobComponent } from 'ng2-knob';
 
 @Component({
-  selector: 'app-knob-ext',
-  templateUrl: './knob-ext.component.html',
-  styleUrls: ['./knob-ext.component.scss']
+  selector: 'app-knob-big-ext',
+  templateUrl: './knob-big-ext.component.html',
+  styleUrls: ['./knob-big-ext.component.scss']
 })
-export class KnobExtComponent extends KnobComponent implements OnInit {
+export class KnobBigExtComponent extends KnobComponent implements OnInit {
   @Input()
   _min: number;
   @Input()
   _max: number;
   @Input()
-  _value: number;
+  private _value: number;
   @Input()
   _change: any;
   @Input()

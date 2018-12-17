@@ -1,7 +1,15 @@
-<app-knob-ext [_min]="this._filter.FREQUENCY_MIN()" [_max]="this._filter.FREQUENCY_MAX()"
-  [_value]="this._filter.frequency" [_measureUnit]="'Hz'"
-  [_change]="this.frequencyChange.bind(null, this)"></app-knob-ext>
+<div>
+  <select (change)="typeChange($event)">
+      <option *ngFor="let filterType of _filterTypes;">{{filterType}}</option>
+  </select>
+</div>
 
-<app-knob-ext [_min]="this._filter.RESONANCE_MIN() * 10" [_max]="this._filter.RESONANCE_MAX() * 10"
-  [_value]="this._filter.resonance" [_measureUnit]=""
-  [_change]="this.resonanceChange.bind(null, this)"></app-knob-ext>
+<div>
+<app-knob-lil-ext [_min]="this._filter.frequency.minValue" [_max]="this._filter.frequency.maxValue"
+  [_value]="this._filter.frequency.value" [_measureUnit]="'Hz'"
+  [_change]="this.frequencyChange.bind(null, this)"></app-knob-lil-ext>
+
+<app-knob-lil-ext [_min]="this._filter.Q.minValue" [_max]="this._filter.Q.maxValue"
+  [_value]="this._filter.Q.value"
+  [_change]="this.resonanceChange.bind(null, this)"></app-knob-lil-ext>
+</div>

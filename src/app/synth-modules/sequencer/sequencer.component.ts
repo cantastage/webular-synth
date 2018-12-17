@@ -24,7 +24,7 @@ export class SequencerComponent implements OnInit, IObserver {
   private _duplicableOctaves: number[];
 
   private _sequencer: ISequencer;
-  private _subdivisionCounter: number;
+  private _subdivisionCounter: number; // MOVE THE COUNTER INTO THE CLOCK SERVICE?!?!
   @ViewChildren('subdivisionColumns') subdivisionColumns;
 
   constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService) { }

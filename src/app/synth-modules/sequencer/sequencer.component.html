@@ -42,6 +42,7 @@
         <td *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;" class="subdivisioni_{{subdivisioni}}">
             <input class="inputcell subdivisioni_{{subdivisioni}} duration" id="subdivisioni_{{subdivisioni}}_duration"
             value="{{subdivision.duration}}" (change)="durationChange($event)"/>
+            <!-- <app-knob-lil-ext></app-knob-lil-ext> -->
         </td>
       </tr>
 
