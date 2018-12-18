@@ -12,69 +12,49 @@ import { Voice } from 'src/app/synth-modules/oscillator/voice';
 export class OscillatorComponent implements OnInit {
 
   public c: AudioContext;
+  public g: GainNode;
   public active_voices: any;
   public frequency: any;
-  public waveForm: any;
+  private waveForm: any;
   public midiData: any;
-  //public Voice: any;
+  public maxVelocity: number;
+  public addSemitone: number;
+  public finePitch: number;
+  public active: number;
+
   constructor(private contextManager: AudioContextManagerService) {   }
 
   ngOnInit() {
+    this.active = 0;
     this.active_voices = [];
     this.c = this.contextManager.audioContext;
-    const g = this.c.createGain();
+    this.g = this.c.createGain();
     let active = 0;
     this.waveForm = "sine";
-    let fixedVel = 100;
-    g.gain.setValueAtTime(0.5, this.c.currentTime);
-
-  
-    function toggleWave(button){
-      button.onclick = selectWaveform;
-    }
-
-    function selectWaveform(data){
-      console.log("called");
-      var type = data.target.id;
-      switch(type){
-        case("sin"): this.waveForm = "sine"; active = 0; break;
-        case("sqr"): this.waveForm = "square"; active = 1; break;
-        case("saw"): this.waveForm = "sawtooth"; active = 2; break;
-        case("tri"): this.waveForm = "triangle"; active = 3; break;
-      };
-     
-      render();
-    };
-
-    function render(){
-      document.querySelectorAll(".button").forEach(toggleWave);
-      document.querySelectorAll(".button").forEach(renderDot);
-    }
+    this.maxVelocity = 100/127;
+    this.addSemitone = 0;
+    this.finePitch = 0;
+    //this.g.gain.setValueAtTime(0.5, this.c.currentTime);
     
-    function renderButton(button){
-      console.log(active);
-    }
-    
-    function renderDot(data){
-      let dots = document.querySelectorAll(".dot")
-      document.querySelectorAll(".dot").forEach(function(data){data.classList.remove("active")});
-        switch(active){
-            case(0): dots[0].classList.add("active"); break;
-            case(1): dots[1].classList.add("active"); break;
-            case(2): dots[2].classList.add("active"); break;
-            case(3): dots[3].classList.add("active"); break;
-        }
-      
-    }
-    
-    render();
-
     this.checkMidi();
   }
 
+  public selectWaveform(data){
+    switch(data){
+      case(0): this.waveForm = "sine"; this.active = 0; break;
+      case(1): this.waveForm = "square"; this.active = 1; break;
+      case(2): this.waveForm = "sawtooth"; this.active = 2; break;
+      case(3): this.waveForm = "triangle"; this.active = 3; break;
+    };
+  };
+
+
+
   public noteOn(midiNote, velocity){
-    this.frequency = 440 * Math.pow(2, (midiNote-69)/12);
-    const note = new Voice(this.c);
+    this.g.gain.value = velocity / 127 * this.maxVelocity / 127;
+    this.frequency = 440 * Math.pow(2, ((midiNote+this.addSemitone)-69)/12) + this.finePitch;
+    console.log(this.waveForm);
+    const note = new Voice(this.c, this.g, this.waveForm, this.finePitch);
     this.active_voices[midiNote] = note;
     note.playNote(this.frequency);
   }
@@ -130,9 +110,21 @@ export class OscillatorComponent implements OnInit {
   }
 
   public onVolumeChange(value){
-    console.log(value);
-    //this.maxVelocity = value;
-    this.noteOn(66,100);
+    //console.log(value);
+    this.maxVelocity = value;
+    this.g.gain.value = this.maxVelocity / 127;
+    //this.noteOn(66,this.maxVelocity);
   }
+
+  public fineTuneChange(value){
+    this.finePitch = value;
+    //console.log(this.finePitch);
+  }
+
+  public coarseTuneChange(value){
+    this.addSemitone = value;
+    //console.log(this.addSemitone);
+  }
+
 
 }

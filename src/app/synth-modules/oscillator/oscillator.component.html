@@ -1,43 +1,44 @@
 <div class = "container">
-  <div class = "dot active" id = "sin-dot">
+  <div class = "dot" [className] = "this.active == 0 ? 'dot active' : 'dot'" id = "sin-dot">
   </div>
-  <div class = "dot" id = "sqr-dot">
+  <div class = "dot" [className] = "this.active == 1 ? 'dot active' : 'dot'" id = "sqr-dot">
   </div>
-  <div class = "dot" id = "saw-dot">
+  <div class = "dot" [className] = "this.active == 2 ? 'dot active' : 'dot'" id = "saw-dot">
   </div>
-  <div class = "dot" id = "tri-dot">
+  <div class = "dot" [className] = "this.active == 3 ? 'dot active' : 'dot'" id = "tri-dot">
   </div>
   
-  <div class = "button" id = "sin">
+  <div class = "button" id = "sin" (click) = "selectWaveform(0)">
     SIN
   </div>
-  <div class = "button" id = "sqr">
+  <div class = "button" id = "sqr" (click) = "selectWaveform(1)">
     SQR
   </div>
-  <div class = "button" id = "saw">
+  <div class = "button" id = "saw" (click) = "selectWaveform(2)">
     SAW
   </div>
-  <div class = "button" id = "tri">
+  <div class = "button" id = "tri" (click) = "selectWaveform(3)">
     TRI
   </div>
-  <knob class = "skin1" #myKnob id ="volumeKnob" [min]="0" [max]="127" [value]="80" [startDegree]="-120"  [endDegree]="120" (change) = "onVolumeChange(myKnob.meterValue)">
+  <knob class = "skin1" #volKnob id ="volumeKnob" [min]="0" [max]="127" [value]="100" [startDegree]="-120"  [endDegree]="120" (change) = "onVolumeChange(volKnob.meterValue)">
     
   </knob>
   <div id="label-volume">
     VOLUME
   </div>
   
-  <knob class = "skin1" id ="coarseKnob" [min]="10" [max]="200" [value]="80" [startDegree]="-120"  [endDegree]="120">
-  
+  <knob class = "skin1" #crsKnob id ="coarseKnob" [min]="-12" [max]="12" [value]="0" [startDegree]="-120"  [endDegree]="120" (change) = "coarseTuneChange(crsKnob.meterValue)">
+
   </knob>
-  <knob class = "skin1" #fineKnob id ="fineKnob" [min]="10" [max]="200" [value]="80" [startDegree]="-120"  [endDegree]="120">
+
+  <knob class = "skin1" #fnKnob id ="fineKnob" [min]="-10" [max]="10" [value]="0" [startDegree]="-120"  [endDegree]="120" (change) = "fineTuneChange(fnKnob.meterValue)">
   
   </knob>
   <div id = "label-coarse">
-    COARSE
+    FINE
   </div>
   <div id = "label-fine">
-    FINE
+    COARSE
   </div>
   
  
@@ -45,7 +46,8 @@
   
 </div>
 
-
-<button id = "but">
+<!--
+  <button id = "but" (onclick) = "playNote(65,100)">
   playNote
-</button>
+  </button>
+-->

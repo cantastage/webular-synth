@@ -116,20 +116,10 @@
 
     position: absolute;
     transform: translateX(-50%);
-    //width: 80px;
-    //height: 80px;
-    //border: 1px solid black;
-    //border-radius: 50%;
     display: inline-block;
-    //top: 35%;
-    //left: 50%;
-
     background-size:contain;
-    //margin-left: 600px;
-    //width:100px;
-    //height:100px;
-    //display:block;
 }
+
 knob.skin1{
     background: url('ng2-knob/skins/skin1_back.svg');
     background-size: contain;    
@@ -137,6 +127,19 @@ knob.skin1{
 knob.skin1 /deep/ .knob{
     background: url('ng2-knob/skins/skin1_front.svg');
     background-size: contain;    
+}
+
+knob.skin4{
+  background:url('ng2-knob/skins/skin4_back.svg');
+  background-size: contain;    
+  width:200px;
+  height:200px;
+}
+knob.skin4 /deep/ .knob{
+  background:url('ng2-knob/skins/skin4_front.svg');
+  background-size: contain;    
+  width:200px;
+  height:200px;
 }
 
 #volumeKnob{
