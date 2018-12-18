@@ -10,11 +10,17 @@ export class ClockComponent implements OnInit {
   constructor(private clockManager: ClockManagerService) { }
 
   ngOnInit() {
-    this.clockManager.start();
+    // this.clockManager.start();
   }
 
   bpmChange(ctx: ClockComponent, newValue: number): void {
     // eventual checks
     ctx.clockManager.bpm = Number(newValue);
+  }
+  start(): void {
+    this.clockManager.start();
+  }
+  stop(): void {
+    this.clockManager.stop();
   }
 }

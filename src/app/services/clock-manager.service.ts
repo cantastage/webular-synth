@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IObservable } from '../system2/patterns/observer/IObservable';
-import { IObserver } from '../system2/patterns/observer/IObserver';
+import { Observable } from '../system2/patterns/observer/Observable';
 import { IClock } from '../model/modules/clock/IClock';
 import { ClockProvider } from '../model/modules/clock/ClockProvider';
 import { IStartable } from './IStartable';
@@ -8,10 +7,10 @@ import { IStartable } from './IStartable';
 @Injectable({
   providedIn: 'root'
 })
-export class ClockManagerService implements IStartable, IClock, IObservable {
+export class ClockManagerService extends Observable<number> implements IStartable, IClock {
   private _clock: IClock;
+  private _beatCount: number;
 
-  private _observers: IObserver[];
   private _isRunning: boolean;
   private _th: any;
 
@@ -40,15 +39,23 @@ export class ClockManagerService implements IStartable, IClock, IObservable {
       this._th = setInterval(this.callback.bind(null, this), 60.0 / this.bpm * 1000);
     }
   }
+  public get beatCount(): number {
+    return this._beatCount;
+  }
 
+  private resetBeatCount(): void {
+    this._beatCount = 0;
+  }
   constructor() {
+    super();
     this._clock = ClockProvider.retrieveInstance();
-    this._observers = new Array<IObserver>();
+    this.resetBeatCount();
     this._isRunning = false;
     this._th = null;
   }
 
   public start(): void {
+    this.resetBeatCount();
     if (!this._isRunning) {
       this._th = setInterval(this.callback.bind(null, this), 60.0 / this.bpm * 1000);
       this._isRunning = true;
@@ -59,28 +66,11 @@ export class ClockManagerService implements IStartable, IClock, IObservable {
       clearInterval(this._th);
       this._isRunning = false;
     }
+    this.resetBeatCount();
   }
 
-  public attach(observer: IObserver): void {
-    if (observer == null) {
-      throw new Error('the observer cannot be null');
-    }
-    this._observers.push(observer);
-  }
-  public detach(observer: IObserver): void {
-    let i;
-    if (observer == null || (i = this._observers.indexOf(observer)) < 0) {
-      throw new Error('observer null or not found');
-    } else {
-      this._observers.splice(i, 1);
-    }
-  }
-  public notify(arg: any): void {
-    this._observers.forEach(element => {
-      element.update(arg);
-    });
-  }
-  private callback(ctx) {
-    ctx.notify();
+  private callback(ctx: ClockManagerService) {
+    ctx.notify(ctx.beatCount);
+    ctx._beatCount = (ctx._beatCount + 1) % ctx.bpm;
   }
 }

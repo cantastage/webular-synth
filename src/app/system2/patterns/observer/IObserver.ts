@@ -1,3 +1,3 @@
-export interface IObserver {
-    update(arg: any): void;
+export interface IObserver<notifyType> {
+    update(arg: notifyType): void;
 }

@@ -13,6 +13,7 @@ import { KnobBigExtComponent } from './synth-modules/sub-components/knob-big-ext
 import { KnobLilExtComponent } from './synth-modules/sub-components/knob-lil-ext/knob-lil-ext.component';
 import { FormsModule } from '@angular/forms';
 import { FilterComponent } from './synth-modules/filter/filter.component';
+import { LfoComponent } from './synth-modules/lfo/lfo.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { FilterComponent } from './synth-modules/filter/filter.component';
     KnobBigExtComponent,
     KnobLilExtComponent,
     FilterComponent,
+    LfoComponent,
   ],
   entryComponents: [],
   imports: [

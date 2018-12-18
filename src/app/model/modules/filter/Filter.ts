@@ -1,4 +1,4 @@
-import { ModulableParameter, ISoundGenerator } from '../ISoundGenerator';
+import { ISoundGenerator } from '../ISoundGenerator';
 import { IFilter } from './IFilter';
 
 export class Filter implements IFilter, ISoundGenerator {
@@ -9,30 +9,26 @@ export class Filter implements IFilter, ISoundGenerator {
   public static readonly RESONANCE_DEFAULT = 0.5;
   public static readonly RESONANCE_MAX = 10;
 
-  private _frequency: ModulableParameter;
-  private _resonance: ModulableParameter;
+  private _frequency: number; // AudioParam?!?! number directly?!
+  private _resonance: number;
 
   public get frequency(): number {
-    return this._frequency.value;
+    return this._frequency;
   }
   public set frequency(value: number) {
-    if (!this._frequency) {
-      this._frequency = new ModulableParameter(value,
-        (arg: number) => Number.isInteger(arg) && arg >= Filter.FREQUENCY_MIN && arg <= Filter.FREQUENCY_MAX);
-    } else {
-      this._frequency.value = value;
+    if (!Number.isInteger(value) || value < Filter.FREQUENCY_MIN || value > Filter.FREQUENCY_MAX) {
+      throw new Error('error while assigning the frequency value');
     }
+    this._frequency = value;
   }
   public get resonance(): number {
-    return this._resonance.value;
+    return this._resonance;
   }
   public set resonance(value: number) {
-    if (!this._resonance) {
-      this._resonance = new ModulableParameter(value,
-        (arg: number) => arg >= Filter.RESONANCE_MIN && arg <= Filter.RESONANCE_MAX);
-    } else {
-      this._resonance.value = value;
+    if (value < Filter.RESONANCE_MIN || value > Filter.RESONANCE_MAX) {
+      throw new Error('error while assigning the resonance value');
     }
+    this._resonance = value;
   }
 
   public FREQUENCY_MIN(): number {

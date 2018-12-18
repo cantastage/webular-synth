@@ -8,7 +8,7 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
 })
 export class FilterComponent implements OnInit {
   private _filter: BiquadFilterNode;
-  public readonly _filterTypes = ['lowpass', 'highpass', 'bandpass', 'notch'];
+  private readonly _filterTypes = ['lowpass', 'highpass', 'bandpass', 'notch'];
 
   constructor(private contextManager: AudioContextManagerService) { }
 

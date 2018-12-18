@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 
 import * as NavigatorBridge from '../audio-processors/navigator-bridge.js';
 import { A4, SD } from '../model/modules/sequencer/IReferralNote.js';
-import { IObservable } from '../system2/patterns/observer/IObservable.js';
-import { IObserver } from '../system2/patterns/observer/IObserver.js';
+import { Observable } from '../system2/patterns/observer/Observable.js';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MidiContextManagerService implements IObservable {
+// Observable<any>?
+export class MidiContextManagerService extends Observable<[number, boolean, number, number]> {
   private static readonly MIDI_MSG_TYPE_MASK = 0xF0;
   private static readonly MIDI_MSG_TYPE_ON = 0x90;
   private static readonly MIDI_MSG_TYPE_OFF = 0x80;
@@ -20,16 +20,14 @@ export class MidiContextManagerService implements IObservable {
   private _navigatorExt: any;
   private _midiAccess: any;
   private _midiInputDevices: any;
-  // private _midiOutputDevices: any;
-  private _observers: IObserver[];
 
   public get midiAccess(): any {
     return this._midiAccess;
   }
 
   constructor() {
+    super();
     this._navigatorExt = new NavigatorBridge();
-    this._observers = new Array<IObserver>();
     if (this._navigatorExt.requestMIDIAccess) {
       this._navigatorExt.requestMIDIAccess({
         sysex: false
@@ -56,7 +54,7 @@ export class MidiContextManagerService implements IObservable {
     return Math.floor( Math.log10(frequency / A4) / Math.log10(SD) ) + MidiContextManagerService.MIDI_A4;
   }
 
-  private static convertFromMIDI(midiMessage: any): any[] {
+  private static convertFromMIDI(midiMessage: any): [number, boolean, number, number] {
     // tslint:disable-next-line:no-bitwise
     const ch = Number(midiMessage.data[0]) &
     // tslint:disable-next-line:no-bitwise
@@ -78,40 +76,19 @@ export class MidiContextManagerService implements IObservable {
     return [ch, isON, f, v];
   }
   // RX
-  private onMIDIMessage(ctx: any, midiMessageEventArg: any): void {
+  private onMIDIMessage(ctx: MidiContextManagerService, midiMessageEventArg: any): void {
     ctx.notify(MidiContextManagerService.convertFromMIDI(midiMessageEventArg));
   }
   // TX
   private sendRawNoteON(channel: number, frequency: number, velocity: number) {
     this.notify([channel, true, frequency, velocity]);
   }
-  private sendRawNoteOFF(ctx: any, channel: number, frequency: number, velocity: number) {
+  private sendRawNoteOFF(ctx: MidiContextManagerService, channel: number, frequency: number, velocity: number) {
     ctx.notify([channel, false, frequency, velocity]);
   }
   public sendRawNote(channel: number, frequency: number, duration: number, velocity: number) {
     // CHECK ON PARAMETERS
     this.sendRawNoteON(channel, frequency, velocity);
     setTimeout(this.sendRawNoteOFF.bind(null, this, channel, frequency, velocity), duration);
-  }
-
-  attach(observer: IObserver): void {
-    if (observer == null) {
-      throw new Error('the observer cannot be null');
-    }
-    this._observers.push(observer);
-  }
-  detach(observer: IObserver): void {
-    let i;
-    if (observer == null || (i = this._observers.indexOf(observer)) < 0) {
-      throw new Error('observer null or not found');
-    } else {
-      this._observers.splice(i, 1);
-    }
-  }
-  notify(arg: any): void {
-    console.log(arg); // MOCK OBSERVER
-    this._observers.forEach(element => {
-      element.update(arg);
-    });
   }
 }

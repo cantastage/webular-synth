@@ -17,26 +17,23 @@ import { MidiContextManagerService } from 'src/app/services/midi-context-manager
   templateUrl: './sequencer.component.html',
   styleUrls: ['./sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit, IObserver {
+export class SequencerComponent implements OnInit, IObserver<number> {
   private _referralNotes: IReferralNote[];
   private _tonalities: Tonality[];
   private _metrics: number[];
   private _duplicableOctaves: number[];
 
   private _sequencer: ISequencer;
-  private _subdivisionCounter: number; // MOVE THE COUNTER INTO THE CLOCK SERVICE?!?!
+  // private _subdivisionCounter: number; // MOVE THE COUNTER INTO THE CLOCK SERVICE?!?! HERE ONLY THE MODULE OPERATION...
   @ViewChildren('subdivisionColumns') subdivisionColumns;
 
   constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService) { }
 
-  private startCount() {
-    this._subdivisionCounter = 0;
-    this.clockManager.attach(this);
+  private startScan() {
+    this.clockManager.start();
   }
-  private restartCount() {
-    this.clockManager.detach(this);
-    this._subdivisionCounter = 0;
-    this.clockManager.attach(this);
+  private restartScan() {
+    this.clockManager.stop(); this.clockManager.start();
   }
   ngOnInit() {
     this._referralNotes = ReferralNotesProvider.retrieveInstances();
@@ -65,7 +62,8 @@ export class SequencerComponent implements OnInit, IObserver {
     }
     this._sequencer = new Sequencer(scale, new Measure(subdivisions));
 
-    this.startCount();
+    this.clockManager.attach(this);
+    this.startScan();
   }
   private highLightSubdivision(n: number) {
     // this.subdivisionColumns contains each of 8xMetric td cells
@@ -79,9 +77,10 @@ export class SequencerComponent implements OnInit, IObserver {
     }
   }
   // IObserver member
-  update(): void {
-    this.highLightSubdivision(this._subdivisionCounter);
-    const currentSubdivision = this._sequencer.measure.subdivisions[this._subdivisionCounter];
+  update(beatNumber: number): void {
+    const _subdivisionCounter = beatNumber % this._sequencer.measure.subdivisions.length;
+    this.highLightSubdivision(_subdivisionCounter);
+    const currentSubdivision = this._sequencer.measure.subdivisions[_subdivisionCounter];
     if (currentSubdivision.duration !== 0 && currentSubdivision.velocity !== 0) {
       let currentReferralFreq, currentOctave, currentResultingFreq;
       // SEND AUDIO/MIDI MESSAGE
@@ -96,7 +95,6 @@ export class SequencerComponent implements OnInit, IObserver {
         }
       }
     }
-    this._subdivisionCounter = (this._subdivisionCounter + 1) % this._sequencer.measure.subdivisions.length;
   }
   // UI configuration alteration
   keyChange(eventArg: any): void {
@@ -121,7 +119,7 @@ export class SequencerComponent implements OnInit, IObserver {
         this._sequencer.measure.subdivisions.push(new Subdivision(new Array<number>().concat(this._duplicableOctaves), 0, 0));
       }
     }
-    this.restartCount();
+    this.restartScan();
   }
   // UI octave alteration
   gridChange(eventArg: any) {

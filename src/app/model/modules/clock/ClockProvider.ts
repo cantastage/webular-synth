@@ -32,7 +32,6 @@ class Clock implements IClock {
   public constructor(bpm: number) {
     this.bpm = bpm;
   }
-
 }
 
 export class ClockProvider { // singleton pattern
