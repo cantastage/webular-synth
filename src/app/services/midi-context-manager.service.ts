@@ -64,9 +64,9 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
     // tslint:disable-next-line:no-bitwise
       Number(MidiContextManagerService.MIDI_MSG_TYPE_MASK);
     // tslint:disable-next-line:no-bitwise
-    const isON = (type & MidiContextManagerService.MIDI_MSG_TYPE_ON) &&
+    const isON = ((type & MidiContextManagerService.MIDI_MSG_TYPE_ON) === MidiContextManagerService.MIDI_MSG_TYPE_ON) &&
     // tslint:disable-next-line:no-bitwise
-      !(type & MidiContextManagerService.MIDI_MSG_TYPE_OFF);
+      !((type & MidiContextManagerService.MIDI_MSG_TYPE_OFF) === MidiContextManagerService.MIDI_MSG_TYPE_OFF);
     // tslint:disable-next-line:no-bitwise
     const f = MidiContextManagerService.frequencyToMIDINote(Number(midiMessage.data[0]) &
       Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK));
