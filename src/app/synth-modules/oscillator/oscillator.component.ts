@@ -10,7 +10,7 @@ import { Voice } from 'src/app/synth-modules/oscillator/voice';
 })
 
 export class OscillatorComponent implements OnInit {
-
+  
   public c: AudioContext;
   public g: GainNode;
   public active_voices: any;
@@ -31,7 +31,7 @@ export class OscillatorComponent implements OnInit {
     this.g = this.c.createGain();
     let active = 0;
     this.waveForm = "sine";
-    this.maxVelocity = 100/127;
+    this.maxVelocity = 100;
     this.addSemitone = 0;
     this.finePitch = 0;
     //this.g.gain.setValueAtTime(0.5, this.c.currentTime);

@@ -1,0 +1,23 @@
+.container{
+    position: absolute;
+    width: 400px;
+    height: 280px;
+    border: 1px solid black;
+    border-radius: 5px;
+  }
+
+  #envelope {
+    position: absolute;
+    display: block;
+    margin-left: 10%;
+    top: 30%;
+    border: 1px solid black;
+  }
+  button{
+      position: absolute;
+      display: inline-block;
+      transform: translateX(-100%);
+      transform: translateY(-100%);
+      left: 90%;
+      top:100%;
+  }

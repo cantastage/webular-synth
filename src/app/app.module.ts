@@ -11,6 +11,7 @@ import { MoogLadderFilterComponent } from './synth-modules/moog-ladder-filter/mo
 import { OscillatorComponent } from './synth-modules/oscillator/oscillator.component';
 import { KnobComponent } from './synth-modules/sub-components/knob/knob.component';
 import { FormsModule } from '@angular/forms';
+import { ADSRComponent } from './synth-modules/adsr/adsr.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,6 +19,7 @@ import { FormsModule } from '@angular/forms';
     MoogLadderFilterComponent,
     OscillatorComponent,
     KnobComponent,
+    ADSRComponent,
   ],
   imports: [
     BrowserModule,
