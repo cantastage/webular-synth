@@ -1,16 +1,16 @@
-import { IModulator } from '../IModulator';
-import { ISoundGenerator, IModulableParameterFromMod } from '../ISoundGenerator';
+// import { IModulator } from '../../../synth-modules/IModulatorComponent';
+// import { IModulableComponent, IModulableParameterFromMod } from '../../../synth-modules/IModulableComponent';
 
-class LFO implements IModulator {
-  modulatedModule: ISoundGenerator;
-  modulatedParameter: IModulableParameterFromMod;
+// class LFO implements IModulator {
+//   modulatedModule: IModulable;
+//   modulatedParameter: IModulableParameterFromMod;
 
-  start(): void {
-    throw new Error('Method not implemented.');
-  }
-  stop(): void {
-    throw new Error('Method not implemented.');
-  }
+//   start(): void {
+//     throw new Error('Method not implemented.');
+//   }
+//   stop(): void {
+//     throw new Error('Method not implemented.');
+//   }
 
 
-}
+// }

@@ -1,7 +1,6 @@
-import { ISoundGenerator } from '../ISoundGenerator';
 import { IFilter } from './IFilter';
 
-export class Filter implements IFilter, ISoundGenerator {
+export class Filter implements IFilter {
   public static readonly FREQUENCY_MIN = 20;
   public static readonly FREQUENCY_DEFAULT = 5500;
   public static readonly FREQUENCY_MAX = 22000;

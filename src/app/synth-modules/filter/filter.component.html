@@ -5,11 +5,8 @@
 </div>
 
 <div>
-<app-knob-lil-ext [_min]="this._filter.frequency.minValue" [_max]="this._filter.frequency.maxValue"
-  [_value]="this._filter.frequency.value" [_measureUnit]="'Hz'"
-  [_change]="this.frequencyChange.bind(null, this)"></app-knob-lil-ext>
-
-<app-knob-lil-ext [_min]="this._filter.Q.minValue" [_max]="this._filter.Q.maxValue"
-  [_value]="this._filter.Q.value"
-  [_change]="this.resonanceChange.bind(null, this)"></app-knob-lil-ext>
+    <app-knob-lil-ext *ngFor="let mp of this._modulableParameters;"
+      [_min]="mp.parameter.minValue" [_max]="mp.parameter.maxValue"
+      [_value]="mp.parameter.value" [_measurementUnit]="mp.measurementUnit"
+      [_change]="this.mpChange.bind(null, mp)"></app-knob-lil-ext>
 </div>

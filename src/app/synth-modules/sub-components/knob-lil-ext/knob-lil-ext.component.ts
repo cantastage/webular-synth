@@ -16,7 +16,7 @@ export class KnobLilExtComponent extends KnobComponent implements OnInit {
   @Input()
   _change: any;
   @Input()
-  _measureUnit: string;
+  _measurementUnit: string;
 
   constructor() {
     super();
