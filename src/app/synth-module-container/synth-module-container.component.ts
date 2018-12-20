@@ -5,6 +5,7 @@ import { ModuleItem } from '../model/module-item';
 import { AddModuleDirective } from '../directives/add-module.directive';
 import { ModuleComponent } from '../interfaces/module.component';
 import { ModuleManagerService } from '../services/module-manager.service';
+import { ComponentRef } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-synth-module-container',
@@ -15,17 +16,11 @@ import { ModuleManagerService } from '../services/module-manager.service';
  * This component contains all synth modules
  */
 export class SynthModuleContainerComponent implements OnInit {
-  // @Input() modules: ModuleItem[]; // synth modules injected by the contextManagerService
-  // @Input() connectedModules: Array<AudioNode>;
-  // @Input() unconnectedModules: Array<AudioNode>;
-  // private connectedModules: Array<AudioNode> = new Array<AudioNode>();
-  // private unconnectedModules: Array<AudioNode> = new Array<AudioNode>();
-  private connectedModules: Array<any> = new Array<any>(0);
-  private unconnectedModules: Array<any> = new Array<any>(0);
+  private soundChain: Array<ComponentRef<any>> = new Array<ComponentRef<any>>(0);
+  private unconnectedModules: Array<ComponentRef<any>> = new Array<ComponentRef<any>>(0);
   @ViewChild(AddModuleDirective) appAddModule: AddModuleDirective;
   private modules: ModuleItem[];
   private isNewComponentCreated: boolean;
-
 
   constructor(
     private contextManager: AudioContextManagerService,
@@ -37,7 +32,11 @@ export class SynthModuleContainerComponent implements OnInit {
     this.modules = this.moduleManager.getModules();
   }
 
-  drop(event: CdkDragDrop<string[]>): void {
+  /**
+   * Method called when an element is dropped
+   * @param event the drop event
+   */
+  drop(event: CdkDragDrop<Array<ComponentRef<any>>>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -53,7 +52,7 @@ export class SynthModuleContainerComponent implements OnInit {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(adItem.component);
 
     const viewContainerRef = this.appAddModule.viewContainerRef;
-    viewContainerRef.clear();  // NB uncomment to have only one component at a time
+    // viewContainerRef.clear();  // NB uncomment to have only one component at a time
 
     const componentRef = viewContainerRef.createComponent(componentFactory);
     (<ModuleComponent>componentRef.instance).data = adItem.data;

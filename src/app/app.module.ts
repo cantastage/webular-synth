@@ -11,6 +11,7 @@ import { PolyphonicOscComponent } from './synth-modules/polyphonic-osc/polyphoni
 import { AddModuleDirective } from './directives/add-module.directive';
 import { KnobComponent } from './synth-modules/sub-components/knob/knob.component';
 import { FormsModule } from '@angular/forms';
+import { SynthModuleWrapperComponent } from './synth-module-wrapper/synth-module-wrapper.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,6 +20,7 @@ import { FormsModule } from '@angular/forms';
     PolyphonicOscComponent,
     AddModuleDirective,
     KnobComponent,
+    SynthModuleWrapperComponent,
   ],
   entryComponents: [MoogLadderFilterComponent],
   imports: [
