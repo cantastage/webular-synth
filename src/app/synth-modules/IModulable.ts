@@ -24,11 +24,13 @@ export class ModulableParameter {
 }
 
 export interface IModulableComponent {
+  innerNode(): AudioNode;
   modulableParameters(): ModulableParameter[];
   mpChange(mp: ModulableParameter, newValue: number): void;
 }
 
 export abstract class ModulableComponent implements IModulableComponent {
+  public abstract innerNode(): AudioNode;
   public abstract modulableParameters(): ModulableParameter[];
   public mpChange(mp: ModulableParameter, newValue: number): void {
     mp.parameter.value = Number(newValue);

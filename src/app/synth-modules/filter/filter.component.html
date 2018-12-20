@@ -10,3 +10,7 @@
       [_value]="mp.parameter.value" [_measurementUnit]="mp.measurementUnit"
       [_change]="this.mpChange.bind(null, mp)"></app-knob-lil-ext>
 </div>
+
+<!-- this is FilterComponent,
+  this._modulableParameters[0].parameter is AudioParam = this._filterNode.frequency -->
+<app-lfo [modulatedComponent]="this" [modulatedParameter]="this._modulableParameters[0].parameter"></app-lfo>
