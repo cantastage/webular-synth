@@ -1,11 +1,11 @@
 <div>
   <select (change)="waveShapeChange($event)">
-      <option *ngFor="let waveShape of _waveShapes;">{{waveShape}}</option>
+      <option *ngFor="let waveShape of waveShapes;">{{waveShape}}</option>
   </select>
 </div>
 
 <div>
-<app-knob-lil-ext [_min]="this._fmin" [_max]="this._fmax"
-  [_value]="this._lfoNode.frequency.value" [_measurementUnit]="'Hz'"
+<app-knob-lil-ext [_min]="this.minModulationFrequency" [_max]="this.maxModulationFrequency"
+  [_value]="this._lfoNode.frequency.value" [_measurementUnit]="this.defMeasurementUnit"
   [_change]="this.frequencyChange.bind(null, this)"></app-knob-lil-ext>
 </div>

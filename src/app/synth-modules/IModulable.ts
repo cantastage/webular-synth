@@ -4,7 +4,7 @@ import { sealed } from '../system2/utilities/ClassDecorators';
 export class ModulableParameter {
   private _name: string;
   private _audioParameter: AudioParam;
-  private _minValue: number;
+  private _minValue: number; // for our purpose we "hide" the defaults of AudioParam
   private _maxValue: number;
   private _measurementUnit: string;
 
@@ -24,7 +24,7 @@ export class ModulableParameter {
     return this._measurementUnit;
   }
 
-  constructor(name: string, parameter: AudioParam, minValue: number, maxValue: number, measurementUnit: string) {
+  public constructor(name: string, parameter: AudioParam, minValue: number, maxValue: number, measurementUnit: string) {
     this._name = name;
     this._audioParameter = parameter;
     this._minValue = minValue;

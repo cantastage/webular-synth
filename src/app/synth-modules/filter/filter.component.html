@@ -1,6 +1,6 @@
 <div>
   <select (change)="typeChange($event)">
-      <option *ngFor="let filterType of _filterTypes;">{{filterType}}</option>
+      <option *ngFor="let filterType of this.filterTypes;">{{filterType}}</option>
   </select>
 </div>
 
@@ -12,6 +12,6 @@
 </div>
 
 <!-- this is FilterComponent,
-  this._modulableParameters[0] is ModulableParameter -->
+  this.modulableParameters()[0] is ModulableParameter for frequency-->
+<app-lfo [modulatedComponent]="this" [modulatedParameter]="this.modulableParameters()[0]"></app-lfo>
 
-<app-lfo [modulatedComponent]="this" [modulatedParameter]="this._modulableParameters[0]"></app-lfo>

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IModulatorComponent } from '../IModulator';
-import { IModulableComponent, ModulableParameter } from '../IModulable';
+import { ModulatorComponent } from '../IModulator';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 
 @Component({
@@ -8,52 +7,74 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
   templateUrl: './lfo.component.html',
   styleUrls: ['./lfo.component.scss']
 })
-export class LfoComponent implements OnInit, IModulatorComponent {
-  private readonly _fmin = 1;
-  private readonly _fmax = 20;
+export class LfoComponent extends ModulatorComponent implements OnInit {
+  private _minModulationFrequency: number; // readonly
+  private _maxModulationFrequency: number; // readonly
+  private _defMeasurementUnit: string; // readonly
+
   private _testGeneratorNode: OscillatorNode;
   private _lfoNode: OscillatorNode;
-  private _lfoAmplifier: GainNode;
   // how to extract a string[] from OscillatorType?!?!?! O.O
-  private readonly _waveShapes = ['sine', 'square', 'sawtooth', 'triangle'];
-  private _modulatedComponent: IModulableComponent;
-  private _modulatedParameter: ModulableParameter;
+  private _waveShapes: OscillatorType[]; // readonly
 
-  get modulatedComponent(): IModulableComponent {
-    return this._modulatedComponent;
+  public get waveShapes(): OscillatorType[] {
+    return this._waveShapes;
   }
-  @Input()
-  set modulatedComponent(mm: IModulableComponent) {
-    this._modulatedComponent = mm;
+  public get minModulationFrequency(): number {
+    return this._minModulationFrequency;
   }
-  get modulatedParameter(): ModulableParameter {
-    return this._modulatedParameter;
+  public get maxModulationFrequency(): number {
+    return this._maxModulationFrequency;
   }
-  @Input()
-  set modulatedParameter(mp: ModulableParameter) {
-    this._modulatedParameter = mp;
+  public get defMeasurementUnit(): string {
+    return this._defMeasurementUnit;
+  }
 
+  protected onModulatedComponentAttach(): void {
+    // nothing todo
+    return;
+  }
+  protected onModulatedComponentDetach(): void {
+    // nothing todo
+    return;
+  }
+  protected onModulatedParameterAttach(): void {
+    // this.modulatedParameter is defined: create connections
     this._testGeneratorNode.connect(this.modulatedComponent.innerNode());
-    this.modulatedComponent.innerNode().connect(this.contextManager.audioContext.destination);
 
-    this._lfoAmplifier.gain.value = this.modulatedParameter.maxValue;
-    this._lfoAmplifier.connect(this.modulatedParameter.audioParameter); // other things todo at the unset...
+
+    // shouldn't exist:
+    this.modulatedComponent.innerNode().connect(this.contextManager.audioContext.destination);
+  }
+  protected onModulatedParameterDetach(): void {
+    // symmetric disconnections: this.modulatedParameter is going to be set to null
+    // shouldn't exist:
+    this.modulatedComponent.innerNode().disconnect(this.contextManager.audioContext.destination);
+
+    this._testGeneratorNode.disconnect(this.modulatedComponent.innerNode());
   }
 
-  constructor(private contextManager: AudioContextManagerService) {
+  public constructor(private contextManager: AudioContextManagerService) {
+    super(contextManager); // creates the _fxAmplifier
+
+    this._waveShapes = ['sine', 'square', 'sawtooth', 'triangle'];
+    this._minModulationFrequency = 1;
+    this._maxModulationFrequency = 20;
+    this._defMeasurementUnit = 'Hz';
+
     this._lfoNode = this.contextManager.audioContext.createOscillator();
-    this._lfoNode.type = 'sine';
-    this._lfoNode.frequency.value = 1;
-    this._lfoAmplifier = this.contextManager.audioContext.createGain();
+    this._lfoNode.frequency.value = this.minModulationFrequency;
+    this._lfoNode.start();
+    this._lfoNode.connect(this._fxAmplifier);
+
+    // remove below after tests...
     this._testGeneratorNode = this.contextManager.audioContext.createOscillator();
     this._testGeneratorNode.type = 'square';
     this._testGeneratorNode.frequency.value = 1000;
-    this._lfoNode.start();
-    this._lfoNode.connect(this._lfoAmplifier);
     this._testGeneratorNode.start();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
   }
 
   public waveShapeChange(eventArg: any) {
@@ -64,20 +85,4 @@ export class LfoComponent implements OnInit, IModulatorComponent {
     // eventual checks
     ctx._lfoNode.frequency.value = Number(newValue);
   }
-  // IModulatorComponent members
-  // CONSTRAINT CHECKS & HYPOTHETICAL FUNCTIONS REMOVAL
-  // public onModulatedModuleAttach(modulableModule: IModulableComponent) {
-  //   this._modulatedComponent = modulableModule; // ONLY FOR REDUNDANCY AND STATE FULLNESS
-  // }
-  // public onModulatedParameterAttach(modulableParameter: AudioParam) {
-  //   this._modulatedParameter = modulableParameter;
-  //   this._lfoNode.connect(this._modulatedParameter);
-  // }
-  // public onModulatedParameterDetach() {
-  //   this._lfoNode.disconnect(this._modulatedParameter);
-  //   this._modulatedParameter = null;
-  // }
-  // public onModulatedModuleDetach() {
-  //   this._modulatedComponent = null;
-  // }
 }
