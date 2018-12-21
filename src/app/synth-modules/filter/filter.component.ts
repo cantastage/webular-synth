@@ -20,8 +20,8 @@ export class FilterComponent extends ModulableComponent implements OnInit {
     super();
     this._filterNode = this.contextManager.audioContext.createBiquadFilter();
     this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
-    this._modulableParameters = [new ModulableParameter('frequency', this._filterNode.frequency, 'Hz'),
-      new ModulableParameter('resonance', this._filterNode.Q, '')];
+    this._modulableParameters = [new ModulableParameter('frequency', this._filterNode.frequency, 1, 22000, 'Hz'),
+      new ModulableParameter('resonance', this._filterNode.Q, 1, 10, '')];
   }
 
   ngOnInit() {

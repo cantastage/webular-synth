@@ -3,22 +3,32 @@ import { sealed } from '../system2/utilities/ClassDecorators';
 @sealed
 export class ModulableParameter {
   private _name: string;
-  private _parameter: AudioParam;
+  private _audioParameter: AudioParam;
+  private _minValue: number;
+  private _maxValue: number;
   private _measurementUnit: string;
 
   public get name() {
     return this._name;
   }
-  public get parameter() {
-    return this._parameter;
+  public get audioParameter() {
+    return this._audioParameter;
+  }
+  public get minValue(): number {
+    return this._minValue;
+  }
+  public get maxValue(): number {
+    return this._maxValue;
   }
   public get measurementUnit() {
     return this._measurementUnit;
   }
 
-  constructor(name: string, parameter: AudioParam, measurementUnit: string) {
+  constructor(name: string, parameter: AudioParam, minValue: number, maxValue: number, measurementUnit: string) {
     this._name = name;
-    this._parameter = parameter;
+    this._audioParameter = parameter;
+    this._minValue = minValue;
+    this._maxValue = maxValue;
     this._measurementUnit = measurementUnit;
   }
 }
@@ -33,6 +43,6 @@ export abstract class ModulableComponent implements IModulableComponent {
   public abstract innerNode(): AudioNode;
   public abstract modulableParameters(): ModulableParameter[];
   public mpChange(mp: ModulableParameter, newValue: number): void {
-    mp.parameter.value = Number(newValue);
+    mp.audioParameter.value = Number(newValue);
   }
 }

@@ -5,7 +5,7 @@
 </div>
 
 <div>
-<app-knob-lil-ext [_min]="this._lfoNode.frequency.minValue" [_max]="this._lfoNode.frequency.maxValue"
+<app-knob-lil-ext [_min]="this._fmin" [_max]="this._fmax"
   [_value]="this._lfoNode.frequency.value" [_measurementUnit]="'Hz'"
   [_change]="this.frequencyChange.bind(null, this)"></app-knob-lil-ext>
 </div>
