@@ -34,17 +34,21 @@ export abstract class ModulatorComponent {
     return this._modulatedParameter;
   }
   @Input()
+  // CHECK: think of all the combo modulatedParameter x mp
   public set modulatedParameter(mp: ModulableParameter) {
     if (mp && mp != null) { // Attach
       this._modulatedParameter = mp;
-      // should handle the modulatedComponent changes?!?!
-      this._fxAmplifier.gain.value = this.modulatedParameter.maxValue;
+
+      this.modulatedParameter.audioParameter.value = 0;
+      this._fxAmplifier.gain.value = this.modulatedParameter.maxUIValue;
       this._fxAmplifier.connect(this.modulatedParameter.audioParameter);
       this.onModulatedParameterAttach();
     } else { // Detach
       this.onModulatedParameterDetach();
       this._fxAmplifier.disconnect(this.modulatedParameter.audioParameter);
       this._fxAmplifier.gain.value = this._fxAmplifier.gain.defaultValue;
+      this.modulatedParameter.audioParameter.value = this.modulatedParameter.uiValue;
+
       this._modulatedParameter = null;
     }
   }

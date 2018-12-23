@@ -11,7 +11,7 @@
       [_change]="this.mpChange.bind(null, mp)"></app-knob-lil-ext>
 </div>
 
-<!-- this is FilterComponent,
-  this.modulableParameters()[0] is ModulableParameter for frequency-->
+<!-- this is FilterComponent implementing IModulableComponent,
+  this.modulableParameters()[0] is ModulableParameter wrapping frequency as AudioParam -->
 <app-lfo [modulatedComponent]="this" [modulatedParameter]="this.modulableParameters()[0]"></app-lfo>
 

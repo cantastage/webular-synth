@@ -42,7 +42,6 @@ export class LfoComponent extends ModulatorComponent implements OnInit {
     // this.modulatedParameter is defined: create connections
     this._testGeneratorNode.connect(this.modulatedComponent.innerNode());
 
-
     // shouldn't exist:
     this.modulatedComponent.innerNode().connect(this.contextManager.audioContext.destination);
   }
