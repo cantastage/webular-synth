@@ -4,6 +4,7 @@ import { sealed } from '../system2/utilities/ClassDecorators';
 export class ParameterDescriptor {
   private _name: string;
   private _minUIValue: number; // for our purpose we "hide" the defaults of AudioParam
+  private _defaultUIValue: number;
   private _maxUIValue: number;
   private _measurementUnit: string;
 
@@ -13,6 +14,9 @@ export class ParameterDescriptor {
   public get minUIValue(): number {
     return this._minUIValue;
   }
+  public get defaultUIValue(): number {
+    return this._defaultUIValue;
+  }
   public get maxUIValue(): number {
     return this._maxUIValue;
   }
@@ -20,9 +24,10 @@ export class ParameterDescriptor {
     return this._measurementUnit;
   }
 
-  public constructor(name: string, minUIValue: number, maxUIValue: number, measurementUnit: string) {
+  public constructor(name: string, minUIValue: number, defaultUIValue: number, maxUIValue: number, measurementUnit: string) {
     this._name = name;
     this._minUIValue = minUIValue;
+    this._defaultUIValue = defaultUIValue;
     this._maxUIValue = maxUIValue;
     this._measurementUnit = measurementUnit;
   }
@@ -53,23 +58,25 @@ export class AudioParameter2 {
   public constructor(parameterDescriptor: ParameterDescriptor, parameter: AudioParam) {
     this._parameterDescriptor = parameterDescriptor; // check...
     this._audioParameter = parameter;
-    this._uiValue = this.audioParameter.value;
+    this.uiValue = this.parameterDescriptor.defaultUIValue;
+    // uncoupled!
+    this.audioParameter.value = this.uiValue;
   }
 }
 
 export interface IModulableComponent {
-  innerNode(): AudioNode;
-  modulableParameters(): AudioParameter2[];
+  readonly innerNode: AudioNode;
+  readonly modulableParameters: AudioParameter2[];
   mpChange(mp: AudioParameter2, newValue: number): void;
 }
 
 export abstract class ModulableComponent implements IModulableComponent {
-  public abstract innerNode(): AudioNode;
-  public abstract modulableParameters(): AudioParameter2[];
+  public abstract readonly innerNode: AudioNode;
+  public abstract readonly modulableParameters: AudioParameter2[];
   public mpChange(mp: AudioParameter2, newValue: number): void {
     mp.uiValue = Number(newValue);
 
     // THE FOLLOWING SHOULD BE DONE ONLY IF NOT UNDER MODULATION:
-    mp.audioParameter.value = Number(newValue);
+    mp.audioParameter.value = mp.uiValue;
   }
 }

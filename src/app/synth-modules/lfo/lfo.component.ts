@@ -33,17 +33,17 @@ export class LfoComponent extends ModulatorComponent implements OnInit {
   }
   protected onModulatedParameterAttach(): void {
     // this.modulatedParameter is defined: create connections
-    this._testGeneratorNode.connect(this.modulatedComponent.innerNode());
+    this._testGeneratorNode.connect(this.modulatedComponent.innerNode);
 
     // shouldn't exist:
-    this.modulatedComponent.innerNode().connect(this.contextManager.audioContext.destination);
+    this.modulatedComponent.innerNode.connect(this.contextManager.audioContext.destination);
   }
   protected onModulatedParameterDetach(): void {
     // symmetric disconnections: this.modulatedParameter is going to be set to null
     // shouldn't exist:
-    this.modulatedComponent.innerNode().disconnect(this.contextManager.audioContext.destination);
+    this.modulatedComponent.innerNode.disconnect(this.contextManager.audioContext.destination);
 
-    this._testGeneratorNode.disconnect(this.modulatedComponent.innerNode());
+    this._testGeneratorNode.disconnect(this.modulatedComponent.innerNode);
   }
 
   public constructor(private contextManager: AudioContextManagerService) {
@@ -52,8 +52,7 @@ export class LfoComponent extends ModulatorComponent implements OnInit {
     this._waveShapes = ['sine', 'square', 'sawtooth', 'triangle'];
 
     this._lfoNode = this.contextManager.audioContext.createOscillator();
-    this._rate = new AudioParameter2(new ParameterDescriptor('rate', 1, 20, 'Hz'), this._lfoNode.frequency);
-    this._lfoNode.frequency.value = this.rate.parameterDescriptor.minUIValue;
+    this._rate = new AudioParameter2(new ParameterDescriptor('rate', 0.1, 1, 20, 'Hz'), this._lfoNode.frequency);
     this._lfoNode.start();
     this._lfoNode.connect(this._intensityNode);
 

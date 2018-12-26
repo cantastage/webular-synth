@@ -17,10 +17,10 @@ export class FilterComponent extends ModulableComponent implements OnInit {
     return this._filterTypes;
   }
 
-  public innerNode(): AudioNode {
+  public get innerNode(): AudioNode {
     return this._filterNode;
   }
-  public modulableParameters(): AudioParameter2[] {
+  public get modulableParameters(): AudioParameter2[] {
     return this._modulableParameters;
   }
 
@@ -29,8 +29,10 @@ export class FilterComponent extends ModulableComponent implements OnInit {
     this._filterNode = this.contextManager.audioContext.createBiquadFilter();
     // how to extract a string[] from BiquadFilterType?!?!?! O.O
     this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
-    this._modulableParameters = [new AudioParameter2(new ParameterDescriptor('frequency', 1, 22000, 'Hz'), this._filterNode.frequency),
-      new AudioParameter2(new ParameterDescriptor('resonance', 1, 10, ''), this._filterNode.Q)];
+    this._modulableParameters = [
+      new AudioParameter2(new ParameterDescriptor('frequency', 1, 5500, 22000, 'Hz'), this._filterNode.frequency),
+      new AudioParameter2(new ParameterDescriptor('resonance', -100, 1, 100, ''), this._filterNode.Q)
+    ];
   }
 
   public ngOnInit() {

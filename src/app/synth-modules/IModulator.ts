@@ -44,12 +44,15 @@ export abstract class ModulatorComponent {
     if (mp && mp != null) { // Attach
       this._modulatedParameter = mp;
 
-      this.modulatedParameter.audioParameter.value = 0; // I'm being modulated
+      this.modulatedParameter.audioParameter.value = 0; // mp's being modulated
+      // (omission of percentage)
+      this.intensity.audioParameter.value = this.modulatedParameter.parameterDescriptor.maxUIValue;
       this._intensityNode.connect(this.modulatedParameter.audioParameter);
       this.onModulatedParameterAttach();
     } else { // Detach
       this.onModulatedParameterDetach();
       this._intensityNode.disconnect(this.modulatedParameter.audioParameter);
+      this.intensity.audioParameter.value = this.intensity.parameterDescriptor.defaultUIValue;
       this.modulatedParameter.audioParameter.value = this.modulatedParameter.uiValue; // no longer
 
       this._modulatedParameter = null;
@@ -63,8 +66,7 @@ export abstract class ModulatorComponent {
 
   public constructor(contextManager: AudioContextManagerService) {
     this._intensityNode = contextManager.audioContext.createGain();
-    this._intensity = new AudioParameter2(new ParameterDescriptor('intensity', 0, 100, ''), this._intensityNode.gain);
-    this._intensityNode.gain.value = this.intensity.parameterDescriptor.minUIValue;
+    this._intensity = new AudioParameter2(new ParameterDescriptor('intensity', 0, 100, 100, ''), this._intensityNode.gain);
   }
 
   public intensityChange(ctx: ModulatorComponent, newValue: number): void {
