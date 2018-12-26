@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModulatorComponent } from '../IModulator';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { ParameterDescriptor, AudioParameter2 } from '../IModulable';
 
 @Component({
   selector: 'app-lfo',
@@ -8,26 +9,18 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
   styleUrls: ['./lfo.component.scss']
 })
 export class LfoComponent extends ModulatorComponent implements OnInit {
-  private _minModulationFrequency: number; // readonly
-  private _maxModulationFrequency: number; // readonly
-  private _defMeasurementUnit: string; // readonly
-
   private _testGeneratorNode: OscillatorNode;
   private _lfoNode: OscillatorNode;
   // how to extract a string[] from OscillatorType?!?!?! O.O
   private _waveShapes: OscillatorType[]; // readonly
+  // THINK CAREFULLY ABOUT THE TYPE BELOW
+  private _rate: AudioParameter2; // readonly
 
   public get waveShapes(): OscillatorType[] {
     return this._waveShapes;
   }
-  public get minModulationFrequency(): number {
-    return this._minModulationFrequency;
-  }
-  public get maxModulationFrequency(): number {
-    return this._maxModulationFrequency;
-  }
-  public get defMeasurementUnit(): string {
-    return this._defMeasurementUnit;
+  public get rate(): AudioParameter2 {
+    return this._rate;
   }
 
   protected onModulatedComponentAttach(): void {
@@ -54,17 +47,15 @@ export class LfoComponent extends ModulatorComponent implements OnInit {
   }
 
   public constructor(private contextManager: AudioContextManagerService) {
-    super(contextManager); // creates the _fxAmplifier
+    super(contextManager); // creates the intensityNode
 
     this._waveShapes = ['sine', 'square', 'sawtooth', 'triangle'];
-    this._minModulationFrequency = 1;
-    this._maxModulationFrequency = 20;
-    this._defMeasurementUnit = 'Hz';
 
     this._lfoNode = this.contextManager.audioContext.createOscillator();
-    this._lfoNode.frequency.value = this.minModulationFrequency;
+    this._rate = new AudioParameter2(new ParameterDescriptor('rate', 1, 20, 'Hz'), this._lfoNode.frequency);
+    this._lfoNode.frequency.value = this.rate.parameterDescriptor.minUIValue;
     this._lfoNode.start();
-    this._lfoNode.connect(this._fxAmplifier);
+    this._lfoNode.connect(this._intensityNode);
 
     // remove below after tests...
     this._testGeneratorNode = this.contextManager.audioContext.createOscillator();
@@ -80,8 +71,9 @@ export class LfoComponent extends ModulatorComponent implements OnInit {
     this._lfoNode.type = eventArg.target.value;
   }
 
-  public frequencyChange(ctx: LfoComponent, newValue: number): void {
+  public rateChange(ctx: LfoComponent, newValue: number): void {
     // eventual checks
-    ctx._lfoNode.frequency.value = Number(newValue);
+    ctx.rate.uiValue = Number(newValue);
+    ctx.rate.audioParameter.value = Number(newValue);
   }
 }

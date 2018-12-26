@@ -5,7 +5,13 @@
 </div>
 
 <div>
-<app-knob-lil-ext [_min]="this.minModulationFrequency" [_max]="this.maxModulationFrequency"
-  [_value]="this._lfoNode.frequency.value" [_measurementUnit]="this.defMeasurementUnit"
-  [_change]="this.frequencyChange.bind(null, this)"></app-knob-lil-ext>
+<app-knob-lil-ext [_min]="this.intensity.parameterDescriptor.minUIValue" [_max]="this.intensity.parameterDescriptor.maxUIValue"
+  [_value]="this.intensity.uiValue" [_measurementUnit]="this.intensity.parameterDescriptor.measurementUnit"
+  [_change]="this.intensityChange.bind(null, this)"></app-knob-lil-ext>
+</div>
+
+<div>
+<app-knob-lil-ext [_min]="this.rate.parameterDescriptor.minUIValue" [_max]="this.rate.parameterDescriptor.maxUIValue"
+  [_value]="this.rate.uiValue" [_measurementUnit]="this.rate.parameterDescriptor.measurementUnit"
+  [_change]="this.rateChange.bind(null, this)"></app-knob-lil-ext>
 </div>

@@ -1,10 +1,10 @@
-import { IModulableComponent, ModulableParameter } from './IModulable';
+import { IModulableComponent, AudioParameter2, ParameterDescriptor } from './IModulable';
 import { Input } from '@angular/core';
 import { AudioContextManagerService } from '../services/audio-context-manager.service';
 
 export interface IModulatorComponent {
   modulatedComponent: IModulableComponent;
-  modulatedParameter: ModulableParameter;
+  modulatedParameter: AudioParameter2;
 
   onModulatedComponentAttach(): void;
   onModulatedComponentDetach(): void;
@@ -13,10 +13,15 @@ export interface IModulatorComponent {
 }
 
 export abstract class ModulatorComponent {
-  protected _fxAmplifier: GainNode;
+  protected _intensityNode: GainNode;
+  private _intensity: AudioParameter2; // readonly
   protected _modulatedComponent: IModulableComponent;
-  protected _modulatedParameter: ModulableParameter;
+  // THINK CAREFULLY ABOUT THE TYPE BELOW
+  protected _modulatedParameter: AudioParameter2;
 
+  public get intensity(): AudioParameter2 {
+    return this._intensity;
+  }
   public get modulatedComponent(): IModulableComponent {
     return this._modulatedComponent;
   }
@@ -30,24 +35,22 @@ export abstract class ModulatorComponent {
       this._modulatedComponent = null;
     }
   }
-  public get modulatedParameter(): ModulableParameter {
+  public get modulatedParameter(): AudioParameter2 {
     return this._modulatedParameter;
   }
   @Input()
   // CHECK: think of all the combo modulatedParameter x mp
-  public set modulatedParameter(mp: ModulableParameter) {
+  public set modulatedParameter(mp: AudioParameter2) {
     if (mp && mp != null) { // Attach
       this._modulatedParameter = mp;
 
-      this.modulatedParameter.audioParameter.value = 0;
-      this._fxAmplifier.gain.value = this.modulatedParameter.maxUIValue;
-      this._fxAmplifier.connect(this.modulatedParameter.audioParameter);
+      this.modulatedParameter.audioParameter.value = 0; // I'm being modulated
+      this._intensityNode.connect(this.modulatedParameter.audioParameter);
       this.onModulatedParameterAttach();
     } else { // Detach
       this.onModulatedParameterDetach();
-      this._fxAmplifier.disconnect(this.modulatedParameter.audioParameter);
-      this._fxAmplifier.gain.value = this._fxAmplifier.gain.defaultValue;
-      this.modulatedParameter.audioParameter.value = this.modulatedParameter.uiValue;
+      this._intensityNode.disconnect(this.modulatedParameter.audioParameter);
+      this.modulatedParameter.audioParameter.value = this.modulatedParameter.uiValue; // no longer
 
       this._modulatedParameter = null;
     }
@@ -59,6 +62,16 @@ export abstract class ModulatorComponent {
   protected abstract onModulatedParameterDetach(): void;
 
   public constructor(contextManager: AudioContextManagerService) {
-    this._fxAmplifier = contextManager.audioContext.createGain();
+    this._intensityNode = contextManager.audioContext.createGain();
+    this._intensity = new AudioParameter2(new ParameterDescriptor('intensity', 0, 100, ''), this._intensityNode.gain);
+    this._intensityNode.gain.value = this.intensity.parameterDescriptor.minUIValue;
+  }
+
+  public intensityChange(ctx: ModulatorComponent, newValue: number): void {
+    // eventual checks
+    ctx.intensity.uiValue = Number(newValue);
+    // newValue as integer part of a percentage
+    ctx.intensity.audioParameter.value = Number(newValue) / 100 *
+      ctx.modulatedParameter.parameterDescriptor.maxUIValue;
   }
 }

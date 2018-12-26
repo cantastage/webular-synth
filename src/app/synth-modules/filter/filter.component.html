@@ -5,9 +5,9 @@
 </div>
 
 <div>
-    <app-knob-lil-ext *ngFor="let mp of this._modulableParameters;"
-      [_min]="mp.minValue" [_max]="mp.maxValue"
-      [_value]="mp.audioParameter.value" [_measurementUnit]="mp.measurementUnit"
+    <app-knob-lil-ext *ngFor="let mp of this.modulableParameters();"
+      [_min]="mp.parameterDescriptor.minUIValue" [_max]="mp.parameterDescriptor.maxUIValue"
+      [_value]="mp.uiValue" [_measurementUnit]="mp.parameterDescriptor.measurementUnit"
       [_change]="this.mpChange.bind(null, mp)"></app-knob-lil-ext>
 </div>
 
