@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModulatorComponent } from '../IModulator';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
-import { UIParameterDescriptor, AudioParameter2 } from '../IModulable';
+import { AudioParamWrapper, AudioParamDescriptor } from '../AudioParamWrapper';
 
 @Component({
   selector: 'app-lfo',
@@ -13,13 +13,12 @@ export class LfoComponent extends ModulatorComponent implements OnInit {
   private _lfoNode: OscillatorNode;
   // how to extract a string[] from OscillatorType?!?!?! O.O
   private _waveShapes: OscillatorType[]; // readonly
-  // THINK CAREFULLY ABOUT THE TYPE BELOW
-  private _rate: AudioParameter2; // readonly
+  private _rate: AudioParamWrapper; // readonly
 
   public get waveShapes(): OscillatorType[] {
     return this._waveShapes;
   }
-  public get rate(): AudioParameter2 {
+  public get rate(): AudioParamWrapper {
     return this._rate;
   }
 
@@ -52,7 +51,7 @@ export class LfoComponent extends ModulatorComponent implements OnInit {
     this._waveShapes = ['sine', 'square', 'sawtooth', 'triangle'];
 
     this._lfoNode = this.contextManager.audioContext.createOscillator();
-    this._rate = new AudioParameter2(new UIParameterDescriptor('rate', 0.1, 1, 20, 'Hz'), this._lfoNode.frequency);
+    this._rate = new AudioParamWrapper(new AudioParamDescriptor('rate', 0.1, 1, 20, 'Hz'), this._lfoNode.frequency);
     this._lfoNode.start();
     this._lfoNode.connect(this._intensityNode);
 
@@ -72,7 +71,6 @@ export class LfoComponent extends ModulatorComponent implements OnInit {
 
   public rateChange(ctx: LfoComponent, newValue: number): void {
     // eventual checks
-    ctx.rate.uiValue = Number(newValue);
     ctx.rate.audioParameter.value = Number(newValue);
   }
 }

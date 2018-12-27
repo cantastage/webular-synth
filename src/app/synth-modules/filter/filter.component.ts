@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AudioParameter2, ModulableComponent, UIParameterDescriptor } from 'src/app/synth-modules/IModulable';
+import { ModulableComponent } from 'src/app/synth-modules/IModulable';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { ModulableAudioParamWrapper, AudioParamDescriptor } from '../AudioParamWrapper';
 
 @Component({
   selector: 'app-filter',
@@ -49,8 +50,7 @@ export class FilterComponent extends ModulableComponent implements OnInit {
   // };
   private _filterNode: BiquadFilterNode;
   private _filterTypes: BiquadFilterType[]; // readonly
-  // THINK CAREFULLY ABOUT THE TYPE BELOW
-  private _modulableParameters: AudioParameter2[];
+  private _modulableParameters: ModulableAudioParamWrapper[];
 
   public get filterTypes(): string[] {
     return this._filterTypes;
@@ -59,7 +59,7 @@ export class FilterComponent extends ModulableComponent implements OnInit {
   public get innerNode(): AudioNode {
     return this._filterNode;
   }
-  public get modulableParameters(): AudioParameter2[] {
+  public get modulableParameters(): ModulableAudioParamWrapper[] {
     return this._modulableParameters;
   }
 
@@ -69,8 +69,14 @@ export class FilterComponent extends ModulableComponent implements OnInit {
     // how to extract a string[] from BiquadFilterType?!?!?! O.O
     this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
     this._modulableParameters = [
-      new AudioParameter2(new UIParameterDescriptor('frequency', 1, 5500, 22000, 'Hz'), this._filterNode.frequency),
-      new AudioParameter2(new UIParameterDescriptor('resonance', -100, 1, 100, ''), this._filterNode.Q)
+      new ModulableAudioParamWrapper(
+        new AudioParamDescriptor('frequency', 1, 5500, 22000, 'Hz'),
+          this._filterNode.frequency
+      ),
+      new ModulableAudioParamWrapper(
+        new AudioParamDescriptor('resonance', -100, 1, 100, ''),
+          this._filterNode.Q
+      )
     ];
   }
 
