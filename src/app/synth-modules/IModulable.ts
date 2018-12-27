@@ -1,7 +1,44 @@
 import { sealed } from '../system2/utilities/ClassDecorators';
 
+// @sealed
+// export class UIParameter {
+//   private _minValue: number;
+//   private _defaultValue: number;
+//   private _maxValue: number;
+//   private _valueToUIValueFactor: number;
+
+//   public get minValue(): number {
+//     return this._minValue;
+//   }
+//   public get defaultValue(): number {
+//     return this._defaultValue;
+//   }
+//   public get maxValue(): number {
+//     return this._maxValue;
+//   }
+//   public get valueToUIValueFactor(): number {
+//     return this._valueToUIValueFactor;
+//   }
+//   public get minUIValue(): number { // 2DO
+//     return this._minValue;
+//   }
+//   public get defaultUIValue(): number { // 2DO
+//     return this._defaultValue;
+//   }
+//   public get maxUIValue(): number { // 2DO
+//     return this._maxValue;
+//   }
+
+//   constructor(minValue: number, defaultValue: number, maxValue: number, valueToUIValueFactor: number) {
+//     this._minValue = minValue;
+//     this._defaultValue = defaultValue;
+//     this._maxValue = maxValue;
+//     this._valueToUIValueFactor = valueToUIValueFactor;
+//   }
+// }
+
 @sealed
-export class ParameterDescriptor {
+export class UIParameterDescriptor {
   private _name: string;
   private _minUIValue: number; // for our purpose we "hide" the defaults of AudioParam
   private _defaultUIValue: number;
@@ -35,12 +72,12 @@ export class ParameterDescriptor {
 
 @sealed
 export class AudioParameter2 {
-  private _parameterDescriptor: ParameterDescriptor;
+  private _uiDescriptor: UIParameterDescriptor;
   private _audioParameter: AudioParam;
   private _uiValue: number;
 
-  public get parameterDescriptor(): ParameterDescriptor {
-    return this._parameterDescriptor;
+  public get uiDescriptor(): UIParameterDescriptor {
+    return this._uiDescriptor;
   }
   public get audioParameter(): AudioParam {
     return this._audioParameter;
@@ -49,16 +86,16 @@ export class AudioParameter2 {
     return this._uiValue;
   }
   public set uiValue(uiValue: number) {
-    if (!uiValue || uiValue < this.parameterDescriptor.minUIValue || uiValue > this.parameterDescriptor.maxUIValue) {
+    if (!uiValue || uiValue < this.uiDescriptor.minUIValue || uiValue > this.uiDescriptor.maxUIValue) {
       throw new Error('error while assigning the user value');
     }
     this._uiValue = uiValue;
   }
 
-  public constructor(parameterDescriptor: ParameterDescriptor, parameter: AudioParam) {
-    this._parameterDescriptor = parameterDescriptor; // check...
+  public constructor(uiDescriptor: UIParameterDescriptor, parameter: AudioParam) {
+    this._uiDescriptor = uiDescriptor; // check...
     this._audioParameter = parameter;
-    this.uiValue = this.parameterDescriptor.defaultUIValue;
+    this.uiValue = this.uiDescriptor.defaultUIValue;
     // uncoupled!
     this.audioParameter.value = this.uiValue;
   }

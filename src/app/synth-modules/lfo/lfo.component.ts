@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModulatorComponent } from '../IModulator';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
-import { ParameterDescriptor, AudioParameter2 } from '../IModulable';
+import { UIParameterDescriptor, AudioParameter2 } from '../IModulable';
 
 @Component({
   selector: 'app-lfo',
@@ -52,7 +52,7 @@ export class LfoComponent extends ModulatorComponent implements OnInit {
     this._waveShapes = ['sine', 'square', 'sawtooth', 'triangle'];
 
     this._lfoNode = this.contextManager.audioContext.createOscillator();
-    this._rate = new AudioParameter2(new ParameterDescriptor('rate', 0.1, 1, 20, 'Hz'), this._lfoNode.frequency);
+    this._rate = new AudioParameter2(new UIParameterDescriptor('rate', 0.1, 1, 20, 'Hz'), this._lfoNode.frequency);
     this._lfoNode.start();
     this._lfoNode.connect(this._intensityNode);
 

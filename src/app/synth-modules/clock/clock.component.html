@@ -1,8 +1,8 @@
 <div>
     <div>
-        <app-knob-big-ext [_min]="this.clockManager.BEATS_MIN()" [_max]="this.clockManager.BEATS_MAX()"
+        <!-- <app-knob-big-ext [_min]="this.clockManager.BEATS_MIN()" [_max]="this.clockManager.BEATS_MAX()"
             [_value]="this.clockManager.bpm" [_measurementUnit]="'bpm'"
-            [_change]="this.bpmChange.bind(null, this)"></app-knob-big-ext>
+            [_change]="this.bpmChange.bind(null, this)"></app-knob-big-ext> -->
     </div>
     <div>
         <input type="button" (click)="this.start()" value="Start" />
@@ -10,3 +10,4 @@
         <input type="button" (click)="this.stop(); this.start();" value="Restart"/>
     </div>
 </div>
+

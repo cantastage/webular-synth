@@ -5,13 +5,17 @@
 </div>
 
 <div>
-    <app-knob-lil-ext *ngFor="let mp of this.modulableParameters;"
+    <!-- <app-knob-lil-ext *ngFor="let mp of this.modulableParameters;"
       [_min]="mp.parameterDescriptor.minUIValue" [_max]="mp.parameterDescriptor.maxUIValue"
       [_value]="mp.uiValue" [_measurementUnit]="mp.parameterDescriptor.measurementUnit"
-      [_change]="this.mpChange.bind(null, mp)"></app-knob-lil-ext>
+      [_change]="this.mpChange.bind(null, mp)"></app-knob-lil-ext> -->
+
+      <!-- <jqxKnob [width]="50" [height]="50" [value]="60" [min]="0.1" [max]="10" [startAngle]="120"
+      [endAngle]="420" [snapToStep]="true" [rotation]="'clockwise'" [style]="style"
+      [marks]="marks" [labels]="labels" [progressBar]="progressBar" [pointer]="pointer"></jqxKnob> -->
 </div>
 
 <!-- this is FilterComponent implementing IModulableComponent,
   this.modulableParameters[0] is ModulableParameter wrapping frequency as AudioParam -->
-<app-lfo [modulatedComponent]="this" [modulatedParameter]="this.modulableParameters[0]"></app-lfo>
+<!-- <app-lfo [modulatedComponent]="this" [modulatedParameter]="this.modulableParameters[0]"></app-lfo> -->
 

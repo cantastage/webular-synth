@@ -1,4 +1,4 @@
-import { IModulableComponent, AudioParameter2, ParameterDescriptor } from './IModulable';
+import { IModulableComponent, AudioParameter2, UIParameterDescriptor } from './IModulable';
 import { Input } from '@angular/core';
 import { AudioContextManagerService } from '../services/audio-context-manager.service';
 
@@ -46,13 +46,13 @@ export abstract class ModulatorComponent {
 
       this.modulatedParameter.audioParameter.value = 0; // mp's being modulated
       // (omission of percentage)
-      this.intensity.audioParameter.value = this.modulatedParameter.parameterDescriptor.maxUIValue;
+      this.intensity.audioParameter.value = this.modulatedParameter.uiDescriptor.maxUIValue;
       this._intensityNode.connect(this.modulatedParameter.audioParameter);
       this.onModulatedParameterAttach();
     } else { // Detach
       this.onModulatedParameterDetach();
       this._intensityNode.disconnect(this.modulatedParameter.audioParameter);
-      this.intensity.audioParameter.value = this.intensity.parameterDescriptor.defaultUIValue;
+      this.intensity.audioParameter.value = this.intensity.uiDescriptor.defaultUIValue;
       this.modulatedParameter.audioParameter.value = this.modulatedParameter.uiValue; // no longer
 
       this._modulatedParameter = null;
@@ -66,7 +66,7 @@ export abstract class ModulatorComponent {
 
   public constructor(contextManager: AudioContextManagerService) {
     this._intensityNode = contextManager.audioContext.createGain();
-    this._intensity = new AudioParameter2(new ParameterDescriptor('intensity', 0, 100, 100, ''), this._intensityNode.gain);
+    this._intensity = new AudioParameter2(new UIParameterDescriptor('intensity', 0, 100, 100, ''), this._intensityNode.gain);
   }
 
   public intensityChange(ctx: ModulatorComponent, newValue: number): void {
@@ -74,6 +74,6 @@ export abstract class ModulatorComponent {
     ctx.intensity.uiValue = Number(newValue);
     // newValue as integer part of a percentage
     ctx.intensity.audioParameter.value = Number(newValue) / 100 *
-      ctx.modulatedParameter.parameterDescriptor.maxUIValue;
+      ctx.modulatedParameter.uiDescriptor.maxUIValue;
   }
 }
