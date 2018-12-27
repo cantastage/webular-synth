@@ -1,9 +1,10 @@
 <div class="example-container">
   <h2>Synth Modules</h2>
 
+  <!-- List that represents the sound chain -->
   <div cdkDropList cdkDropListOrientation="horizontal" #connectedList="cdkDropList" [cdkDropListData]="connectedModules"
     [cdkDropListConnectedTo]="[unconnectedList]" class="example-list" (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let item of connectedModules" cdkDrag>{{item}}</div>
+      <app-synth-module-wrapper [compRef]="item" *ngFor="let item of soundChain" cdkDrag></app-synth-module-wrapper>
   </div>
 </div>
 
@@ -11,14 +12,14 @@
 <button type="button" (click)="loadComponent()">Load Component</button>
 <div class="add-module-example">
   <h3>New modules</h3>
+  <!-- List that represents new modules -->
   <div cdkDropList cdkDropListOrientation="horizontal" #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules"
     [cdkDropListConnectedTo]="[connectedList]" class="example-list" (cdkDropListDropped)="drop($event)">
-    <div cdkDrag>
+    <!-- <div class="container" cdkDrag>
       <ng-template appAddModule></ng-template>
-    </div>
-    
+    </div> -->
+    <app-synth-module-wrapper *ngFor="let item of unconnectedModules" [compRef]="item" cdkDrag></app-synth-module-wrapper>
   </div>
-
 </div>
 
 
