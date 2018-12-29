@@ -1,9 +1,9 @@
 import {
   Component, OnInit, ViewChild, AfterViewInit, Input, ViewContainerRef,
-  ComponentFactoryResolver, ChangeDetectorRef, Compiler, ComponentRef, OnChanges, OnDestroy
+  ComponentFactoryResolver, ChangeDetectorRef, Compiler, ComponentRef
 } from '@angular/core';
-import { MoogLadderFilterComponent } from '../synth-modules/moog-ladder-filter/moog-ladder-filter.component';
-import { TargetLocator } from 'selenium-webdriver';
+import { ModuleComponent } from '../interfaces/module.component';
+import { ModuleItem } from '../model/module-item';
 
 /**
  * This component is a wrapper that contains a synth module inside.
@@ -14,30 +14,21 @@ import { TargetLocator } from 'selenium-webdriver';
   templateUrl: './synth-module-wrapper.component.html',
   styleUrls: ['./synth-module-wrapper.component.scss']
 })
-export class SynthModuleWrapperComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
-  @Input() compRef: ComponentRef<any>;  // riferimento al synth module component
+export class SynthModuleWrapperComponent implements OnInit, AfterViewInit {
+  @Input() synthModuleData: ModuleItem;
   private isViewInitialized = false;
+  private cmpRef: ComponentRef<any>;
 
-  // @Input() moduleType: any;  // moduleType to pass to the componentFactoryResolver to instantiate the component
-  // @Input() moduleRef: ComponentRef<any>;  // used to pass component ref to use as childview
-  /**
-   * instance of the real synth module.
-   * TODO check if the type as to be different from viewContainerRef
-   */
   @ViewChild('target', { read: ViewContainerRef }) target: ViewContainerRef;
 
   constructor(
+    private componentFactoryResolver: ComponentFactoryResolver,
     private compiler: Compiler,
     private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
   }
 
-  ngOnChanges(): void {
-    // Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
-    // Add '${implements OnChanges}' to the class.
-    this.updateComponent();
-  }
 
   /**
    * Necessary to be certain that the reference injected by "ViewChild" is present.
@@ -49,24 +40,17 @@ export class SynthModuleWrapperComponent implements OnInit, OnChanges, AfterView
     this.updateComponent();
   }
 
-
-  ngOnDestroy(): void {
-    // if (this.compRef) {
-    //   this.compRef.destroy();
-    // }
-    // NB La component ref non va distrutta perchè va passata.
-    this.target.detach();  // TODO check if it really detaches the view from the container
-  }
-
   updateComponent(): void {
     if (!this.isViewInitialized) {
       return;
     }
-    if (!this.compRef) {
-      // this.compRef.destroy();
+    if (this.cmpRef) {
+      this.cmpRef.destroy();
       console.log('component ref not present!');
     }
-    this.target.insert(this.compRef.hostView);  // Insert the view of the passed component into the container.
-    this.cdRef.detectChanges();
+    const factory = this.componentFactoryResolver.resolveComponentFactory(this.synthModuleData.component);
+    this.cmpRef = this.target.createComponent(factory);
+    (<ModuleComponent>this.cmpRef.instance).data = this.synthModuleData.data;
+    this.cdRef.detectChanges();  // TODO check se serve davvero
   }
 }
