@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, TemplateRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef, OnDestroy, SimpleChanges, OnChanges } from '@angular/core';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 import { ModuleComponent } from 'src/app/interfaces/module.component';
 
@@ -7,7 +7,7 @@ import { ModuleComponent } from 'src/app/interfaces/module.component';
   templateUrl: './moog-ladder-filter.component.html',
   styleUrls: ['./moog-ladder-filter.component.scss']
 })
-export class MoogLadderFilterComponent implements OnInit, ModuleComponent, OnDestroy {
+export class MoogLadderFilterComponent implements OnInit, ModuleComponent, OnDestroy, OnChanges {
   @Input() data: any;
   private _osc: OscillatorNode;
   private _scriptNode: ScriptProcessorNode;
@@ -40,6 +40,13 @@ export class MoogLadderFilterComponent implements OnInit, ModuleComponent, OnDes
     this._scriptNode.connect(this.contextManager.audioContext.destination);
     // this._osc.connect(this.contextManager.audioContext.destination);
     // this._osc.start();
+    console.log('Provided data in input: ', this.data);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
+    // Add '${implements OnChanges}' to the class.
+    console.log('Changes: ', changes);
   }
 
   public onCutoffChange(arg: any): void {

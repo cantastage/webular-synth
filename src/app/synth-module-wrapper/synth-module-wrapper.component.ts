@@ -27,6 +27,7 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit {
     private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
+    console.log('Data provided to synth wrapper: ', this.synthModuleData);
   }
 
 
@@ -51,6 +52,6 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit {
     const factory = this.componentFactoryResolver.resolveComponentFactory(this.synthModuleData.component);
     this.cmpRef = this.target.createComponent(factory);
     (<ModuleComponent>this.cmpRef.instance).data = this.synthModuleData.data;
-    this.cdRef.detectChanges();  // TODO check se serve davvero
+    this.cdRef.detectChanges();  // NB non rimuovere altrimenti la onInit del child view non viene chiamata.
   }
 }
