@@ -6,6 +6,7 @@ import { LfoComponent } from '../synth-modules/lfo/lfo.component';
 import { ClockComponent } from '../synth-modules/clock/clock.component';
 import { SequencerComponent } from '../synth-modules/sequencer/sequencer.component';
 import { ADSRComponent } from '../synth-modules/adsr/adsr.component';
+import { OscillatorComponent } from '../synth-modules/oscillator/oscillator.component';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ export class ModuleManagerService {
     new ModuleItem(LfoComponent, { name: 'lfo' }),
     new ModuleItem(ClockComponent, { name: 'clock' }),
     new ModuleItem(SequencerComponent, { name: 'sequencer' }),
-    new ModuleItem(ADSRComponent, { name: 'ADSR' })];
+    new ModuleItem(ADSRComponent, { name: 'ADSR' }),
+    new ModuleItem(OscillatorComponent, { name: 'poly-oscillator' })];
   }
 }
