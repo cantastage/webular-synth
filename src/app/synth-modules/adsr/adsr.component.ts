@@ -48,6 +48,10 @@ export class ADSRComponent implements OnInit {
   constructor() {  }
 
   ngOnInit() {
+    this.scrollOffsetY = 0;
+    this.scrollOffsetX = 0;
+    console.log(this.scrollOffsetX);
+    console.log(this.scrollOffsetY);
     const canvas: HTMLCanvasElement = this.envCanvas.nativeElement;
     this.offsetParentLeft = canvas.parentElement.offsetLeft;
     this.offsetParentTop = canvas.parentElement.offsetTop;
@@ -110,7 +114,8 @@ export class ADSRComponent implements OnInit {
       this.ctx.fillStyle=circle.color;
       this.ctx.fill();
     }
-  
+    this.ctx.strokeStyle = "#f2ede0";
+    this.ctx.lineWidth = 3;
     this.ctx.beginPath();
     this.ctx.moveTo(0, this.envCanvas.nativeElement.height);
     this.ctx.lineTo(this.points[0].x,this.points[0].y);
