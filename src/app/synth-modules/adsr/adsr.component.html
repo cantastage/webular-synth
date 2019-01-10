@@ -1,0 +1,9 @@
+<div class="container" (mouseup) = "fixPoint($event)">
+  
+  <canvas #envCanvas id = "envelope" width = "320" height = "150" (mousedown) = "selectPoint($event)" (mousemove) = "movePoint($event)">
+  
+  </canvas>
+
+  <button id = "note" (mousedown) = "playNote()" (mouseup) = "stopNote()"> note</button>
+</div>
+

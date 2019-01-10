@@ -16,6 +16,7 @@ import { FilterComponent } from './synth-modules/filter/filter.component';
 import { LfoComponent } from './synth-modules/lfo/lfo.component';
 import { ClockComponent } from './synth-modules/clock/clock.component';
 import { SequencerComponent } from './synth-modules/sequencer/sequencer.component';
+import { ADSRComponent } from './synth-modules/adsr/adsr.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,8 +30,10 @@ import { SequencerComponent } from './synth-modules/sequencer/sequencer.componen
     LfoComponent,
     ClockComponent,
     SequencerComponent,
+    ADSRComponent,
   ],
-  entryComponents: [MoogLadderFilterComponent, FilterComponent, LfoComponent, ClockComponent, SequencerComponent],
+  entryComponents: [MoogLadderFilterComponent, FilterComponent,
+    LfoComponent, ClockComponent, SequencerComponent, ADSRComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

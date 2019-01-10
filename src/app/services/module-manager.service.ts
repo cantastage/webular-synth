@@ -5,6 +5,7 @@ import { FilterComponent } from '../synth-modules/filter/filter.component';
 import { LfoComponent } from '../synth-modules/lfo/lfo.component';
 import { ClockComponent } from '../synth-modules/clock/clock.component';
 import { SequencerComponent } from '../synth-modules/sequencer/sequencer.component';
+import { ADSRComponent } from '../synth-modules/adsr/adsr.component';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class ModuleManagerService {
     new ModuleItem(FilterComponent, { name: 'pesteneraFilter' }),
     new ModuleItem(LfoComponent, { name: 'lfo' }),
     new ModuleItem(ClockComponent, { name: 'clock' }),
-    new ModuleItem(SequencerComponent, { name: 'sequencer' })];
+    new ModuleItem(SequencerComponent, { name: 'sequencer' }),
+    new ModuleItem(ADSRComponent, { name: 'ADSR' })];
   }
 }
