@@ -1,10 +1,10 @@
 .example-box {
-    width: 200px;
-    height: 200px;
+    // width: 200px;
+    // height: 200px;
     border: solid 1px #ccc;
     color: rgba(0, 0, 0, 0.87);
     cursor: move;
-    display: flex;
+    display: block;
     justify-content: center;
     align-items: center;
     text-align: center;

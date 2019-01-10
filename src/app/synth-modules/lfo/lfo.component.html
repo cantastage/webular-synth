@@ -1,0 +1,17 @@
+<div>
+  <select (change)="waveShapeChange($event)">
+      <option *ngFor="let waveShape of waveShapes;">{{waveShape}}</option>
+  </select>
+</div>
+
+<div>
+<!-- <app-knob-lil-ext [_min]="this.intensity.parameterDescriptor.minUIValue" [_max]="this.intensity.parameterDescriptor.maxUIValue"
+  [_value]="this.intensity.uiValue" [_measurementUnit]="this.intensity.parameterDescriptor.measurementUnit"
+  [_change]="this.intensityChange.bind(null, this)"></app-knob-lil-ext> -->
+</div>
+
+<div>
+<!-- <app-knob-lil-ext [_min]="this.rate.parameterDescriptor.minUIValue" [_max]="this.rate.parameterDescriptor.maxUIValue"
+  [_value]="this.rate.uiValue" [_measurementUnit]="this.rate.parameterDescriptor.measurementUnit"
+  [_change]="this.rateChange.bind(null, this)"></app-knob-lil-ext> -->
+</div>

@@ -12,6 +12,10 @@ import { AddModuleDirective } from './directives/add-module.directive';
 import { KnobComponent } from './synth-modules/sub-components/knob/knob.component';
 import { FormsModule } from '@angular/forms';
 import { SynthModuleWrapperComponent } from './synth-module-wrapper/synth-module-wrapper.component';
+import { FilterComponent } from './synth-modules/filter/filter.component';
+import { LfoComponent } from './synth-modules/lfo/lfo.component';
+import { ClockComponent } from './synth-modules/clock/clock.component';
+import { SequencerComponent } from './synth-modules/sequencer/sequencer.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,8 +25,12 @@ import { SynthModuleWrapperComponent } from './synth-module-wrapper/synth-module
     AddModuleDirective,
     KnobComponent,
     SynthModuleWrapperComponent,
+    FilterComponent,
+    LfoComponent,
+    ClockComponent,
+    SequencerComponent,
   ],
-  entryComponents: [MoogLadderFilterComponent],
+  entryComponents: [MoogLadderFilterComponent, FilterComponent, LfoComponent, ClockComponent, SequencerComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

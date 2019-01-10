@@ -49,7 +49,8 @@ export class SynthModuleContainerComponent implements OnInit {
 
   // Adds a module into the array of unconnectedModules
   loadComponent(): void {
-    const adItem = this.modules[0]; // chooses first element to load
+    // const adItem = this.modules[0]; // chooses first element to load
+    const adItem = this.modules[4];
     this.unconnectedModules.push(adItem);
   }
 
