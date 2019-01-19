@@ -1,13 +1,18 @@
 <div>
-  <div>
-      <!-- <app-knob-big-ext [_min]="this.clockManager.BEATS_MIN()" [_max]="this.clockManager.BEATS_MAX()"
-          [_value]="this.clockManager.bpm" [_measurementUnit]="'bpm'"
-          [_change]="this.bpmChange.bind(null, this)"></app-knob-big-ext> -->
-  </div>
-  <div>
+  <!-- <div class="clock-sub">
+        <div class="clock-info">{{this.clockManager.bpm}}bpm</div>
+        <jqxKnob (onChange)="onChange($event)"
+        [width]="150" [height]="150"
+        [value]="this.clockManager.bpm"
+        [min]="this.clockManager.BEATS_MIN()" [max]="this.clockManager.BEATS_MAX()"
+        [startAngle]="120" [endAngle]="420" [snapToStep]="true" [rotation]="'clockwise'"
+        [style]="style" [marks]="marks" [labels]="labels"
+        [progressBar]="progressBar" [pointer]="pointer">
+        </jqxKnob>
+  </div> -->
+  <!-- <div>
       <input type="button" (click)="this.start()" value="Start" />
       <input type="button" (click)="this.stop()" value="Stop" />
       <input type="button" (click)="this.stop(); this.start();" value="Restart"/>
-  </div>
+  </div> -->
 </div>
-

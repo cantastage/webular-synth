@@ -1,20 +1,25 @@
-<div>
-  <select (change)="typeChange($event)">
-      <option *ngFor="let filterType of this.filterTypes;">{{filterType}}</option>
-  </select>
-</div>
-
-<div>
-    <!-- <app-knob-lil-ext *ngFor="let mp of this.modulableParameters;"
-      [_min]="mp.parameterDescriptor.minUIValue" [_max]="mp.parameterDescriptor.maxUIValue"
-      [_value]="mp.uiValue" [_measurementUnit]="mp.parameterDescriptor.measurementUnit"
-      [_change]="this.mpChange.bind(null, mp)"></app-knob-lil-ext> -->
-
-      <!-- <jqxKnob [width]="50" [height]="50" [value]="60" [min]="0.1" [max]="10" [startAngle]="120"
-      [endAngle]="420" [snapToStep]="true" [rotation]="'clockwise'" [style]="style"
-      [marks]="marks" [labels]="labels" [progressBar]="progressBar" [pointer]="pointer"></jqxKnob> -->
+<div class="component-block">
+  <div class="component-header">
+      <select (change)="typeChange($event)">
+          <option *ngFor="let filterType of this.filterTypes;">{{filterType}}</option>
+      </select>
+  </div>
+  <div class="component-body">
+    <div class="component-body-sub" *ngFor="let mp of this.modulableParameters;">
+      <div class="component-body-sub-info modulated">
+        <div class="component-body-sub-info-name" [ngClass]="{'modulated': mp.isModulated}">{{mp.name}}:</div>
+        <div class="component-body-sub-info-value" [ngClass]="{'modulated': mp.isModulated}">{{mp.value}}{{mp.uiDescriptor.measurementUnit}}</div>          
+      </div>
+      <div class="component-body-sub-selector">
+          <knob class="skin2" [min]="mp.uiDescriptor.minValue" [max]="mp.uiDescriptor.maxValue"
+          [value]="mp.value"
+          [startDegree]="-120"  [endDegree]="120"
+          [intensive]="false" (change)="mpChange(mp, $event)"></knob>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- this is FilterComponent implementing IModulableComponent,
-  this.modulableParameters[0] is ModulableParameter wrapping frequency as AudioParam -->
-<!-- <app-lfo [modulatedComponent]="this" [modulatedParameter]="this.modulableParameters[0]"></app-lfo> -->
+  this.modulableParameters[0] is ModulableAudioParamWrapper wrapping frequency as AudioParam -->
+<app-lfo [modulatedComponent]="this" [modulatedParameter]="this.modulableParameters[0]"></app-lfo>

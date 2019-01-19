@@ -1,13 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModulatorComponent } from '../IModulator';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
-import { AudioParamWrapper, AudioParamDescriptor } from '../AudioParamWrapper';
+import { UIAudioParameter, AudioParamDescriptor } from '../AudioParamWrapper';
 import { ModuleComponent } from 'src/app/interfaces/module.component';
 
 @Component({
   selector: 'app-lfo',
   templateUrl: './lfo.component.html',
-  styleUrls: ['./lfo.component.scss']
+  styleUrls: ['./lfo.component.scss', '../../app.component.scss']
 })
 export class LfoComponent extends ModulatorComponent implements OnInit, ModuleComponent {
   @Input() data: Object;
@@ -15,12 +15,12 @@ export class LfoComponent extends ModulatorComponent implements OnInit, ModuleCo
   private _lfoNode: OscillatorNode;
   // how to extract a string[] from OscillatorType?!?!?! O.O
   private _waveShapes: OscillatorType[]; // readonly
-  private _rate: AudioParamWrapper; // readonly
+  private _rate: UIAudioParameter; // readonly
 
   public get waveShapes(): OscillatorType[] {
     return this._waveShapes;
   }
-  public get rate(): AudioParamWrapper {
+  public get rate(): UIAudioParameter {
     return this._rate;
   }
 
@@ -53,7 +53,10 @@ export class LfoComponent extends ModulatorComponent implements OnInit, ModuleCo
     this._waveShapes = ['sine', 'square', 'sawtooth', 'triangle'];
 
     this._lfoNode = this.contextManager.audioContext.createOscillator();
-    this._rate = new AudioParamWrapper(new AudioParamDescriptor('rate', 0.1, 1, 20, 'Hz'), this._lfoNode.frequency);
+    this._rate = new UIAudioParameter('rate',
+      new AudioParamDescriptor(0, 1, 20, 'Hz'),
+      this._lfoNode.frequency,
+      null);
     this._lfoNode.start();
     this._lfoNode.connect(this._intensityNode);
 
@@ -71,8 +74,8 @@ export class LfoComponent extends ModulatorComponent implements OnInit, ModuleCo
     this._lfoNode.type = eventArg.target.value;
   }
 
-  public rateChange(ctx: LfoComponent, newValue: number): void {
+  public rateChange(newValue: number): void {
     // eventual checks
-    ctx.rate.audioParameter.value = Number(newValue);
+    this.rate.value = Number(newValue);
   }
 }

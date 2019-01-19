@@ -1,11 +1,11 @@
 import { Input } from '@angular/core';
 import { AudioContextManagerService } from '../services/audio-context-manager.service';
 import { IModulableComponent } from './IModulable';
-import { AudioParamWrapper, ModulableAudioParamWrapper, AudioParamDescriptor } from './AudioParamWrapper';
+import { UIAudioParameter, ModulableUIAudioParameter, AudioParamDescriptor } from './AudioParamWrapper';
 
 export interface IModulatorComponent {
   modulatedComponent: IModulableComponent;
-  modulatedParameter: ModulableAudioParamWrapper;
+  modulatedParameter: ModulableUIAudioParameter;
 
   onModulatedComponentAttach(): void;
   onModulatedComponentDetach(): void;
@@ -15,11 +15,11 @@ export interface IModulatorComponent {
 
 export abstract class ModulatorComponent {
   protected _intensityNode: GainNode;
-  private _intensity: AudioParamWrapper; // readonly
+  private _intensity: UIAudioParameter; // readonly
   protected _modulatedComponent: IModulableComponent;
-  protected _modulatedParameter: ModulableAudioParamWrapper;
+  protected _modulatedParameter: ModulableUIAudioParameter;
 
-  public get intensity(): AudioParamWrapper {
+  public get intensity(): UIAudioParameter {
     return this._intensity;
   }
   public get modulatedComponent(): IModulableComponent {
@@ -35,23 +35,23 @@ export abstract class ModulatorComponent {
       this._modulatedComponent = null;
     }
   }
-  public get modulatedParameter(): ModulableAudioParamWrapper {
+  public get modulatedParameter(): ModulableUIAudioParameter {
     return this._modulatedParameter;
   }
   @Input()
   // CHECK: think of all the combo modulatedParameter x mp
-  public set modulatedParameter(mp: ModulableAudioParamWrapper) {
+  public set modulatedParameter(mp: ModulableUIAudioParameter) {
     if (mp && mp != null) { // Attach
       this._modulatedParameter = mp;
 
       this.modulatedParameter.beginModulationConfig();
-      this.intensity.audioParameter.value = this.modulatedParameter.descriptor.maxValue;
-      this._intensityNode.connect(this.modulatedParameter.audioParameter);
+      this.intensity.value = 100;
+      this._intensityNode.connect(this.modulatedParameter.audioParam);
       this.onModulatedParameterAttach();
     } else { // Detach
       this.onModulatedParameterDetach();
-      this._intensityNode.disconnect(this.modulatedParameter.audioParameter);
-      this.intensity.audioParameter.value = this.intensity.descriptor.defaultValue;
+      this._intensityNode.disconnect(this.modulatedParameter.audioParam);
+      this.intensity.value = this.intensity.uiDescriptor.defaultValue;
       this.modulatedParameter.endModulationConfig();
 
       this._modulatedParameter = null;
@@ -65,12 +65,14 @@ export abstract class ModulatorComponent {
 
   public constructor(contextManager: AudioContextManagerService) {
     this._intensityNode = contextManager.audioContext.createGain();
-    this._intensity = new AudioParamWrapper(new AudioParamDescriptor('intensity', 0, 100, 100, '%'), this._intensityNode.gain);
+    this._intensity = new UIAudioParameter('intensity',
+      new AudioParamDescriptor(0, 22000, 22000, 'Hz'),
+      this._intensityNode.gain,
+      new AudioParamDescriptor(0, 100, 100, '%'));
   }
 
-  public intensityChange(ctx: ModulatorComponent, newValue: number): void {
+  public intensityChange(newValue: number): void {
     // eventual checks
-    ctx.intensity.audioParameter.value = Number(newValue) / 100 *
-      ctx.modulatedParameter.descriptor.maxValue;
+    this.intensity.value = Number(newValue);
   }
 }
