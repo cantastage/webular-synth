@@ -1,11 +1,11 @@
 import { Input } from '@angular/core';
 import { AudioContextManagerService } from '../services/audio-context-manager.service';
-import { IModulableComponent } from './IModulable';
-import { UIAudioParameter, ModulableUIAudioParameter, AudioParamDescriptor } from './AudioParamWrapper';
+import { IModulableComponent } from './Modulable';
+import { IUIAudioParameter, ModulableAudioParameter, AudioParameter, UIAudioParameter, AudioParameterDescriptor } from './Modulation';
 
 export interface IModulatorComponent {
   modulatedComponent: IModulableComponent;
-  modulatedParameter: ModulableUIAudioParameter;
+  modulatedParameter: IUIAudioParameter<ModulableAudioParameter>;
 
   onModulatedComponentAttach(): void;
   onModulatedComponentDetach(): void;
@@ -15,11 +15,11 @@ export interface IModulatorComponent {
 
 export abstract class ModulatorComponent {
   protected _intensityNode: GainNode;
-  private _intensity: UIAudioParameter; // readonly
+  private _intensity: IUIAudioParameter<AudioParameter>;
   protected _modulatedComponent: IModulableComponent;
-  protected _modulatedParameter: ModulableUIAudioParameter;
+  protected _modulatedParameter: IUIAudioParameter<ModulableAudioParameter>;
 
-  public get intensity(): UIAudioParameter {
+  public get intensity(): IUIAudioParameter<AudioParameter> {
     return this._intensity;
   }
   public get modulatedComponent(): IModulableComponent {
@@ -35,24 +35,36 @@ export abstract class ModulatorComponent {
       this._modulatedComponent = null;
     }
   }
-  public get modulatedParameter(): ModulableUIAudioParameter {
+  public get modulatedParameter(): IUIAudioParameter<ModulableAudioParameter> {
     return this._modulatedParameter;
   }
   @Input()
   // CHECK: think of all the combo modulatedParameter x mp
-  public set modulatedParameter(mp: ModulableUIAudioParameter) {
+  public set modulatedParameter(mp: IUIAudioParameter<ModulableAudioParameter>) {
     if (mp && mp != null) { // Attach
       this._modulatedParameter = mp;
 
-      this.modulatedParameter.beginModulationConfig();
-      this.intensity.value = 100;
-      this._intensityNode.connect(this.modulatedParameter.audioParam);
+      this.modulatedParameter.audioParameter.beginModulationConfig();
+      this._intensity = new UIAudioParameter<AudioParameter>(
+        new AudioParameter(
+          'intensity',
+          new AudioParameterDescriptor(
+            this.modulatedParameter.audioParameter.llDescriptor.minValue,
+            this.modulatedParameter.audioParameter.llDescriptor.maxValue,
+            this.modulatedParameter.audioParameter.llDescriptor.maxValue,
+            this.modulatedParameter.audioParameter.llDescriptor.measurementUnit
+          ),
+          this._intensityNode.gain
+        ),
+        new AudioParameterDescriptor(0, 100, 100, '%')
+      );
+      this._intensityNode.connect(this.modulatedParameter.audioParameter.audioParam);
       this.onModulatedParameterAttach();
     } else { // Detach
       this.onModulatedParameterDetach();
-      this._intensityNode.disconnect(this.modulatedParameter.audioParam);
-      this.intensity.value = this.intensity.uiDescriptor.defaultValue;
-      this.modulatedParameter.endModulationConfig();
+      this._intensityNode.disconnect(this.modulatedParameter.audioParameter.audioParam);
+      this.intensity.hlValue = this.intensity.hlDescriptor.defaultValue;
+      this.modulatedParameter.audioParameter.endModulationConfig();
 
       this._modulatedParameter = null;
     }
@@ -65,14 +77,10 @@ export abstract class ModulatorComponent {
 
   public constructor(contextManager: AudioContextManagerService) {
     this._intensityNode = contextManager.audioContext.createGain();
-    this._intensity = new UIAudioParameter('intensity',
-      new AudioParamDescriptor(0, 22000, 22000, 'Hz'),
-      this._intensityNode.gain,
-      new AudioParamDescriptor(0, 100, 100, '%'));
   }
 
   public intensityChange(newValue: number): void {
     // eventual checks
-    this.intensity.value = Number(newValue);
+    this.intensity.hlValue = Number(newValue);
   }
 }

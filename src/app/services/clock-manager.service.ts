@@ -14,21 +14,21 @@ export class ClockManagerService extends Observable<number> implements IStartabl
   private _isRunning: boolean;
   private _th: any;
 
-  public BEATS_MIN() {
-    return this._clock.BEATS_MIN();
+  public get minValue(): number {
+    return this._clock.minValue;
   }
-  public BEATS_DEFAULT(): number {
-    return this._clock.BEATS_DEFAULT();
+  public get defaultValue(): number {
+    return this._clock.defaultValue;
   }
-  public BEATS_MAX() {
-    return this._clock.BEATS_MAX();
+  public get maxValue(): number {
+    return this._clock.maxValue;
   }
 
-  public get bpm() {
+  public get bpm(): number {
     return this._clock.bpm;
   }
   public set bpm(bpm: number) {
-    if (!Number.isInteger(Number(bpm)) || bpm < this.BEATS_MIN() || bpm > this.BEATS_MAX()) {
+    if (!Number.isInteger(Number(bpm)) || bpm < this.minValue || bpm > this.maxValue) {
       throw new Error('error while assigning the bpm value');
     }
     this._clock.bpm = bpm;
@@ -46,7 +46,7 @@ export class ClockManagerService extends Observable<number> implements IStartabl
   private resetBeatCount(): void {
     this._beatCount = 0;
   }
-  constructor() {
+  public constructor() {
     super();
     this._clock = ClockProvider.retrieveInstance();
     this.resetBeatCount();

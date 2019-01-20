@@ -10,12 +10,12 @@
 
     <div class="component-body-sub">
       <div class="component-body-sub-info">
-          <div class="component-body-sub-info-name">{{intensity.name}}:</div>
-          <div class="component-body-sub-info-value">{{intensity.value}}{{intensity.uiDescriptor.measurementUnit}}</div>          
+          <div class="component-body-sub-info-name">{{intensity.audioParameter.name}}:</div>
+          <div class="component-body-sub-info-value">{{intensity.hlValue}}{{intensity.hlDescriptor.measurementUnit}}</div>          
       </div>
       <div class="component-body-sub-selector">
-          <knob class="skin2" [min]="intensity.uiDescriptor.minValue" [max]="intensity.uiDescriptor.maxValue"
-          [value]="intensity.value"
+          <knob class="skin2" [min]="intensity.hlDescriptor.minValue" [max]="intensity.hlDescriptor.maxValue"
+          [value]="intensity.hlValue"
           [startDegree]="-120"  [endDegree]="120"
           [intensive]="false" (change)="intensityChange($event)"></knob>
       </div>
@@ -23,12 +23,12 @@
 
     <div class="component-body-sub">
       <div class="component-body-sub-info">
-          <div class="component-body-sub-info-name">{{rate.name}}:</div>
-          <div class="component-body-sub-info-value">{{rate.value}}{{rate.uiDescriptor.measurementUnit}}</div>          
+          <div class="component-body-sub-info-name">{{rate.audioParameter.name}}:</div>
+          <div class="component-body-sub-info-value">{{rate.hlValue}}{{rate.hlDescriptor.measurementUnit}}</div>          
       </div>
       <div class="component-body-sub-selector">
-          <knob class="skin2" [min]="rate.uiDescriptor.minValue" [max]="rate.uiDescriptor.maxValue"
-          [value]="rate.value"
+          <knob class="skin2" [min]="rate.hlDescriptor.minValue" [max]="rate.hlDescriptor.maxValue"
+          [value]="rate.hlValue"
           [startDegree]="-120"  [endDegree]="120"
           [intensive]="false" (change)="rateChange($event)"></knob>
       </div>
