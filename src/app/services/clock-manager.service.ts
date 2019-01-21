@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from '../system2/patterns/observer/Observable';
 import { IClock } from '../model/modules/clock/IClock';
 import { ClockProvider } from '../model/modules/clock/ClockProvider';
-import { IStartable } from './IStartable';
+import { IObserver } from '../system2/patterns/observer/IObserver';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClockManagerService extends Observable<number> implements IStartable, IClock {
+export class ClockManagerService extends Observable<number> implements IClock {
   private _clock: IClock;
   private _beatCount: number;
 
@@ -52,21 +52,31 @@ export class ClockManagerService extends Observable<number> implements IStartabl
     this.resetBeatCount();
     this._isRunning = false;
     this._th = null;
+    this.start();
   }
 
-  public start(): void {
+  private start(): void {
     this.resetBeatCount();
     if (!this._isRunning) {
       this._th = setInterval(this.callback.bind(null, this), 60.0 / this.bpm * 1000);
       this._isRunning = true;
     }
   }
-  public stop(): void {
+  private stop(): void {
     if (this._isRunning) {
       clearInterval(this._th);
       this._isRunning = false;
     }
     this.resetBeatCount();
+  }
+  public restart(): void {
+    this.stop(); this.start();
+  }
+
+  // override
+  public attach(observer: IObserver<number>): void {
+    super.attach(observer);
+    this.restart();
   }
 
   private callback(ctx: ClockManagerService) {

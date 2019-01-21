@@ -25,17 +25,10 @@ export class SequencerComponent implements OnInit, IObserver<number> {
   private _duplicableOctavesInit: number[];
 
   private _sequencer: ISequencer;
-  // private _subdivisionCounter: number; // MOVE THE COUNTER INTO THE CLOCK SERVICE?!?! HERE ONLY THE MODULE OPERATION...
   @ViewChildren('subdivisionColumns') subdivisionColumns;
 
   constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService) { }
 
-  private startScan() {
-    this.clockManager.start();
-  }
-  private restartScan() {
-    this.clockManager.stop(); this.clockManager.start();
-  }
   ngOnInit() {
     this._pitchClasses = PitchClassesProvider.retrieveInstances();
     this._harmonizations = [
@@ -75,7 +68,6 @@ export class SequencerComponent implements OnInit, IObserver<number> {
     this._sequencer = new Sequencer(scale, new Measure(subdivisions));
 
     this.clockManager.attach(this);
-    this.startScan();
   }
   private highLightSubdivision(n: number) {
     // this.subdivisionColumns contains each of 8xMetric td cells
@@ -135,7 +127,7 @@ export class SequencerComponent implements OnInit, IObserver<number> {
         this._sequencer.measure.subdivisions.push(new Subdivision(new Array<number>().concat(this._duplicableOctavesInit), 0, 0));
       }
     }
-    this.restartScan();
+    this.clockManager.restart();
   }
   // UI octave alteration
   gridChange(eventArg: any) {
