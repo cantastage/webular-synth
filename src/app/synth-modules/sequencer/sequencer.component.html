@@ -1,12 +1,12 @@
 <div id="sequencer">
   <div id="selector">
-    <table>
+    <table class="wborderedcells">
       <tbody>
         <tr>
           <td>key</td>
           <td>harmonization</td>
           <td>metric</td>
-          <td>midiCh</td>
+          <!-- <td>midiCh</td> -->
         </tr>
         <tr>
             <td><select id="key" (change)="keyChange($event)">
@@ -18,9 +18,9 @@
             <td><select id="metric" (change)="metricChange($event)">
                 <option *ngFor="let metric of _metrics;">{{metric}}</option>
             </select></td>
-            <td><select id="midiCh">
-              <!-- TO ADD -->
-            </select></td>
+            <!-- <td><select id="midiCh">
+              TO ADD
+            </select></td> -->
         </tr>
       </tbody>
     </table>
@@ -32,27 +32,31 @@
         <!-- RISOLVERE QUESTIONE NOMI -->
         <td class="notei_{{notei}}">{{diatonicNote.pitchClass()}}</td>
         <td #subdivisionColumns *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;" class="subdivisioni_{{subdivisioni}}">
-          <input class="inputcell subdivisioni_{{subdivisioni}} notei_{{notei}}" id="subdivisioni_{{subdivisioni}}_notei_{{notei}}"
-          value="{{subdivision.octaves[notei]}}" (change)="gridChange($event)"/>
+          <select class="subdivisioni_{{subdivisioni}} notei_{{notei}}" id="subdivisioni_{{subdivisioni}}_notei_{{notei}}"
+          value="{{subdivision.octaves[notei]}}" (change)="gridChange($event)">
+              <option *ngFor="let possibleOctave of _possibleOctaves;">{{possibleOctave}}</option>
+          </select>
+          <!-- <input class="inputcell subdivisioni_{{subdivisioni}} notei_{{notei}}" id="subdivisioni_{{subdivisioni}}_notei_{{notei}}"
+          value="{{subdivision.octaves[notei]}}" (change)="gridChange($event)"/> -->
         </td>
       </tr>
 
       <tr>
         <td>duration</td>
         <td *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;" class="subdivisioni_{{subdivisioni}}">
-            <input class="inputcell subdivisioni_{{subdivisioni}} duration" id="subdivisioni_{{subdivisioni}}_duration"
+            <input type="range" class="inputcell subdivisioni_{{subdivisioni}} duration" id="subdivisioni_{{subdivisioni}}_duration"
+            min="0" max="1" step="0.25"
             value="{{subdivision.duration}}" (change)="durationChange($event)"/>
-            <!-- knob -->
         </td>
       </tr>
 
-      <tr>
+      <!-- <tr>
         <td>velocity</td>
         <td *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;" class="subdivisioni_{{subdivisioni}}">
             <input class="inputcell subdivisioni_{{subdivisioni}} velocity" id="subdivisioni_{{subdivisioni}}_velocity"
             value="{{subdivision.velocity}}" (change)="velocityChange($event)"/>
         </td>
-      </tr>
+      </tr> -->
     </tbody>
   </table>
 </div>

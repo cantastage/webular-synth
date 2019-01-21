@@ -20,8 +20,9 @@ import { MidiContextManagerService } from 'src/app/services/midi-context-manager
 export class SequencerComponent implements OnInit, IObserver<number> {
   private _pitchClasses: IPitchClass[];
   private _harmonizations: Harmonization[];
+  private _possibleOctaves: number[];
   private _metrics: number[];
-  private _duplicableOctaves: number[];
+  private _duplicableOctavesInit: number[];
 
   private _sequencer: ISequencer;
   // private _subdivisionCounter: number; // MOVE THE COUNTER INTO THE CLOCK SERVICE?!?! HERE ONLY THE MODULE OPERATION...
@@ -52,9 +53,14 @@ export class SequencerComponent implements OnInit, IObserver<number> {
       }
       return ret;
     }();
-    this._duplicableOctaves = new Array<number>();
+    this._possibleOctaves = new Array<number>();
+    this._possibleOctaves.push(Subdivision.OCTAVE_DEFAULT);
+    for (let i = Subdivision.OCTAVE_MIN; i <= Subdivision.OCTAVE_MAX; i++) {
+      this._possibleOctaves.push(i);
+    }
+    this._duplicableOctavesInit = new Array<number>();
     for (let i = 0; i < Subdivision.NOTE_COUNT; i++) {
-      this._duplicableOctaves.push(Subdivision.OCTAVE_DEFAULT);
+      this._duplicableOctavesInit.push(Subdivision.OCTAVE_DEFAULT);
     }
 
     const pitchClass: IPitchClass = this._pitchClasses[0];
@@ -62,7 +68,9 @@ export class SequencerComponent implements OnInit, IObserver<number> {
 
     const subdivisions: Subdivision[] = new Array<Subdivision>();
     for (let i = 0; i < Measure.METRIC_MIN; i++) {
-      subdivisions.push(new Subdivision(new Array<number>().concat(this._duplicableOctaves), 0, 0));
+      subdivisions.push(new Subdivision(
+        new Array<number>().concat(this._duplicableOctavesInit), Subdivision.DURATION_MIN, Subdivision.VELOCITY_MAX)
+      );
     }
     this._sequencer = new Sequencer(scale, new Measure(subdivisions));
 
@@ -87,8 +95,12 @@ export class SequencerComponent implements OnInit, IObserver<number> {
     const currentSubdivision = this._sequencer.measure.subdivisions[_subdivisionCounter];
     if (currentSubdivision.duration !== 0 && currentSubdivision.velocity !== 0) {
       let currentReferralFreq, currentOctave, currentResultingFreq;
+      // ASSUMPTION: HARMONIZATION COVERING A WHOLE OCTAVE
+      const voiceRepetition = currentSubdivision.octaves[0] === currentSubdivision.octaves[Subdivision.NOTE_COUNT - 1];
+      const upperBound = voiceRepetition ?
+        this._sequencer.scale.diatonicNotes.length - 1 : this._sequencer.scale.diatonicNotes.length;
       // SEND AUDIO/MIDI MESSAGE
-      for (let i = 0; i < this._sequencer.scale.diatonicNotes.length; i++) {
+      for (let i = 0; i < upperBound; i++) {
         currentReferralFreq = this._sequencer.scale.diatonicNotes[i].referralFrequency();
         currentOctave = currentSubdivision.octaves[i];
         if (currentOctave !== 0) {
@@ -120,7 +132,7 @@ export class SequencerComponent implements OnInit, IObserver<number> {
       if (this._sequencer.measure.subdivisions.length > m) {
         this._sequencer.measure.subdivisions.pop();
       } else {
-        this._sequencer.measure.subdivisions.push(new Subdivision(new Array<number>().concat(this._duplicableOctaves), 0, 0));
+        this._sequencer.measure.subdivisions.push(new Subdivision(new Array<number>().concat(this._duplicableOctavesInit), 0, 0));
       }
     }
     this.restartScan();
@@ -139,9 +151,9 @@ export class SequencerComponent implements OnInit, IObserver<number> {
     this._sequencer.measure.subdivisions[subdivisioni].duration = Number(eventArg.target.value);
   }
   // UI velocity alteration
-  velocityChange(eventArg: any) {
-    const tmp = eventArg.target.id.split('_');
-    const subdivisioni = Number(tmp[1]);
-    this._sequencer.measure.subdivisions[subdivisioni].velocity = Number(eventArg.target.value);
-  }
+  // velocityChange(eventArg: any) {
+  //   const tmp = eventArg.target.id.split('_');
+  //   const subdivisioni = Number(tmp[1]);
+  //   this._sequencer.measure.subdivisions[subdivisioni].velocity = Number(eventArg.target.value);
+  // }
 }

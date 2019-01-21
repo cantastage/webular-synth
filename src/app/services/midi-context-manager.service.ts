@@ -85,6 +85,7 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
     // console.log([channel, true, midiNote, velocity]);
     ctx.notify([channel, false, midiNote, velocity]);
   }
+  // RESPONSABILITIES NOT PROPERLY DIVIDED, nevermind...
   public sendRawNote(channel: number, frequency: number, duration: number, velocity: number): void {
     // CHECK ON PARAMETERS
     const midiNote = MidiContextManagerService.frequencyToMIDINote(frequency);
