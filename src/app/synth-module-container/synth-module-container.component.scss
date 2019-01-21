@@ -1,14 +1,14 @@
 .example-container {
-  width: 400px;
-  max-width: 100%;
+  // width: 400px;
+  // max-width: 100%;
   margin: 0 25px 25px 0;
-  display: inline-block;
+  // display: inline-block;
   vertical-align: top;
 }
 
 .example-list, .synth-module-box { // MERGE CONFLICT?!
-  width: 400px;
-  height: 280px;
+  // width: 400px;
+  // height: 280px;
   border: solid 1px #ccc;
   min-height: 60px;
   background: white;
@@ -21,7 +21,7 @@
   padding: 20px 10px;
   border-bottom: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
-  display: flex;
+  // display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
