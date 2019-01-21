@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 
-// import * as NavigatorBridge from '../audio-processors/navigator-bridge.js';
-import { A4, SD } from '../model/modules/sequencer/IReferralNote.js';
+import { A4, SD } from '../model/modules/sequencer/IPitchClass.js';
 import { Observable } from '../system2/patterns/observer/Observable.js';
 
 @Injectable({
   providedIn: 'root'
 })
-// Observable<any>?
+// Observable<[ch, isON, midiNote, velocity]>
 export class MidiContextManagerService extends Observable<[number, boolean, number, number]> {
   private static readonly MIDI_MSG_TYPE_MASK = 0xF0;
   private static readonly MIDI_MSG_TYPE_ON = 0x90;
@@ -17,7 +16,6 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
 
   private static readonly MIDI_A4 = 69;
 
-  // private _navigatorExt: any;
   private _midiAccess: any;
   private _midiInputDevices: any;
 
@@ -25,16 +23,8 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
     return this._midiAccess;
   }
 
-  constructor() {
+  public constructor() {
     super();
-    // this._navigatorExt = new NavigatorBridge();
-    // if (navigator["requestMIDIAccess"]) {
-    //   navigator["requestMIDIAccess"]({
-    //       sysex: false
-    //   }).then(this.onMIDISuccess.bind(this), this.onMIDIFailure.bind(this));
-    // } else {
-    //   alert("No MIDI support in your browser.");
-    // }
     if (navigator['requestMIDIAccess']) {
       navigator['requestMIDIAccess']({
         sysex: false
@@ -58,10 +48,10 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
     return A4 * (SD ** (midiNote - MidiContextManagerService.MIDI_A4));
   }
   public static frequencyToMIDINote(frequency: number): number {
-    return Math.floor( Math.log10(frequency / A4) / Math.log10(SD) ) + MidiContextManagerService.MIDI_A4;
+    return Math.round( Math.log10(frequency / A4) / Math.log10(SD) ) + MidiContextManagerService.MIDI_A4;
   }
 
-  private static convertFromMIDI(midiMessage: any): [number, boolean, number, number] {
+  private static extractMIDIFields(midiMessage: any): [number, boolean, number, number] {
     // tslint:disable-next-line:no-bitwise
     const ch = Number(midiMessage.data[0]) &
     // tslint:disable-next-line:no-bitwise
@@ -71,31 +61,35 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
     // tslint:disable-next-line:no-bitwise
       Number(MidiContextManagerService.MIDI_MSG_TYPE_MASK);
     // tslint:disable-next-line:no-bitwise
-    const isON = ((type & MidiContextManagerService.MIDI_MSG_TYPE_ON) === MidiContextManagerService.MIDI_MSG_TYPE_ON) &&
+    const isON = ((type & MidiContextManagerService.MIDI_MSG_TYPE_ON) === MidiContextManagerService.MIDI_MSG_TYPE_ON); // &&
     // tslint:disable-next-line:no-bitwise
-      !((type & MidiContextManagerService.MIDI_MSG_TYPE_OFF) === MidiContextManagerService.MIDI_MSG_TYPE_OFF);
+      // !((type & MidiContextManagerService.MIDI_MSG_TYPE_OFF) === MidiContextManagerService.MIDI_MSG_TYPE_OFF);
     // tslint:disable-next-line:no-bitwise
-    const f = MidiContextManagerService.frequencyToMIDINote(Number(midiMessage.data[0]) &
-      Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK));
+    const note = Number(midiMessage.data[1]); // &
+      // Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK));
     // tslint:disable-next-line:no-bitwise
-    const v = Number(midiMessage.data[0]) & Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK);
+    const v = Number(midiMessage.data[2]); // & Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK);
 
-    return [ch, isON, f, v];
+    return [ch, isON, note, v];
   }
   // RX
   private onMIDIMessage(ctx: MidiContextManagerService, midiMessageEventArg: any): void {
-    ctx.notify(MidiContextManagerService.convertFromMIDI(midiMessageEventArg));
+    ctx.notify(MidiContextManagerService.extractMIDIFields(midiMessageEventArg));
   }
   // TX
-  private sendRawNoteON(channel: number, frequency: number, velocity: number) {
-    this.notify([channel, true, frequency, velocity]);
+  private sendRawNoteON(channel: number, midiNote: number, velocity: number): void {
+    // console.log([channel, true, midiNote, velocity]);
+    this.notify([channel, true, midiNote, velocity]);
   }
-  private sendRawNoteOFF(ctx: MidiContextManagerService, channel: number, frequency: number, velocity: number) {
-    ctx.notify([channel, false, frequency, velocity]);
+  private sendRawNoteOFF(ctx: MidiContextManagerService, channel: number, midiNote: number, velocity: number): void {
+    // console.log([channel, true, midiNote, velocity]);
+    ctx.notify([channel, false, midiNote, velocity]);
   }
-  public sendRawNote(channel: number, frequency: number, duration: number, velocity: number) {
+  // RESPONSABILITIES NOT PROPERLY DIVIDED, nevermind...
+  public sendRawNote(channel: number, frequency: number, duration: number, velocity: number): void {
     // CHECK ON PARAMETERS
-    this.sendRawNoteON(channel, frequency, velocity);
-    setTimeout(this.sendRawNoteOFF.bind(null, this, channel, frequency, velocity), duration);
+    const midiNote = MidiContextManagerService.frequencyToMIDINote(frequency);
+    this.sendRawNoteON(channel, midiNote, velocity);
+    setTimeout(this.sendRawNoteOFF.bind(null, this, channel, midiNote, velocity), duration);
   }
 }

@@ -4,23 +4,22 @@ import { ClockManagerService } from 'src/app/services/clock-manager.service';
 @Component({
   selector: 'app-clock',
   templateUrl: './clock.component.html',
-  styleUrls: ['./clock.component.scss']
+  styleUrls: ['./clock.component.scss', '../../app.component.scss']
 })
 export class ClockComponent implements OnInit {
-  constructor(private clockManager: ClockManagerService) { }
+  public constructor(private clockManager: ClockManagerService) { }
 
-  ngOnInit() {
-    // this.clockManager.start();
+  public ngOnInit() {
   }
 
-  bpmChange(ctx: ClockComponent, newValue: number): void {
-    // eventual checks
-    ctx.clockManager.bpm = Number(newValue);
-  }
-  start(): void {
+  public start(): void {
     this.clockManager.start();
   }
-  stop(): void {
+  public stop(): void {
     this.clockManager.stop();
+  }
+
+  public onChange(eventArg: any): void {
+    this.clockManager.bpm = Number(eventArg);
   }
 }

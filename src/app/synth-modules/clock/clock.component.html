@@ -1,13 +1,18 @@
-<div>
-  <div>
-      <!-- <app-knob-big-ext [_min]="this.clockManager.BEATS_MIN()" [_max]="this.clockManager.BEATS_MAX()"
-          [_value]="this.clockManager.bpm" [_measurementUnit]="'bpm'"
-          [_change]="this.bpmChange.bind(null, this)"></app-knob-big-ext> -->
+<div class="component-block">
+  <div class="component-header">
   </div>
-  <div>
-      <input type="button" (click)="this.start()" value="Start" />
-      <input type="button" (click)="this.stop()" value="Stop" />
-      <input type="button" (click)="this.stop(); this.start();" value="Restart"/>
+  <div class="component-body">
+    <div class="component-body-sub">
+      <div class="component-body-sub-info">
+        <div class="component-body-sub-info-name">tempo:</div>
+        <div class="component-body-sub-info-value">{{clockManager.bpm}}bpm</div>          
+      </div>
+      <div class="component-body-sub-selector">
+          <knob class="skin2" [min]="clockManager.minValue" [max]="clockManager.maxValue"
+          [value]="clockManager.bpm"
+          [startDegree]="-120"  [endDegree]="120"
+          [intensive]="false" (change)="onChange($event)"></knob>
+      </div>
+    </div>
   </div>
 </div>
-

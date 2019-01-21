@@ -1,6 +1,8 @@
 export class Subdivision {
     public static readonly NOTE_COUNT = 8;
-    public static readonly OCTAVE_DEFAULT = 0;
+    public static readonly OCTAVE_MIN = 3;
+    public static readonly OCTAVE_DEFAULT = 0; // no sound
+    public static readonly OCTAVE_MAX = 6;
 
     public static readonly DURATION_MIN = 0;
     public static readonly DURATION_MAX = 1;

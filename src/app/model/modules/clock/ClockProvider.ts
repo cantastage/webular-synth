@@ -9,17 +9,17 @@ class Clock implements IClock {
 
   private _bpm: number;
 
-  public BEATS_MIN() {
+  public get minValue(): number {
     return Clock.BEATS_MIN;
   }
-  public BEATS_DEFAULT(): number {
+  public get defaultValue(): number {
     return Clock.BEATS_DEFAULT;
   }
-  public BEATS_MAX() {
+  public get maxValue(): number {
     return Clock.BEATS_MAX;
   }
 
-  public get bpm() {
+  public get bpm(): number {
     return this._bpm;
   }
   public set bpm(bpm: number) {
