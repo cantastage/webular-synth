@@ -29,8 +29,8 @@ export enum EnharmonicNames {
     'Cb' = 11
 }
 
-export interface IReferralNote {
-    referralNote(): string;
+export interface IPitchClass {
+    pitchClass(): string;
     enharmonicName(): string;
     referralFrequency(): number;
 }

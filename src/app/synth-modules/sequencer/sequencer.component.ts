@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChildren } from '@angular/core';
 
 import { ISequencer } from '../../model/modules/sequencer/ISequencer';
 import { Sequencer } from '../../model/modules/sequencer/Sequencer';
 import { Measure } from '../../model/modules/sequencer/Measure';
 import { Scale } from '../../model/modules/sequencer/Scale';
-import { ReferralNotesProvider } from '../../model/modules/sequencer/ReferralNotesProvider';
-import { IReferralNote } from '../../model/modules/sequencer/IReferralNote';
-import { Tonality } from '../../model/modules/sequencer/Tonality';
+import { PitchClassesProvider } from '../../model/modules/sequencer/PitchClassesProvider';
+import { IPitchClass } from '../../model/modules/sequencer/IPitchClass';
+import { Harmonization } from '../../model/modules/sequencer/Harmonization';
 import { Subdivision } from '../../model/modules/sequencer/Subdivision';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
@@ -18,8 +18,8 @@ import { MidiContextManagerService } from 'src/app/services/midi-context-manager
   styleUrls: ['./sequencer.component.scss']
 })
 export class SequencerComponent implements OnInit, IObserver<number> {
-  private _referralNotes: IReferralNote[];
-  private _tonalities: Tonality[];
+  private _pitchClasses: IPitchClass[];
+  private _harmonizations: Harmonization[];
   private _metrics: number[];
   private _duplicableOctaves: number[];
 
@@ -36,10 +36,14 @@ export class SequencerComponent implements OnInit, IObserver<number> {
     this.clockManager.stop(); this.clockManager.start();
   }
   ngOnInit() {
-    this._referralNotes = ReferralNotesProvider.retrieveInstances();
-    this._tonalities = [
-      new Tonality('Major', [2, 2, 1, 2, 2, 2, 1]),
-      new Tonality('Minor', [2, 1, 2, 2, 1, 2, 2])
+    this._pitchClasses = PitchClassesProvider.retrieveInstances();
+    this._harmonizations = [
+      new Harmonization('M', [2, 2, 1, 2, 2, 2, 1]),
+      new Harmonization('mN', [2, 1, 2, 2, 1, 2, 2]),
+      new Harmonization('mH', [2, 1, 2, 2, 1, 3, 1]),
+      new Harmonization('mM', [2, 1, 2, 2, 2, 2, 1]),
+      new Harmonization('pentatonic', [3, 2, 2, 3, 2]),
+      new Harmonization('esatonic', [2, 2, 2, 2, 2, 2])
     ];
     this._metrics = function(): number[] {
       const ret: number[] = new Array<number>();
@@ -53,8 +57,8 @@ export class SequencerComponent implements OnInit, IObserver<number> {
       this._duplicableOctaves.push(Subdivision.OCTAVE_DEFAULT);
     }
 
-    const referralNote: IReferralNote = this._referralNotes[0];
-    const scale: Scale = new Scale(referralNote, this._tonalities[0]);
+    const pitchClass: IPitchClass = this._pitchClasses[0];
+    const scale: Scale = new Scale(pitchClass, this._harmonizations[0]);
 
     const subdivisions: Subdivision[] = new Array<Subdivision>();
     for (let i = 0; i < Measure.METRIC_MIN; i++) {
@@ -98,17 +102,17 @@ export class SequencerComponent implements OnInit, IObserver<number> {
   }
   // UI configuration alteration
   keyChange(eventArg: any): void {
-    this._sequencer.scale.key = ReferralNotesProvider.retrieveInstance(eventArg.target.value);
+    this._sequencer.scale.key = PitchClassesProvider.retrieveInstance(eventArg.target.value);
   }
-  tonalityChange(eventArg: any): void {
-    let selected: Tonality;
-    for (let i = 0; i < this._tonalities.length; i++) {
-      if (this._tonalities[i].name === eventArg.target.value) {
-        selected = this._tonalities[i];
+  harmonizationChange(eventArg: any): void {
+    let selected: Harmonization;
+    for (let i = 0; i < this._harmonizations.length; i++) {
+      if (this._harmonizations[i].name === eventArg.target.value) {
+        selected = this._harmonizations[i];
         break;
       }
     }
-    this._sequencer.scale.tonality = selected;
+    this._sequencer.scale.harmonization = selected;
   }
   metricChange(eventArg: any): void {
     const m = Number(eventArg.target.value);

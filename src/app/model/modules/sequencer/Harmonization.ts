@@ -1,7 +1,7 @@
 import { sealed } from '../../../system2/utilities/ClassDecorators';
 
 @sealed
-export class Tonality {
+export class Harmonization {
     private _name: string;
     private _pattern: number[];
 
@@ -21,7 +21,7 @@ export class Tonality {
         let validPattern = pattern != null;
         if (validPattern) {
             pattern.forEach(element => {
-                if (!Number.isInteger(Number(element)) || (element !== 1 && element !== 2)) {
+                if (!Number.isInteger(Number(element))) {
                     validPattern = false;
                     return false; // DOES THIS WORK AS BREAK?!?!
                 }
