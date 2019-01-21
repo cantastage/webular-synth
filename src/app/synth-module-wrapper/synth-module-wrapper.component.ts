@@ -1,6 +1,6 @@
 import {
   Component, OnInit, ViewChild, AfterViewInit, Input, ViewContainerRef,
-  ComponentFactoryResolver, ChangeDetectorRef, Compiler, ComponentRef
+  ComponentFactoryResolver, ChangeDetectorRef, Compiler, ComponentRef, OnDestroy
 } from '@angular/core';
 import { ModuleComponent } from '../interfaces/module.component';
 import { ModuleItem } from '../model/module-item';
@@ -14,7 +14,7 @@ import { ModuleItem } from '../model/module-item';
   templateUrl: './synth-module-wrapper.component.html',
   styleUrls: ['./synth-module-wrapper.component.scss']
 })
-export class SynthModuleWrapperComponent implements OnInit, AfterViewInit {
+export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() synthModuleData: ModuleItem;
   private isViewInitialized = false;
   private cmpRef: ComponentRef<any>;
@@ -23,11 +23,16 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit {
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
-    private compiler: Compiler,
     private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     console.log('Data provided to synth wrapper: ', this.synthModuleData);
+  }
+
+  ngOnDestroy(): void {
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
+    console.log('module wrapper is being destroyed');
   }
 
 
@@ -53,5 +58,12 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit {
     this.cmpRef = this.target.createComponent(factory);
     (<ModuleComponent>this.cmpRef.instance).data = this.synthModuleData.data;
     this.cdRef.detectChanges();  // NB non rimuovere altrimenti la onInit del child view non viene chiamata.
+  }
+
+  /**
+   * Returns the parameters of the wrapped synth module for save purposes.
+   */
+  public savePatch(): void {
+    this.synthModuleData.data = this.cmpRef.instance.savePatch();
   }
 }

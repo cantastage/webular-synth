@@ -34,16 +34,18 @@ export class SynthModuleContainerComponent implements OnInit {
    * Method called when an element is dropped
    * @param event the drop event
    */
-  drop(event: CdkDragDrop<Array<ComponentRef<any>>>): void {
+  drop(event: CdkDragDrop<Array<ModuleItem>>): void {
     if (event.previousContainer === event.container) {
+      // console.log('Reordering modules');
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       // Component will be destroyed, so I need to save the state of the synth module
-      // tipo:
+      // tipo: audiocontextmanager
       transferArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex);
+      // update connections in audiocontextservice
     }
   }
 
