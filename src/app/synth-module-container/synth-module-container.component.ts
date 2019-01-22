@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, ComponentFactoryResolver, ComponentRef,
+  Component, OnInit, ComponentFactoryResolver, ComponentRef, ViewChildren,
 } from '@angular/core';
 import { AudioContextManagerService } from '../services/audio-context-manager.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -39,6 +39,8 @@ export class SynthModuleContainerComponent implements OnInit {
       // console.log('Reordering modules');
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
+      this.contextManager.subject.next(event.currentIndex);
+      console.log('moduleItem being passed: ', event.previousContainer.data[event.currentIndex]);
       // Component will be destroyed, so I need to save the state of the synth module
       // tipo: audiocontextmanager
       transferArrayItem(event.previousContainer.data,

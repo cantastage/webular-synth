@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import { ModuleComponent } from '../interfaces/module.component';
 import { ModuleItem } from '../model/module-item';
+import { AudioContextManagerService } from '../services/audio-context-manager.service';
 
 /**
  * This component is a wrapper that contains a synth module inside.
@@ -16,17 +17,27 @@ import { ModuleItem } from '../model/module-item';
 })
 export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() synthModuleData: ModuleItem;
+  @Input() index: number; // index in the array of created modules
   private isViewInitialized = false;
   private cmpRef: ComponentRef<any>;
+
 
   @ViewChild('target', { read: ViewContainerRef }) target: ViewContainerRef;
 
   constructor(
+    private contextManager: AudioContextManagerService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     console.log('Data provided to synth wrapper: ', this.synthModuleData);
+    this.contextManager.subject.subscribe((index) => {
+      if (index === this.index) {
+        console.log('saving patch!');
+        this.savePatch();
+        console.log('saved patch parameters: ', this.synthModuleData.data);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -64,6 +75,7 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDes
    * Returns the parameters of the wrapped synth module for save purposes.
    */
   public savePatch(): void {
+    console.log('enters save patch');
     this.synthModuleData.data = this.cmpRef.instance.savePatch();
   }
 }

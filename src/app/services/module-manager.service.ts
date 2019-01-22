@@ -19,12 +19,13 @@ export class ModuleManagerService {
 
   public getModules(): ModuleItem[] {
     // return this.modules;
-    return [new ModuleItem(MoogLadderFilterComponent, { name: 'filter' }),
+    return [
+    new ModuleItem(MoogLadderFilterComponent, { name: 'filter' }),
     new ModuleItem(FilterComponent, { name: 'pesteneraFilter' }),
     new ModuleItem(LfoComponent, { name: 'lfo' }),
     new ModuleItem(ClockComponent, { name: 'clock' }),
     new ModuleItem(SequencerComponent, { name: 'sequencer' }),
     new ModuleItem(ADSRComponent, { name: 'ADSR' }),
-    new ModuleItem(OscillatorComponent, { name: 'poly-oscillator' })];
+    new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', waveForm: 'sine' })];
   }
 }

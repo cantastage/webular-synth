@@ -1,4 +1,4 @@
 export interface ModuleComponent {
-    data: Object;
-    // savePatch(): Object;
+    data: any;
+    // savePatch(): any;
 }

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 import { Voice } from 'src/app/synth-modules/oscillator/voice';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
+import { ModuleComponent } from 'src/app/interfaces/module.component';
 
 @Component({
   selector: 'app-oscillator',
@@ -11,9 +12,9 @@ import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
   styleUrls: ['./oscillator.component.scss']
 })
 
-export class OscillatorComponent implements OnInit, IObserver<[number, boolean, number, number]> {
+export class OscillatorComponent implements OnInit, IObserver<[number, boolean, number, number]>, ModuleComponent {
 
-
+  @Input() data: any;
   public c: AudioContext;
   public g: GainNode;
   public active_voices: any;
@@ -24,10 +25,12 @@ export class OscillatorComponent implements OnInit, IObserver<[number, boolean, 
   public addSemitone: number;
   public finePitch: number;
   public active: number;
+  // private activeIndex: number;
+  // private waveforms: Array<string> = ['SIN', 'SQR', 'SAW', 'TRI'];
 
   constructor(private contextManager: AudioContextManagerService, private midiManager: MidiContextManagerService) {
     midiManager.attach(this);
-   }
+  }
 
   update(arg: [number, boolean, number, number]): void {
     // throw new Error('Method not implemented.');
@@ -39,13 +42,17 @@ export class OscillatorComponent implements OnInit, IObserver<[number, boolean, 
     }
   }
 
+  // la onInit leggerà tutti i valori da synthModuleData.data
   ngOnInit() {
     this.active = 0;
     this.active_voices = [];
     this.c = this.contextManager.audioContext;
     this.g = this.c.createGain();
     // let active = 0;
-    this.waveForm = 'sine';
+    if (this.data.waveForm !== undefined) {
+      this.waveForm = this.data.waveForm;
+    }
+    // this.waveForm = 'sine';
     this.maxVelocity = 100;
     this.addSemitone = 0;
     this.finePitch = 0;
@@ -53,6 +60,8 @@ export class OscillatorComponent implements OnInit, IObserver<[number, boolean, 
 
     // this.midiManager.midiAccess();
     // this.midiFunction();
+
+    // createAudioNode in audio context manager service
   }
 
   public midiFunction() {
@@ -84,52 +93,52 @@ export class OscillatorComponent implements OnInit, IObserver<[number, boolean, 
     this.active_voices[midiNote].stopNote();
     delete this.active_voices[midiNote];
   }
-/*
-  public checkMidi() {
-    if (navigator['requestMIDIAccess']) {
-      navigator['requestMIDIAccess']({
-        sysex: false
-      }).then(this.onMIDISuccess.bind(this), this.onMIDIFailure.bind(this));
-    } else {
-      alert('No MIDI support in your browser.');
+  /*
+    public checkMidi() {
+      if (navigator['requestMIDIAccess']) {
+        navigator['requestMIDIAccess']({
+          sysex: false
+        }).then(this.onMIDISuccess.bind(this), this.onMIDIFailure.bind(this));
+      } else {
+        alert('No MIDI support in your browser.');
+      }
     }
-  }
-
-  public onMIDISuccess(midiAccess) {
-    console.log(midiAccess);
-    let midi;
-    midi = midiAccess;
-    const inputs = midi.inputs.values();
-    for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
-      console.log(input.value);
-      input.value.onmidimessage = this.onMIDIMessage.bind(this);
+  
+    public onMIDISuccess(midiAccess) {
+      console.log(midiAccess);
+      let midi;
+      midi = midiAccess;
+      const inputs = midi.inputs.values();
+      for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
+        console.log(input.value);
+        input.value.onmidimessage = this.onMIDIMessage.bind(this);
+      }
     }
-  }
-
-  public onMIDIFailure(error) {
-    console.log('No access to MIDI devices or your browser doesn\'t support WebMIDI API. Please use WebMIDIAPIShim ' + error);
-  }
-
-  public onMIDIMessage(event) {
-    // console.log('message');
-
-    this.midiData = event.data;
-    const channel = this.midiData[0] & 0xf;
-    const type = this.midiData[0] & 0xf0;
-    const note = this.midiData[1];
-    const velocity = this.midiData[2];
-
-    switch (type) {
-      case 144: // noteOn message
-        this.noteOn(note, velocity);
-        break;
-      case 128: // noteOff message
-        this.noteOff(note, velocity);
-        break;
+  
+    public onMIDIFailure(error) {
+      console.log('No access to MIDI devices or your browser doesn\'t support WebMIDI API. Please use WebMIDIAPIShim ' + error);
     }
-
-  }
-  */
+  
+    public onMIDIMessage(event) {
+      // console.log('message');
+  
+      this.midiData = event.data;
+      const channel = this.midiData[0] & 0xf;
+      const type = this.midiData[0] & 0xf0;
+      const note = this.midiData[1];
+      const velocity = this.midiData[2];
+  
+      switch (type) {
+        case 144: // noteOn message
+          this.noteOn(note, velocity);
+          break;
+        case 128: // noteOff message
+          this.noteOff(note, velocity);
+          break;
+      }
+  
+    }
+    */
 
   public onVolumeChange(value) {
     // console.log(value);
@@ -148,5 +157,9 @@ export class OscillatorComponent implements OnInit, IObserver<[number, boolean, 
     // console.log(this.addSemitone);
   }
 
+  public savePatch(): any {
+    const patch = { waveForm: this.waveForm };
+    return patch;
+  }
 
 }

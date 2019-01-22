@@ -226,7 +226,7 @@ export class ADSRComponent implements OnInit {
     this.releaseTime = newInterval / this.envCanvas.nativeElement.width * 2;
   }
 
-
+// TODO remove after test
   public playNote() {
     this.osc.frequency.value = 440;
     this.osc.connect(this.gain);
