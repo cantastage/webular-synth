@@ -12,13 +12,6 @@ export class ClockComponent implements OnInit {
   public ngOnInit() {
   }
 
-  public start(): void {
-    this.clockManager.start();
-  }
-  public stop(): void {
-    this.clockManager.stop();
-  }
-
   public onChange(eventArg: any): void {
     this.clockManager.bpm = Number(eventArg);
   }

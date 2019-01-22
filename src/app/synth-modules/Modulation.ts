@@ -99,15 +99,16 @@ export class ModulableAudioParameter extends AudioParameter implements IModulabl
 
   public beginModulationConfig(): void {
     if (!this._isModulated) {
-      this._isModulated = true;
       this._modulationCache = this.llValue;
       this.llValue = 0;
+      this._isModulated = true;
     }
   }
   public endModulationConfig(): void {
     if (this.isModulated) {
-      this.llValue = this._modulationCache;
       this._isModulated = false;
+      this.llValue = this._modulationCache;
+      this._modulationCache = 0;
     }
   }
 
