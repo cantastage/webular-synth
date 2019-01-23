@@ -34,7 +34,7 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
         for (let input = this._midiInputDevices.next();
           input && !input.done;
           input = this._midiInputDevices.next()) {
-            input.value.onmidimessage = this.onMIDIMessage.bind(null, this);
+          input.value.onmidimessage = this.onMIDIMessage.bind(null, this);
         }
       }, (message: any): void => {
         throw new Error('unable to acquire MIDI resource: ' + message);
@@ -48,25 +48,25 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
     return A4 * (SD ** (midiNote - MidiContextManagerService.MIDI_A4));
   }
   public static frequencyToMIDINote(frequency: number): number {
-    return Math.round( Math.log10(frequency / A4) / Math.log10(SD) ) + MidiContextManagerService.MIDI_A4;
+    return Math.round(Math.log10(frequency / A4) / Math.log10(SD)) + MidiContextManagerService.MIDI_A4;
   }
 
   private static extractMIDIFields(midiMessage: any): [number, boolean, number, number] {
     // tslint:disable-next-line:no-bitwise
     const ch = Number(midiMessage.data[0]) &
-    // tslint:disable-next-line:no-bitwise
+      // tslint:disable-next-line:no-bitwise
       Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK);
     // tslint:disable-next-line:no-bitwise
     const type = Number(midiMessage.data[0]) &
-    // tslint:disable-next-line:no-bitwise
+      // tslint:disable-next-line:no-bitwise
       Number(MidiContextManagerService.MIDI_MSG_TYPE_MASK);
     // tslint:disable-next-line:no-bitwise
     const isON = ((type & MidiContextManagerService.MIDI_MSG_TYPE_ON) === MidiContextManagerService.MIDI_MSG_TYPE_ON); // &&
     // tslint:disable-next-line:no-bitwise
-      // !((type & MidiContextManagerService.MIDI_MSG_TYPE_OFF) === MidiContextManagerService.MIDI_MSG_TYPE_OFF);
+    // !((type & MidiContextManagerService.MIDI_MSG_TYPE_OFF) === MidiContextManagerService.MIDI_MSG_TYPE_OFF);
     // tslint:disable-next-line:no-bitwise
     const note = Number(midiMessage.data[1]); // &
-      // Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK));
+    // Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK));
     // tslint:disable-next-line:no-bitwise
     const v = Number(midiMessage.data[2]); // & Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK);
 

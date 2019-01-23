@@ -16,7 +16,7 @@ export class FilterComponent extends ModulableComponent implements OnInit, Modul
   private _filterTypes: BiquadFilterType[]; // readonly
   private _modulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
 
-  public get filterTypes(): string[] {
+  public get filterTypes(): string[] {
     return this._filterTypes;
   }
 
@@ -29,7 +29,8 @@ export class FilterComponent extends ModulableComponent implements OnInit, Modul
 
   public constructor(private contextManager: AudioContextManagerService) {
     super();
-    this._filterNode = this.contextManager.audioContext.createBiquadFilter();
+    // this._filterNode = this.contextManager.audioContext.createBiquadFilter();
+    this._filterNode = this.contextManager.createFilter();
     // how to extract a string[] from BiquadFilterType?!?!?! O.O
     this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
     this._modulableParameters = [
