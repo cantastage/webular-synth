@@ -103,7 +103,7 @@ export class OscillatorComponent implements OnInit, IObserver<[number, boolean, 
         alert('No MIDI support in your browser.');
       }
     }
-  
+
     public onMIDISuccess(midiAccess) {
       console.log(midiAccess);
       let midi;
@@ -114,20 +114,20 @@ export class OscillatorComponent implements OnInit, IObserver<[number, boolean, 
         input.value.onmidimessage = this.onMIDIMessage.bind(this);
       }
     }
-  
+
     public onMIDIFailure(error) {
       console.log('No access to MIDI devices or your browser doesn\'t support WebMIDI API. Please use WebMIDIAPIShim ' + error);
     }
-  
+
     public onMIDIMessage(event) {
       // console.log('message');
-  
+
       this.midiData = event.data;
       const channel = this.midiData[0] & 0xf;
       const type = this.midiData[0] & 0xf0;
       const note = this.midiData[1];
       const velocity = this.midiData[2];
-  
+
       switch (type) {
         case 144: // noteOn message
           this.noteOn(note, velocity);
@@ -136,7 +136,7 @@ export class OscillatorComponent implements OnInit, IObserver<[number, boolean, 
           this.noteOff(note, velocity);
           break;
       }
-  
+
     }
     */
 
@@ -158,7 +158,10 @@ export class OscillatorComponent implements OnInit, IObserver<[number, boolean, 
   }
 
   public savePatch(): any {
-    const patch = { waveForm: this.waveForm };
+    const patch = { waveForm: this.waveForm,
+                    maxVelocity: this.maxVelocity,
+                    addSemitone: this.addSemitone,
+                    finePitch: this.finePitch };
     return patch;
   }
 

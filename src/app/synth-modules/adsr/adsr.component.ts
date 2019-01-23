@@ -6,6 +6,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, HostListener } from '@
   styleUrls: ['./adsr.component.scss']
 })
 export class ADSRComponent implements OnInit {
+  @Input() data: any;
   @HostListener('window:scroll', ['$event'])
   @ViewChild('envCanvas') public envCanvas: ElementRef;
   private ctx: CanvasRenderingContext2D;
@@ -20,14 +21,17 @@ export class ADSRComponent implements OnInit {
   private offsetParentLeft: number;
   private offsetParentTop: number;
 
-  public maxAttTime: number;
+  // parameters
   public initTime: number;
   public initValue: number;
-  public maxDecayTime: number;
-  public minDecayTime: number;
   public initDecayTime: number;
   public sustainValue: number;
   public releaseTime: number;
+
+  // constraints
+  public maxAttTime: number;
+  public maxDecayTime: number;
+  public minDecayTime: number;
   public stopOsc: boolean;
   public interruptNote: boolean;
 
@@ -76,7 +80,7 @@ export class ADSRComponent implements OnInit {
     this.lastY = [this.points[0].y, this.points[1].y];
 
 
-    this.maxAttTime = this.points[1].x
+    this.maxAttTime = this.points[1].x;
     this.initTime = this.points[0].x / this.maxAttTime * 2;
     this.initValue = (canvas.height - this.points[0].y) / canvas.height * 2;
 
@@ -134,7 +138,7 @@ export class ADSRComponent implements OnInit {
     const pos = {
       x: e.clientX - this.envCanvas.nativeElement.offsetLeft - this.offsetParentLeft
       + this.scrollOffsetX,
-      y: e.clientY - this.envCanvas.nativeElement.offsetTop - this.offsetParentTop + this.scrollOffsetY   
+      y: e.clientY - this.envCanvas.nativeElement.offsetTop - this.offsetParentTop + this.scrollOffsetY
 
     };
     this.flagDown = true;
@@ -252,6 +256,17 @@ export class ADSRComponent implements OnInit {
       scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
       scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
+  }
+
+  public savePatch(): any {
+    const patch = { initTime: this.initTime,
+                    initValue: this.initValue,
+                    initDecayTime: this.initDecayTime,
+                    sustainValue: this.sustainValue,
+                    releaseTime: this.releaseTime
+
+    };
+    return patch;
   }
 
 

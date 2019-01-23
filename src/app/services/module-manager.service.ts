@@ -26,6 +26,6 @@ export class ModuleManagerService {
     new ModuleItem(ClockComponent, { name: 'clock' }),
     new ModuleItem(SequencerComponent, { name: 'sequencer' }),
     new ModuleItem(ADSRComponent, { name: 'ADSR' }),
-    new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', waveForm: 'sine' })];
+    new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', waveForm: 'sine', maxVelocity: 100, addSemitone: 0, finePitch: 0 })];
   }
 }
