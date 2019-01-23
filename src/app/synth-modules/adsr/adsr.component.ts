@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Host } from '@angular/core';
 import { runInThisContext } from 'vm';
 
 @Component({
@@ -50,8 +50,23 @@ export class ADSRComponent implements OnInit {
       this.scrollOffsetY = window.pageYOffset;
       this.scrollOffsetX = window.pageXOffset;
     }
-
-  constructor() { }
+  @HostListener('window:mousemove', ['$event'])
+    moveEvent(event: MouseEvent) {
+       this.movePoint(event);
+    }
+  @HostListener('window:mouseup', ['$event'])
+    upEvent(event: MouseEvent) {
+      this.fixPoint(event);
+    }
+    /*
+  @HostListener('window:mousedown', ['$event'])
+    downEvent(event: MouseEvent) {
+      this.selectPoint(event);
+    }
+    */
+  constructor(g: GainNode) {
+    this.gain = g;
+   }
 
 
   ngOnInit() {
@@ -132,6 +147,7 @@ export class ADSRComponent implements OnInit {
   }
 
   public isIntersect(mouse, circle) {
+    // console.log(Math.sqrt((mouse.x - circle.x) ** 2 + (mouse.y - circle.y) ** 2) < circle.radius);
     return Math.sqrt((mouse.x - circle.x) ** 2 + (mouse.y - circle.y) ** 2) < circle.radius;
   }
 
@@ -143,17 +159,16 @@ export class ADSRComponent implements OnInit {
       y: e.clientY - this.envCanvas.nativeElement.offsetTop - this.offsetParentTop + this.scrollOffsetY
 
     };
-    this.flagDown = true;
 
     this.points.forEach(point => {
       if (this.isIntersect(pos, point)) {
+        this.flagDown = true;
         this.selectedPoint = point.id - 1;
       }
     });
   }
 
   public movePoint(e: MouseEvent) {
-
 
     if (!this.flagDown) {
       return;
@@ -183,14 +198,16 @@ export class ADSRComponent implements OnInit {
       }
 
       if (this.selectedPoint === 1) {
-        if (mouseY > this.minDist) {
-          if (mouseY < this.bottomMargin) {
+        if (this.lastY[this.selectedPoint] > this.minDist) {
+          if (this.lastY[this.selectedPoint] < this.bottomMargin) {
             this.points[this.selectedPoint].y += dy;
           } else {
             this.points[this.selectedPoint].y = this.bottomMargin;
+            this.lastY[this.selectedPoint] = this.points[this.selectedPoint].y - 1;
           }
         } else {
           this.points[this.selectedPoint].y = 10;
+          this.lastY[this.selectedPoint] = this.points[this.selectedPoint].y + 1;
         }
         if (this.lastX[this.selectedPoint] > this.points[1 - this.selectedPoint].x + this.minDist) {
           if (this.lastX[this.selectedPoint] < this.rightMargin - this.minDist) {
@@ -212,7 +229,6 @@ export class ADSRComponent implements OnInit {
       this.updateAttackValue(this.points[0].y);
       this.updateDecayTime((this.points[1].x - this.points[0].x));
       this.updateSustainValue(this.points[1].y);
-
       this.updateReleaseTime((this.envCanvas.nativeElement.width - this.points[1].x));
     }
   }
@@ -264,14 +280,6 @@ export class ADSRComponent implements OnInit {
     this.gain.gain.linearRampToValueAtTime(0, this.c.currentTime + this.releaseTime);
     setTimeout(function () { this.osc.stop(); }, this.releaseTime * 1000);
   }
- /*
-  public offset(el) {
-    const rect = el.getBoundingClientRect(),
-      scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-      scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
-  }
-  */
 
   public savePatch(): any {
     console.log(this.points);
