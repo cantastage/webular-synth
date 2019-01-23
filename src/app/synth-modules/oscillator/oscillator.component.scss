@@ -4,25 +4,25 @@
     height: 280px;
     border: 1px solid black;
     border-radius: 5px;
-  }
+}
+
+#label-fine{
+  width: 50px;
+  text-align: center;
+  transform: translateX(-50%);
+  position: absolute;
+  left: 18%;
+  top: 90%;
+}
   
-  #label-fine{
-    width: 50px;
-    text-align: center;
-    transform: translateX(-50%);
-    position: absolute;
-    left: 80%;
-    top: 90%;
-  }
-  
-  #label-coarse{
-    width: 50px;
-    text-align: center;
-    transform: translateX(-50%);
-    position: absolute;
-    left: 18%;
-    top: 90%;
-  }
+#label-coarse{
+  width: 50px;
+  text-align: center;
+  transform: translateX(-50%);
+  position: absolute;
+  left: 80%;
+  top: 90%;
+}
   
   #label-volume{
     width: 80px;
@@ -30,7 +30,7 @@
     text-align: center;
     transform: translateX(-50%);
     left: 50%;
-    top: 68%;
+    top: 70%;
     
   }
 
@@ -83,23 +83,23 @@
   
   #sin-dot{
     left: 65px;
-    top: 5%;
+    top: 8%;
   }
   
   #sqr-dot{
     left: 65px;
-    top: 15%;
+    top: 17%;
   }
   
   #saw-dot{
     right: 65px;
-    top: 5%;
+    top: 8%;
     
   }
   
   #tri-dot{
     right: 65px;
-    top: 15%;
+    top: 17%;
   }
   
   .active{
@@ -147,7 +147,8 @@ knob.skin4 /deep/ .knob{
   height: 80px;
   top: 35%;
   left: 50%;
-
+  align-content: center;
+  position: absolute;
 }
 
 #coarseKnob{

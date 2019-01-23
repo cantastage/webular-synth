@@ -48,6 +48,10 @@ export class ModuleManagerService {
     return { hlLevel: 10, hlBalance: 0 };
   }
 
+  private get adsrDefaultState(): any {
+    return { attackTime: 50, attackValue: 10, sustainValue: 80, releaseTime: 180 };
+  }
+
   public getModules(): ModuleItem[] {
     // return this.modules;
     return [
@@ -56,9 +60,9 @@ export class ModuleManagerService {
       new ModuleItem(LfoComponent, { name: 'lfo' }),
       new ModuleItem(ClockComponent, { name: 'clock', state: this.clockDefaultState }),
       new ModuleItem(SequencerComponent, { name: 'sequencer', state: this.sequencerDefaultState }),
-      new ModuleItem(ADSRComponent, { name: 'ADSR' }),
-      new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', waveForm: 'sine' }),
-      new ModuleItem(AmplifierComponent, { name: 'final', state:  this.amplifierDefaultState }),
+      new ModuleItem(ADSRComponent, { name: 'ADSR', state: this.adsrDefaultState }),
+      new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', waveForm: 'sine', maxVelocity: 100, addSemitone: 0, finePitch: 0 }),
+      new ModuleItem(AmplifierComponent, { name: 'final', state:  this.amplifierDefaultState })
     ];
   }
 }
