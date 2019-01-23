@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 import { Voice } from 'src/app/synth-modules/oscillator/voice';
@@ -12,23 +12,25 @@ import { ModuleComponent } from 'src/app/interfaces/module.component';
   styleUrls: ['./oscillator.component.scss']
 })
 
-export class OscillatorComponent implements OnInit, IObserver<[number, boolean, number, number]>, ModuleComponent {
+export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number, boolean, number, number]>, ModuleComponent {
 
   @Input() data: any;
-  public c: AudioContext;
-  public g: GainNode;
-  public active_voices: any;
-  public frequency: any;
+  private c: AudioContext;
+  private g: GainNode;
+  private active_voices: any;
+  private frequency: any;
   private waveForm: any;
-  public midiData: any;
-  public maxVelocity: number;
-  public addSemitone: number;
-  public finePitch: number;
-  public active: number;
+  private midiData: any;
+  private maxVelocity: number;
+  private addSemitone: number;
+  private finePitch: number;
+  private active: number;
   // private activeIndex: number;
   // private waveforms: Array<string> = ['SIN', 'SQR', 'SAW', 'TRI'];
 
-  constructor(private contextManager: AudioContextManagerService, private midiManager: MidiContextManagerService) {
+  constructor(
+    private contextManager: AudioContextManagerService,
+    private midiManager: MidiContextManagerService) {
     midiManager.attach(this);
   }
 
@@ -62,6 +64,10 @@ export class OscillatorComponent implements OnInit, IObserver<[number, boolean, 
     // this.midiFunction();
 
     // createAudioNode in audio context manager service
+  }
+
+  ngOnDestroy() {
+    // this.g.disconnect();
   }
 
   public midiFunction() {

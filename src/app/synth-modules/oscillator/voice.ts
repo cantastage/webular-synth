@@ -3,7 +3,7 @@ export class Voice {
     public gain: GainNode;
     public ac: AudioContext;
     public osc: OscillatorNode;
-    public oscillators: any;
+    public oscillators: Array<any>;
     private waveForm: any;
     private fineTune: any;
 
@@ -12,15 +12,13 @@ export class Voice {
         this.waveForm = waveform;
         this.fineTune = finePitch;
         this.gain = g;
-        this.oscillators = [];
+        this.oscillators = new Array<any>(0);
         this.ac = c;
         this.osc = osc;
         osc.detune.setValueAtTime(this.fineTune, c.currentTime);
         osc.connect(g);
         g.connect(c.destination);
     }
-
-
 
     public playNote(note: number) {
         this.osc.frequency.value = note;
@@ -30,9 +28,13 @@ export class Voice {
         this.oscillators.push(this.osc);
     }
 
+    // Optimized code because for is faster than foreach
     public stopNote() {
-        this.oscillators.forEach(function (oscillator, _) {
-            oscillator.stop();
-        });
+        for (let i = 0; i < this.oscillators.length; i++) {
+            this.oscillators[i].stop();
+        }
+        // this.oscillators.forEach(function (oscillator, _) {
+        //     oscillator.stop();
+        // });
     }
 }

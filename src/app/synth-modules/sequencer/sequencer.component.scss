@@ -11,17 +11,14 @@
 	text-align: center;
 }
 
-.inputcell {
-	width: 50%;
-	height: 70%;
-	text-align: center;
+.column-off {
+	background-color: darkslategray;
 }
-
-.greencolumn {
+.column-on {
 	background-color: lightgreen;
 }
 
-.duration {
+.inputcell {
 	width: 100%;
 	vertical-align: middle;
 }

@@ -1,44 +1,46 @@
-import { Component, OnInit, ViewChildren } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { ISequencer } from '../../model/modules/sequencer/ISequencer';
-import { Sequencer } from '../../model/modules/sequencer/Sequencer';
 import { Measure } from '../../model/modules/sequencer/Measure';
-import { Scale } from '../../model/modules/sequencer/Scale';
 import { PitchClassesProvider } from '../../model/modules/sequencer/PitchClassesProvider';
 import { IPitchClass } from '../../model/modules/sequencer/IPitchClass';
-import { Harmonization } from '../../model/modules/sequencer/Harmonization';
+import { IHarmonization } from '../../model/modules/sequencer/IHarmonization';
+import { HarmonizationsProvider } from 'src/app/model/modules/sequencer/HarmonizationsProvider';
 import { Subdivision } from '../../model/modules/sequencer/Subdivision';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
+import { ModuleComponent } from 'src/app/interfaces/module.component';
 
 @Component({
   selector: 'app-sequencer',
   templateUrl: './sequencer.component.html',
   styleUrls: ['./sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit, IObserver<number> {
-  private _pitchClasses: IPitchClass[];
-  private _harmonizations: Harmonization[];
-  private _possibleOctaves: number[];
-  private _metrics: number[];
-  private _duplicableOctavesInit: number[];
+export class SequencerComponent implements OnInit, IObserver<number>, ModuleComponent {
+  @Input() data: any;
 
+  // UI selections
+  private _pitchClasses: IPitchClass[];
+  private _harmonizations: IHarmonization[];
+  private _metrics: number[];
+  private _possibleOctaves: number[];
+  private _subdivisionCounter: number;
+
+  private _metric: number; // used as redundancy, useful for the UI
   private _sequencer: ISequencer;
-  @ViewChildren('subdivisionColumns') subdivisionColumns;
 
   constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService) { }
 
+  public loadPatch(): void {
+    this._sequencer = this.data.state;
+    this._metric = this._sequencer.measure.subdivisions.length;
+    this.clockManager.attach(this);
+  }
+
   ngOnInit() {
     this._pitchClasses = PitchClassesProvider.retrieveInstances();
-    this._harmonizations = [
-      new Harmonization('M', [2, 2, 1, 2, 2, 2, 1]),
-      new Harmonization('mN', [2, 1, 2, 2, 1, 2, 2]),
-      new Harmonization('mH', [2, 1, 2, 2, 1, 3, 1]),
-      new Harmonization('mM', [2, 1, 2, 2, 2, 2, 1]),
-      new Harmonization('pentatonic', [3, 2, 2, 3, 2]),
-      new Harmonization('esatonic', [2, 2, 2, 2, 2, 2])
-    ];
+    this._harmonizations = HarmonizationsProvider.retrieveInstances();
     this._metrics = function(): number[] {
       const ret: number[] = new Array<number>();
       for (let i = Measure.METRIC_MIN; i <= Measure.METRIC_MAX; i++) {
@@ -46,54 +48,36 @@ export class SequencerComponent implements OnInit, IObserver<number> {
       }
       return ret;
     }();
+
     this._possibleOctaves = new Array<number>();
     this._possibleOctaves.push(Subdivision.OCTAVE_DEFAULT);
     for (let i = Subdivision.OCTAVE_MIN; i <= Subdivision.OCTAVE_MAX; i++) {
       this._possibleOctaves.push(i);
     }
-    this._duplicableOctavesInit = new Array<number>();
-    for (let i = 0; i < Subdivision.NOTE_COUNT; i++) {
-      this._duplicableOctavesInit.push(Subdivision.OCTAVE_DEFAULT);
-    }
+    this._subdivisionCounter = 0;
 
-    const pitchClass: IPitchClass = this._pitchClasses[0];
-    const scale: Scale = new Scale(pitchClass, this._harmonizations[0]);
-
-    const subdivisions: Subdivision[] = new Array<Subdivision>();
-    for (let i = 0; i < Measure.METRIC_MIN; i++) {
-      subdivisions.push(new Subdivision(
-        new Array<number>().concat(this._duplicableOctavesInit), Subdivision.DURATION_MIN, Subdivision.VELOCITY_MAX)
-      );
-    }
-    this._sequencer = new Sequencer(scale, new Measure(subdivisions));
-
-    this.clockManager.attach(this);
+    this.loadPatch();
   }
-  private highLightSubdivision(n: number) {
-    // this.subdivisionColumns contains each of 8xMetric td cells
-    const vectorialized = this.subdivisionColumns.toArray();
-    for (let i = 0; i < vectorialized.length; i++) {
-      if ((i % this._sequencer.measure.subdivisions.length) !== n) { // remove light
-        vectorialized[i].nativeElement.classList.remove('greencolumn');
-      } else {
-        vectorialized[i].nativeElement.classList.add('greencolumn'); // add light
-      }
-    }
+
+  public savePatch(): any {
+    this.clockManager.detach(this);
+    this.data.state = this._sequencer;
+    return this.data;
   }
+
   // IObserver member
   update(beatNumber: number): void {
-    const _subdivisionCounter = beatNumber % this._sequencer.measure.subdivisions.length;
-    this.highLightSubdivision(_subdivisionCounter);
-    const currentSubdivision = this._sequencer.measure.subdivisions[_subdivisionCounter];
+    this._subdivisionCounter = beatNumber % this._sequencer.measure.subdivisions.length;
+    const currentSubdivision = this._sequencer.measure.subdivisions[this._subdivisionCounter];
     if (currentSubdivision.duration !== 0 && currentSubdivision.velocity !== 0) {
       let currentReferralFreq, currentOctave, currentResultingFreq;
       // ASSUMPTION: HARMONIZATION COVERING A WHOLE OCTAVE
-      const voiceRepetition = currentSubdivision.octaves[0] === currentSubdivision.octaves[Subdivision.NOTE_COUNT - 1];
-      const upperBound = voiceRepetition ?
-        this._sequencer.scale.diatonicNotes.length - 1 : this._sequencer.scale.diatonicNotes.length;
+      const voiceRepetition =
+        currentSubdivision.octaves[0] === currentSubdivision.octaves[currentSubdivision.octaves.length - 1];
+      const upperBound = this._sequencer.scale.diatonicNotes.length - (voiceRepetition ? 1 : 0);
       // SEND AUDIO/MIDI MESSAGE
       for (let i = 0; i < upperBound; i++) {
-        currentReferralFreq = this._sequencer.scale.diatonicNotes[i].referralFrequency();
+        currentReferralFreq = this._sequencer.scale.diatonicNotes[i].referralFrequency;
         currentOctave = currentSubdivision.octaves[i];
         if (currentOctave !== 0) {
           currentResultingFreq = currentReferralFreq * (2 ** (currentOctave - 4));
@@ -104,48 +88,30 @@ export class SequencerComponent implements OnInit, IObserver<number> {
       }
     }
   }
-  // UI configuration alteration
-  keyChange(eventArg: any): void {
-    this._sequencer.scale.key = PitchClassesProvider.retrieveInstance(eventArg.target.value);
-  }
-  harmonizationChange(eventArg: any): void {
-    let selected: Harmonization;
-    for (let i = 0; i < this._harmonizations.length; i++) {
-      if (this._harmonizations[i].name === eventArg.target.value) {
-        selected = this._harmonizations[i];
-        break;
-      }
+
+  morethanHarmonizationChange(eventArg: IHarmonization): void {
+    const l = this._sequencer.measure.subdivisions.length;
+    this._sequencer.measure.subdivisions.splice(0, l);
+    for (const sub of Measure.generateSubdivisionVector(l,
+      this._sequencer.scale.harmonization.pattern.length + 1)) {
+      this._sequencer.measure.subdivisions.push(sub);
     }
-    this._sequencer.scale.harmonization = selected;
   }
-  metricChange(eventArg: any): void {
-    const m = Number(eventArg.target.value);
+  morethanMetricChange(eventArg: any): void {
+    const m = Number(eventArg);
     while (this._sequencer.measure.subdivisions.length !== m) {
       if (this._sequencer.measure.subdivisions.length > m) {
         this._sequencer.measure.subdivisions.pop();
       } else {
-        this._sequencer.measure.subdivisions.push(new Subdivision(new Array<number>().concat(this._duplicableOctavesInit), 0, 0));
+        this._sequencer.measure.subdivisions.push(
+          new Subdivision(
+            Subdivision.generateOctaveVector(this._sequencer.scale.harmonization.pattern.length + 1),
+            Subdivision.DURATION_MIN,
+            Subdivision.VELOCITY_MAX
+          )
+        );
       }
     }
     this.clockManager.restart();
   }
-  // UI octave alteration
-  gridChange(eventArg: any) {
-    const tmp = eventArg.target.id.split('_');
-    const subdivisioni = Number(tmp[1]);
-    const notei = Number(tmp[3]);
-    this._sequencer.measure.subdivisions[subdivisioni].octaves[notei] = Number(eventArg.target.value);
-  }
-  // UI duration alteration
-  durationChange(eventArg: any) {
-    const tmp = eventArg.target.id.split('_');
-    const subdivisioni = Number(tmp[1]);
-    this._sequencer.measure.subdivisions[subdivisioni].duration = Number(eventArg.target.value);
-  }
-  // UI velocity alteration
-  // velocityChange(eventArg: any) {
-  //   const tmp = eventArg.target.id.split('_');
-  //   const subdivisioni = Number(tmp[1]);
-  //   this._sequencer.measure.subdivisions[subdivisioni].velocity = Number(eventArg.target.value);
-  // }
 }

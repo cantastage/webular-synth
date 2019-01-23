@@ -48,13 +48,14 @@ export class SynthModuleContainerComponent implements OnInit {
         event.previousIndex,
         event.currentIndex);
       // update connections in audiocontextservice
+      // this.contextManager.
     }
   }
 
   // Adds a module into the array of unconnectedModules
-  loadComponent(): void {
+  loadComponent(index: number): void {
     // const adItem = this.modules[0]; // chooses first element to load
-    const adItem = this.modules[6];
+    const adItem = this.modules[index];
     this.unconnectedModules.push(adItem);
   }
 

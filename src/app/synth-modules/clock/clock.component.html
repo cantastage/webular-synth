@@ -1,5 +1,6 @@
 <div class="component-block">
   <div class="component-header">
+    <div id="led" [ngClass]="{'led-off': !_on, 'led-on': _on}"></div>
   </div>
   <div class="component-body">
     <div class="component-body-sub">
@@ -9,9 +10,9 @@
       </div>
       <div class="component-body-sub-selector">
           <knob class="skin2" [min]="clockManager.minValue" [max]="clockManager.maxValue"
-          [value]="clockManager.bpm"
-          [startDegree]="-120"  [endDegree]="120"
-          [intensive]="false" (change)="onChange($event)"></knob>
+          [(ngModel)]="clockManager.bpm"
+          [startDegree]="-120" [endDegree]="120"
+          [intensive]="true"></knob>
       </div>
     </div>
   </div>

@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class AudioContextManagerService {
-  private g: GainNode;
+  // private master_volume: GainNode;
   private _ctx: AudioContext;
   private soundChain: Array<AudioNode> = new Array<AudioNode>(0); // stores all the nodes in the audiochain
   private disconnectedNodes: Array<AudioNode> = new Array<AudioNode>(0);
@@ -30,6 +30,20 @@ export class AudioContextManagerService {
   }
 
   /**
+   * Creates a polyphonic oscillator node
+   */
+  public createPolyphonicOscillator(): void {
+    // return this.createPoly
+  }
+
+  public createFilter(): BiquadFilterNode {
+    const filter = this._ctx.createBiquadFilter();
+    this.soundChain.push(filter);
+    filter.connect(this._ctx.destination);
+    return filter;
+  }
+
+  /**
    * Adds a new audioNode without connecting it to the soundChain
    * @param module module that has to be created
    */
@@ -42,7 +56,14 @@ export class AudioContextManagerService {
    * maybe can return a boolean or a number
    * @TODO establish if needs parameters (index of the moved element)
    */
-  public updateConnections(): void {
-
+  private updateConnections(): void {
+    // The last element needs to be connected to the audio destination
+    let i = 0;
+    while (i < this.soundChain.length - 1) {
+      this.soundChain[i].connect(this.soundChain[i + 1]);
+      i++;
+    }
+    // connects the last element to audio destination
+    this.soundChain[i].connect(this._ctx.destination);
   }
 }
