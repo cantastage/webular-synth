@@ -58,7 +58,7 @@ export class ModuleManagerService {
       new ModuleItem(SequencerComponent, { name: 'sequencer', state: this.sequencerDefaultState }),
       new ModuleItem(ADSRComponent, { name: 'ADSR' }),
       new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', waveForm: 'sine' }),
-      new ModuleItem(AmplifierComponent, { name: 'final', state:  this.amplifierDefaultState })
+      new ModuleItem(AmplifierComponent, { name: 'final', state:  this.amplifierDefaultState }),
     ];
   }
 }

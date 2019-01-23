@@ -38,7 +38,7 @@ import { AmplifierComponent } from './synth-modules/amplifier/amplifier.componen
     AmplifierComponent,
   ],
   entryComponents: [MoogLadderFilterComponent, FilterComponent,
-    LfoComponent, ClockComponent, SequencerComponent, ADSRComponent, OscillatorComponent],
+    LfoComponent, ClockComponent, SequencerComponent, ADSRComponent, OscillatorComponent, AmplifierComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
