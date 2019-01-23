@@ -2,18 +2,14 @@ import { Input } from '@angular/core';
 import { AudioContextManagerService } from '../services/audio-context-manager.service';
 import { IModulableComponent } from './Modulable';
 import { IUIAudioParameter, ModulableAudioParameter, AudioParameter, UIAudioParameter, AudioParameterDescriptor } from './Modulation';
+import { ModuleComponent } from '../interfaces/module.component';
 
 export interface IModulatorComponent {
   modulatedComponent: IModulableComponent;
   modulatedParameter: IUIAudioParameter<ModulableAudioParameter>;
-
-  onModulatedComponentAttach(): void;
-  onModulatedComponentDetach(): void;
-  onModulatedParameterAttach(): void;
-  onModulatedParameterDetach(): void;
 }
 
-export abstract class ModulatorComponent {
+export abstract class ModulatorComponent implements IModulatorComponent {
   protected _intensityNode: GainNode;
   private _intensity: IUIAudioParameter<AudioParameter>;
   protected _modulatedComponent: IModulableComponent;
@@ -77,10 +73,5 @@ export abstract class ModulatorComponent {
 
   public constructor(contextManager: AudioContextManagerService) {
     this._intensityNode = contextManager.audioContext.createGain();
-  }
-
-  public intensityChange(newValue: number): void {
-    // eventual checks
-    this.intensity.hlValue = Number(newValue);
   }
 }

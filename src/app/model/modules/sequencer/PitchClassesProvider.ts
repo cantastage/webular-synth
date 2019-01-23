@@ -10,16 +10,16 @@ class PitchClass implements IPitchClass, ICache {
     private _enharmonicName: EnharmonicNames;
     private _referralFrequency: number;
 
-    private pitchClassKey(): string {
+    private get pitchClassKey(): string {
         return NoteNames[this._pitchClass];
     }
-    private pitchClassValue(): number {
+    private get pitchClassValue(): number {
         return this._pitchClass;
     }
-    public pitchClass(): string {
-        return this.pitchClassKey();
+    public get pitchClassName(): string {
+        return this.pitchClassKey;
     }
-    public setPitchClass(pitchClass: NoteNames) { // creepy, but unavoidable
+    public set pitchClass(pitchClass: NoteNames) {
         this._pitchClass = pitchClass;
         this._updateCache();
     }
@@ -29,21 +29,21 @@ class PitchClass implements IPitchClass, ICache {
     private enharmonicNameValue(): number {
         return this._enharmonicName;
     }
-    public enharmonicName(): string {
+    public get enharmonicName(): string {
         return this.enharmonicNameKey();
     }
-    public referralFrequency(): number {
+    public get referralFrequency(): number {
         return this._referralFrequency;
     }
     _updateCache(): void {
         // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        this._enharmonicName = String(EnharmonicNames[this.pitchClassValue()]) !== 'undefined' ?
-            this.pitchClassValue() : EnharmonicNames.nd;
-        this._referralFrequency = A4 * (SD ** (this.pitchClassValue() - 9));
+        this._enharmonicName = String(EnharmonicNames[this.pitchClassValue]) !== 'undefined' ?
+            this.pitchClassValue : EnharmonicNames.nd;
+        this._referralFrequency = A4 * (SD ** (this.pitchClassValue - 9));
     }
 
     public constructor(pitchClass: NoteNames) {
-        this.setPitchClass(pitchClass);
+        this.pitchClass = pitchClass;
     }
 }
 
@@ -68,7 +68,7 @@ export class PitchClassesProvider { // fly-weight pattern
         this.initialize();
         let ret: IPitchClass;
         for (let i = 0; i < this._pitchClasses.length; i++) {
-            if (this._pitchClasses[i].pitchClass() === id) {
+            if (this._pitchClasses[i].pitchClassName === id) {
                 ret = this._pitchClasses[i];
                 break;
             }

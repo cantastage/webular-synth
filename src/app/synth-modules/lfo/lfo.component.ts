@@ -10,7 +10,8 @@ import { IUIAudioParameter, AudioParameter, AudioParameterDescriptor, UIAudioPar
   styleUrls: ['./lfo.component.scss', '../../app.component.scss']
 })
 export class LfoComponent extends ModulatorComponent implements OnInit, ModuleComponent {
-  @Input() data: Object;
+  @Input() data: any;
+
   private _testGeneratorNode: OscillatorNode;
   private _lfoNode: OscillatorNode;
   // how to extract a string[] from OscillatorType?!?!?! O.O
@@ -72,14 +73,5 @@ export class LfoComponent extends ModulatorComponent implements OnInit, ModuleCo
   }
 
   public ngOnInit() {
-  }
-
-  public waveShapeChange(eventArg: any) {
-    this._lfoNode.type = eventArg.target.value;
-  }
-
-  public rateChange(newValue: number): void {
-    // eventual checks
-    this.rate.hlValue = Number(newValue);
   }
 }

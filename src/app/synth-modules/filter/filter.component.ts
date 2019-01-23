@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModulableComponent } from 'src/app/synth-modules/Modulable';
+import { IModulableComponent } from 'src/app/synth-modules/Modulable';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 
 import { ModuleComponent } from 'src/app/interfaces/module.component';
@@ -10,8 +10,9 @@ import { IUIAudioParameter, UIAudioParameter, ModulableAudioParameter, AudioPara
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss', '../../app.component.scss']
 })
-export class FilterComponent extends ModulableComponent implements OnInit, ModuleComponent {
-  @Input() data: Object;
+export class FilterComponent implements OnInit, IModulableComponent, ModuleComponent {
+  @Input() data: any;
+
   private _filterNode: BiquadFilterNode;
   private _filterTypes: BiquadFilterType[]; // readonly
   private _modulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
@@ -27,11 +28,10 @@ export class FilterComponent extends ModulableComponent implements OnInit, Modul
     return this._modulableParameters;
   }
 
-  public constructor(private contextManager: AudioContextManagerService) {
-    super();
-    this._filterNode = this.contextManager.audioContext.createBiquadFilter();
-    // how to extract a string[] from BiquadFilterType?!?!?! O.O
-    this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
+  public constructor(private contextManager: AudioContextManagerService) { }
+
+  public loadPatch(): void {
+    this._filterNode.type = this.data.state.filterType;
     this._modulableParameters = [
       new UIAudioParameter<ModulableAudioParameter>(
         new ModulableAudioParameter(
@@ -39,7 +39,7 @@ export class FilterComponent extends ModulableComponent implements OnInit, Modul
           new AudioParameterDescriptor(0, 5500, 22000, 'Hz'),
           this._filterNode.frequency
         ),
-        null
+        new AudioParameterDescriptor(0, this.data.state.hlFrequency, 22000, 'Hz')
       ),
       new UIAudioParameter<ModulableAudioParameter>(
         new ModulableAudioParameter(
@@ -47,15 +47,22 @@ export class FilterComponent extends ModulableComponent implements OnInit, Modul
           new AudioParameterDescriptor(0, 5, 100, ''),
           this._filterNode.Q
         ),
-        null
+        new AudioParameterDescriptor(0, this.data.state.hlResonance, 100, '')
       )
     ];
   }
 
   public ngOnInit() {
+    this._filterNode = this.contextManager.audioContext.createBiquadFilter();
+    // how to extract a string[] from BiquadFilterType?!?!?! O.O
+    this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
+    this.loadPatch();
   }
 
-  public typeChange(eventArg: any): void {
-    this._filterNode.type = eventArg.target.value;
+  public savePatch(): any {
+    this.data.state.filterType = this._filterNode.type;
+    this.data.state.hlFrequency = this.modulableParameters[0].hlValue;
+    this.data.state.hlResonance = this.modulableParameters[1].hlValue;
+    return this.data;
   }
 }

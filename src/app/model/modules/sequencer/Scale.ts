@@ -1,11 +1,11 @@
 import { ICache } from '../../../system2/utilities/ICache';
 import { PitchClassesProvider } from './PitchClassesProvider';
 import { IPitchClass, SD } from './IPitchClass';
-import { Harmonization } from './Harmonization';
+import { IHarmonization } from './IHarmonization';
 
 export class Scale implements ICache {
     private _key: IPitchClass;
-    private _harmonization: Harmonization;
+    private _harmonization: IHarmonization;
 
     // cache field depending on private ones
     private _diatonicNotes: IPitchClass[];
@@ -22,10 +22,10 @@ export class Scale implements ICache {
             this._updateCache();
         }
     }
-    public get harmonization(): Harmonization {
+    public get harmonization(): IHarmonization {
         return this._harmonization;
     }
-    public set harmonization(harmonization: Harmonization) {
+    public set harmonization(harmonization: IHarmonization) {
         if (harmonization == null) {
             throw new Error('error while assigning the harmonization value');
         }
@@ -47,14 +47,14 @@ export class Scale implements ICache {
         let incrementalStep = 0;
         this.harmonization.pattern.forEach(element => {
             incrementalStep += element;
-            const nextfreq = this.key.referralFrequency() * (SD ** incrementalStep);
+            const nextfreq = this.key.referralFrequency * (SD ** incrementalStep);
 
             const nextnote = (): IPitchClass => {
                 let nextnotehp: IPitchClass; let nextfreqhp: number;
                 let found = false;
                 for (let i = 0; i < PitchClassesProvider.retrieveInstances().length; i++) {
                     nextnotehp = PitchClassesProvider.retrieveInstances()[i];
-                    nextfreqhp = nextnotehp.referralFrequency();
+                    nextfreqhp = nextnotehp.referralFrequency;
                     for (let k = 0; k < 10 && !found; k++) { // overdimensioned, maybe 2 (covering 5 octaves) is ok?
                         if (Math.floor(nextfreq) === Math.floor(nextfreqhp * (2 ** k)) ||
                             Math.floor(nextfreq) === Math.floor(nextfreqhp / (2 ** k))) {
@@ -73,7 +73,7 @@ export class Scale implements ICache {
         });
     }
 
-    public constructor(key: IPitchClass, harmonization: Harmonization) {
+    public constructor(key: IPitchClass, harmonization: IHarmonization) {
         this.key = key;
         this.harmonization = harmonization;
     }

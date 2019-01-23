@@ -35,6 +35,10 @@ class Clock implements IClock {
 }
 
 export class ClockProvider { // singleton pattern
+  public static readonly BEATS_MIN: number = Clock.BEATS_MIN;
+  public static readonly BEATS_DEFAULT: number = Clock.BEATS_DEFAULT;
+  public static readonly BEATS_MAX: number = Clock.BEATS_MAX;
+
   private static _hiddenClock: IClock;
   private static initialize(): void {
     if (!this._hiddenClock) {

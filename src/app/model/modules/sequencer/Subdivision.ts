@@ -1,5 +1,4 @@
 export class Subdivision {
-    public static readonly NOTE_COUNT = 8;
     public static readonly OCTAVE_MIN = 3;
     public static readonly OCTAVE_DEFAULT = 0; // no sound
     public static readonly OCTAVE_MAX = 6;
@@ -18,9 +17,7 @@ export class Subdivision {
         return this._octaves;
     }
     public set octaves(octaves: number[]) {
-        if (!octaves || octaves.length !== Subdivision.NOTE_COUNT) {
-            throw new Error('error while assigning the octaves values');
-        }
+        // check: all integer numbers in the valid range
         this._octaves = octaves;
     }
     public get duration(): number {
@@ -46,5 +43,13 @@ export class Subdivision {
         this.octaves = octaves;
         this.duration = duration;
         this.velocity = velocity;
+    }
+
+    public static generateOctaveVector(octaveCount: number): number[] {
+        const ret = new Array<number>();
+        for (let i = 0; i < octaveCount; i++) {
+          ret.push(Subdivision.OCTAVE_DEFAULT);
+        }
+        return ret;
     }
 }
