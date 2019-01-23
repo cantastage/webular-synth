@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModulableComponent } from '../Modulable';
+import { IModulableComponent } from '../Modulable';
 import { ModuleComponent } from 'src/app/interfaces/module.component';
 import { IUIAudioParameter, ModulableAudioParameter, UIAudioParameter, AudioParameterDescriptor } from '../Modulation';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
@@ -9,8 +9,9 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
   templateUrl: './amplifier.component.html',
   styleUrls: ['./amplifier.component.scss', '../../app.component.scss']
 })
-export class AmplifierComponent  extends ModulableComponent implements OnInit, ModuleComponent {
-  @Input() data: Object;
+export class AmplifierComponent implements OnInit, IModulableComponent, ModuleComponent {
+  @Input() data: any;
+
   private _gainNode: GainNode;
   private _panNode: StereoPannerNode;
   private _modulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
@@ -22,13 +23,9 @@ export class AmplifierComponent  extends ModulableComponent implements OnInit, M
     return this._modulableParameters;
   }
 
-  constructor(private contextManager: AudioContextManagerService) {
-    super();
-    this._gainNode = this.contextManager.audioContext.createGain();
-    this._panNode = this.contextManager.audioContext.createStereoPanner();
-    this._gainNode.connect(this._panNode);
-    this._panNode.connect(this.contextManager.audioContext.destination);
+  public constructor(private contextManager: AudioContextManagerService) { }
 
+  public loadPatch(): void {
     this._modulableParameters = [
       new UIAudioParameter<ModulableAudioParameter>(
         new ModulableAudioParameter(
@@ -36,7 +33,7 @@ export class AmplifierComponent  extends ModulableComponent implements OnInit, M
           new AudioParameterDescriptor(0, 1, 1, 'lvl'),
           this._gainNode.gain
         ),
-        new AudioParameterDescriptor(0, 10, 10, 'dlvl'),
+        new AudioParameterDescriptor(0, this.data.state.hlLevel, 10, 'dlvl'),
       ),
       new UIAudioParameter<ModulableAudioParameter>(
         new ModulableAudioParameter(
@@ -44,12 +41,22 @@ export class AmplifierComponent  extends ModulableComponent implements OnInit, M
           new AudioParameterDescriptor(-1, 0, 1, 'balance'),
           this._panNode.pan
         ),
-        new AudioParameterDescriptor(-10, 0, 10, 'dbalance'),
+        new AudioParameterDescriptor(-10, this.data.state.hlBalance, 10, 'dbalance'),
       )
     ];
   }
 
-  ngOnInit() {
+  public ngOnInit() {
+    this._gainNode = this.contextManager.audioContext.createGain();
+    this._panNode = this.contextManager.audioContext.createStereoPanner();
+    this._gainNode.connect(this._panNode);
+    this._panNode.connect(this.contextManager.audioContext.destination);
+    this.loadPatch();
   }
 
+  public savePatch(): any {
+    this.data.state.hlLevel = this.modulableParameters[0].hlValue;
+    this.data.state.hlBalance = this.modulableParameters[1].hlValue;
+    return this.data;
+  }
 }

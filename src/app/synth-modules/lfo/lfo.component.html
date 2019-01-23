@@ -1,8 +1,8 @@
 <div class="component-block">
 
   <div class="component-header">
-      <select (change)="waveShapeChange($event)">
-          <option *ngFor="let waveShape of waveShapes;">{{waveShape}}</option>
+      <select [(ngModel)]="this._lfoNode.type">
+          <option *ngFor="let waveShape of waveShapes;" [ngValue]="waveShape">{{waveShape}}</option>
       </select>
   </div>
 
@@ -15,9 +15,9 @@
       </div>
       <div class="component-body-sub-selector">
           <knob class="skin2" [min]="intensity.hlDescriptor.minValue" [max]="intensity.hlDescriptor.maxValue"
-          [value]="intensity.hlValue"
-          [startDegree]="-120"  [endDegree]="120"
-          [intensive]="false" (change)="intensityChange($event)"></knob>
+          [(ngModel)]="intensity.hlValue"
+          [startDegree]="-120" [endDegree]="120"
+          [intensive]="true"></knob>
       </div>
     </div>
 
@@ -28,9 +28,9 @@
       </div>
       <div class="component-body-sub-selector">
           <knob class="skin2" [min]="rate.hlDescriptor.minValue" [max]="rate.hlDescriptor.maxValue"
-          [value]="rate.hlValue"
-          [startDegree]="-120"  [endDegree]="120"
-          [intensive]="false" (change)="rateChange($event)"></knob>
+          [(ngModel)]="rate.hlValue"
+          [startDegree]="-120" [endDegree]="120"
+          [intensive]="true"></knob>
       </div>
     </div>
 

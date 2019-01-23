@@ -1,7 +1,6 @@
-import { sealed } from '../../../system2/utilities/ClassDecorators';
+import { IHarmonization } from './IHarmonization';
 
-@sealed
-export class Harmonization {
+class Harmonization implements IHarmonization {
     private _name: string;
     private _pattern: number[];
 
@@ -44,5 +43,37 @@ export class Harmonization {
     public constructor(name: string, pattern: number[]) {
         this.name = name;
         this.pattern = pattern;
+    }
+}
+
+export class HarmonizationsProvider { // fly-weight pattern
+    private static _harmonizations: IHarmonization[];
+    private static initialize() {
+        if (!this._harmonizations) {
+            this._harmonizations = [
+                new Harmonization('M', [2, 2, 1, 2, 2, 2, 1]),
+                new Harmonization('mN', [2, 1, 2, 2, 1, 2, 2]),
+                new Harmonization('mH', [2, 1, 2, 2, 1, 3, 1]),
+                new Harmonization('mM', [2, 1, 2, 2, 2, 2, 1]),
+                new Harmonization('pentatonic', [3, 2, 2, 3, 2]),
+                new Harmonization('esatonic', [2, 2, 2, 2, 2, 2])
+            ];
+        }
+    }
+    public static retrieveInstances(): IHarmonization[] {
+        this.initialize();
+        return this._harmonizations;
+    }
+    public static retrieveInstance(id: string): IHarmonization {
+        this.initialize();
+        let ret: IHarmonization;
+        for (let i = 0; i < this._harmonizations.length; i++) {
+            if (this._harmonizations[i].name === id) {
+                ret = this._harmonizations[i];
+                break;
+            }
+        }
+
+        return ret;
     }
 }

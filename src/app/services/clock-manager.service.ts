@@ -28,7 +28,7 @@ export class ClockManagerService extends Observable<number> implements IClock {
     return this._clock.bpm;
   }
   public set bpm(bpm: number) {
-    if (!Number.isInteger(Number(bpm)) || bpm < this.minValue || bpm > this.maxValue) {
+    if (!Number.isInteger(Number(bpm)) || bpm < ClockProvider.BEATS_MIN || bpm > ClockProvider.BEATS_MAX) {
       throw new Error('error while assigning the bpm value');
     }
     this._clock.bpm = bpm;
@@ -36,7 +36,7 @@ export class ClockManagerService extends Observable<number> implements IClock {
       // partial stop with no isRunning modification
       clearInterval(this._th);
       // partial restart with no isRunning modification
-      this._th = setInterval(this.callback.bind(null, this), 60.0 / this.bpm * 1000);
+      this._th = setInterval(this.callback, 60.0 / this.bpm * 1000, this);
     }
   }
   public get beatCount(): number {
@@ -58,7 +58,7 @@ export class ClockManagerService extends Observable<number> implements IClock {
   private start(): void {
     this.resetBeatCount();
     if (!this._isRunning) {
-      this._th = setInterval(this.callback.bind(null, this), 60.0 / this.bpm * 1000);
+      this._th = setInterval(this.callback, 60.0 / this.bpm * 1000, this);
       this._isRunning = true;
     }
   }

@@ -90,6 +90,6 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
     // CHECK ON PARAMETERS
     const midiNote = MidiContextManagerService.frequencyToMIDINote(frequency);
     this.sendRawNoteON(channel, midiNote, velocity);
-    setTimeout(this.sendRawNoteOFF.bind(null, this, channel, midiNote, velocity), duration);
+    setTimeout(this.sendRawNoteOFF, duration, this, channel, midiNote, velocity);
   }
 }

@@ -1,7 +1,7 @@
 <div class="component-block">
   <div class="component-header">
-      <select (change)="typeChange($event)">
-          <option *ngFor="let filterType of this.filterTypes;">{{filterType}}</option>
+      <select [(ngModel)]="this._filterNode.type">
+          <option *ngFor="let filterType of this.filterTypes;" [ngValue]="filterType">{{filterType}}</option>
       </select>
   </div>
   <div class="component-body">
@@ -12,9 +12,9 @@
       </div>
       <div class="component-body-sub-selector">
           <knob class="skin2" [min]="mp.hlDescriptor.minValue" [max]="mp.hlDescriptor.maxValue"
-          [value]="mp.hlValue"
-          [startDegree]="-120"  [endDegree]="120"
-          [intensive]="false" (change)="mpChange(mp, $event)"></knob>
+          [(ngModel)]="mp.hlValue"
+          [startDegree]="-120" [endDegree]="120"
+          [intensive]="true"></knob>
       </div>
     </div>
   </div>
