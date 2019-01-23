@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ModuleItem } from '../model/module-item';
 import { Subject } from 'rxjs';
+import { ModuleComponent } from '../interfaces/module.component';
 
 /**
  * This service provides access to a common audio context shared by all synth modules.
@@ -11,8 +12,8 @@ import { Subject } from 'rxjs';
 export class AudioContextManagerService {
   // private master_volume: GainNode;
   private _ctx: AudioContext;
-  private soundChain: Array<AudioNode> = new Array<AudioNode>(0); // stores all the nodes in the audiochain
-  private disconnectedNodes: Array<AudioNode> = new Array<AudioNode>(0);
+  private soundChain: Array<ModuleComponent> = new Array<ModuleComponent>(0); // stores all the nodes in the audiochain
+  private disconnectedNodes: Array<ModuleComponent> = new Array<ModuleComponent>(0);
   public subject: Subject<number>;
 
   constructor() {
@@ -36,18 +37,18 @@ export class AudioContextManagerService {
     // return this.createPoly
   }
 
-  public createFilter(): BiquadFilterNode {
-    const filter = this._ctx.createBiquadFilter();
-    this.soundChain.push(filter);
-    filter.connect(this._ctx.destination);
-    return filter;
-  }
+  // public createFilter(): BiquadFilterNode {
+  //   const filter = this._ctx.createBiquadFilter();
+  //   this.soundChain.push(filter);
+  //   filter.connect(this._ctx.destination);
+  //   return filter;
+  // }
 
   /**
    * Adds a new audioNode without connecting it to the soundChain
    * @param module module that has to be created
    */
-  public createSynthModule<T extends AudioNode>(module: T) {
+  public addSynthModule<T extends ModuleComponent>(module: T) {
 
   }
 

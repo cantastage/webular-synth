@@ -2,6 +2,11 @@ export interface ModuleComponent {
     data: any;
     // loadPatch(): void;
     // savePatch(): any;
+
+    getInput(): AudioNode;
+    getOutput(): AudioNode;
+    connectToSynthNode(node: AudioNode);
+    disconnectSynthModule();
 }
 
 // proposal
