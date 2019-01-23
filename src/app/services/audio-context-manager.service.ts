@@ -52,6 +52,20 @@ export class AudioContextManagerService {
   }
 
   /**
+   * Adds an audionode in the desired position
+   * @param node the node to be added
+   * @param list_name the list where the node has to be added
+   * @param position index of the position
+   */
+  public addSynthNode(node: AudioNode, list_name: string, position: number): void {
+    // if (list_name === 'soundChain') {
+    //   this.soundChain[]
+    // } else if (list_name === 'unconnectedList') {
+
+    // }
+  }
+
+  /**
    * Updates connections when moving a synth module inside the chain
    * maybe can return a boolean or a number
    * @TODO establish if needs parameters (index of the moved element)

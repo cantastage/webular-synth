@@ -9,9 +9,8 @@
       </div>
       <div class="component-body-sub-selector">
           <knob class="skin2" [min]="mp.hlDescriptor.minValue" [max]="mp.hlDescriptor.maxValue"
-          [value]="mp.hlValue"
           [startDegree]="-120"  [endDegree]="120"
-          [intensive]="false" (change)="mpChange(mp, $event)"></knob>
+          [intensive]="true" [(ngModel)]="mp.hlValue"></knob>
       </div>
     </div>
   </div>
