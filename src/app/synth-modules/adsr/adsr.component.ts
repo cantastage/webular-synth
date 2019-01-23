@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, HostListener } from '@angular/core';
+import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'app-adsr',
@@ -7,8 +8,8 @@ import { Component, OnInit, ViewChild, ElementRef, Input, HostListener } from '@
 })
 export class ADSRComponent implements OnInit {
   @Input() data: any;
-  @HostListener('window:scroll', ['$event'])
   @ViewChild('envCanvas') public envCanvas: ElementRef;
+
   private ctx: CanvasRenderingContext2D;
   private points: any;
   private flagDown: boolean;
@@ -20,11 +21,13 @@ export class ADSRComponent implements OnInit {
   private offsetY: number;
   private offsetParentLeft: number;
   private offsetParentTop: number;
+  private rightMargin: number;
+  private bottomMargin: number;
 
   // parameters
-  public initTime: number;
-  public initValue: number;
-  public initDecayTime: number;
+  public attackTime: number;
+  public attackValue: number;
+  public decayTime: number;
   public sustainValue: number;
   public releaseTime: number;
 
@@ -42,15 +45,21 @@ export class ADSRComponent implements OnInit {
   public scrollOffsetY: number;
   public scrollOffsetX: number;
 
+  @HostListener('window:scroll', ['$event'])
+    checkScroll($event) {
+      this.scrollOffsetY = window.pageYOffset;
+      this.scrollOffsetX = window.pageXOffset;
+    }
 
   constructor() { }
+
 
   ngOnInit() {
     this.scrollOffsetY = 0;
     this.scrollOffsetX = 0;
-    console.log(this.scrollOffsetX);
-    console.log(this.scrollOffsetY);
     const canvas: HTMLCanvasElement = this.envCanvas.nativeElement;
+    this.rightMargin = canvas.width;
+    this.bottomMargin = canvas.height;
     this.offsetParentLeft = canvas.parentElement.offsetLeft;
     this.offsetParentTop = canvas.parentElement.offsetTop;
     this.ctx = canvas.getContext('2d');
@@ -62,15 +71,15 @@ export class ADSRComponent implements OnInit {
 
     this.points = [
       {
-        x: 50,
-        y: 50,
+        x: this.data.state.attackTime,
+        y: this.data.state.attackValue,
         radius: 10,
         color: 'red',
         id: '1'
       },
       {
-        x: 180,
-        y: 80,
+        x: this.data.state.releaseTime,
+        y: this.data.state.sustainValue,
         radius: 10,
         color: 'red',
         id: '2'
@@ -78,20 +87,20 @@ export class ADSRComponent implements OnInit {
     ];
     this.lastX = [this.points[0].x, this.points[1].x];
     this.lastY = [this.points[0].y, this.points[1].y];
-
-
+    // constraints
     this.maxAttTime = this.points[1].x;
-    this.initTime = this.points[0].x / this.maxAttTime * 2;
-    this.initValue = (canvas.height - this.points[0].y) / canvas.height * 2;
-
     this.maxDecayTime = canvas.width - 10;
     this.minDecayTime = this.points[0].x + 10;
-    this.initDecayTime = (this.points[1].x - this.points[0].x) / canvas.width * 1;
-    this.sustainValue = (canvas.height - this.points[1].y) / canvas.height * 2;
-
-    this.releaseTime = (canvas.width - this.points[1].x) / canvas.width * 2;
     this.stopOsc = false;
     this.interruptNote = false;
+
+    // parameters
+    this.attackTime = (this.points[0].x - this.minDist) / this.maxAttTime * 2;
+    this.attackValue = (canvas.height - this.points[0].y) / canvas.height * 2;
+    this.sustainValue = (canvas.height - this.points[1].y) / canvas.height * 2;
+    this.releaseTime = (canvas.width - this.points[1].x) / canvas.width * 2;
+    this.decayTime = (this.points[1].x - this.points[0].x) / canvas.width * 1;
+
 
     this.drawAll();
 
@@ -100,12 +109,6 @@ export class ADSRComponent implements OnInit {
     this.osc = this.c.createOscillator();
     this.gain = this.c.createGain();
 
-  }
-
-  doSomething(event) {
-    this.scrollOffsetY = window.pageYOffset;
-    this.scrollOffsetX = window.pageXOffset;
-    console.log(window.pageXOffset);
   }
 
   public drawAll() {
@@ -134,7 +137,6 @@ export class ADSRComponent implements OnInit {
 
   public selectPoint(e: MouseEvent) {
     e.stopImmediatePropagation();
-    // console.log("clicked");
     const pos = {
       x: e.clientX - this.envCanvas.nativeElement.offsetLeft - this.offsetParentLeft
       + this.scrollOffsetX,
@@ -150,7 +152,7 @@ export class ADSRComponent implements OnInit {
     });
   }
 
-  public movePoint(e) {
+  public movePoint(e: MouseEvent) {
 
 
     if (!this.flagDown) {
@@ -164,17 +166,16 @@ export class ADSRComponent implements OnInit {
       this.lastX[this.selectedPoint] = mouseX;
       this.lastY[this.selectedPoint] = mouseY;
 
-      this.points[this.selectedPoint].y += dy;
-      console.log(mouseY);
-      // console.log($(window).scrollTop());
-
-
       if (this.selectedPoint === 0) {
-        // console.log(this.selectedPoint);
         if (this.lastX[this.selectedPoint] < this.points[1 - this.selectedPoint].x - this.minDist) {
-          this.points[this.selectedPoint].x += dx;
+          if (this.lastX[this.selectedPoint] > this.minDist) {
+            this.points[this.selectedPoint].x += dx;
+          } else {
+            this.points[this.selectedPoint].x = this.minDist;
+            this.lastX[this.selectedPoint] = this.points[this.selectedPoint].x + 1;
+          }
         } else {
-          this.points[this.selectedPoint].x = this.points[1 - this.selectedPoint].x + this.minDist;
+          this.points[this.selectedPoint].x = this.points[1 - this.selectedPoint].x - this.minDist;
           this.lastX[this.selectedPoint] = this.points[this.selectedPoint].x - 1;
         }
 
@@ -182,9 +183,22 @@ export class ADSRComponent implements OnInit {
       }
 
       if (this.selectedPoint === 1) {
-        // console.log(this.selectedPoint);
+        if (mouseY > this.minDist) {
+          if (mouseY < this.bottomMargin) {
+            this.points[this.selectedPoint].y += dy;
+          } else {
+            this.points[this.selectedPoint].y = this.bottomMargin;
+          }
+        } else {
+          this.points[this.selectedPoint].y = 10;
+        }
         if (this.lastX[this.selectedPoint] > this.points[1 - this.selectedPoint].x + this.minDist) {
-          this.points[this.selectedPoint].x += dx;
+          if (this.lastX[this.selectedPoint] < this.rightMargin - this.minDist) {
+            this.points[this.selectedPoint].x += dx;
+          } else {
+            this.points[this.selectedPoint].x = this.rightMargin - this.minDist;
+            this.lastX[this.selectedPoint] = this.points[this.selectedPoint].x - 1;
+          }
         } else {
           this.points[this.selectedPoint].x = this.points[1 - this.selectedPoint].x + this.minDist;
           this.lastX[this.selectedPoint] = this.points[this.selectedPoint].x - 1;
@@ -203,30 +217,30 @@ export class ADSRComponent implements OnInit {
     }
   }
 
-  public fixPoint(e) {
+  public fixPoint(e: MouseEvent) {
     this.flagDown = false;
   }
 
-  public updateAttackTime(maxValue, newValue) {
+  public updateAttackTime(maxValue: number, newValue: number) {
     this.maxAttTime = maxValue;
-    this.initTime = newValue / this.maxAttTime * 2;
+    this.attackTime = (newValue - (this.minDist - 2)) / this.maxAttTime * 2;
   }
 
-  public updateAttackValue(newValue) {
-    this.initValue = (this.envCanvas.nativeElement.height - newValue) / this.envCanvas.nativeElement.height * 2;
+  public updateAttackValue(newValue: number) {
+    this.attackValue = (this.envCanvas.nativeElement.height - newValue) / this.envCanvas.nativeElement.height * 2;
   }
 
 
-  public updateDecayTime(newInterval) {
-    this.initDecayTime = newInterval / this.envCanvas.nativeElement.width * 1;
+  public updateDecayTime(newInterval: number) {
+    this.decayTime = newInterval / this.envCanvas.nativeElement.width * 1;
   }
 
-  public updateSustainValue(newValue) {
+  public updateSustainValue(newValue: number) {
     this.sustainValue = (this.envCanvas.nativeElement.height - newValue) / this.envCanvas.nativeElement.height * 2;
   }
 
 
-  public updateReleaseTime(newInterval) {
+  public updateReleaseTime(newInterval: number) {
     this.releaseTime = newInterval / this.envCanvas.nativeElement.width * 2;
   }
 
@@ -236,8 +250,8 @@ export class ADSRComponent implements OnInit {
     this.osc.connect(this.gain);
     this.gain.connect(this.c.destination);
     this.gain.gain.setValueAtTime(0, this.c.currentTime);
-    this.gain.gain.linearRampToValueAtTime(this.initValue, this.c.currentTime + this.initTime);
-    this.gain.gain.linearRampToValueAtTime(this.sustainValue, this.c.currentTime + this.initTime + this.initDecayTime);
+    this.gain.gain.linearRampToValueAtTime(this.attackValue, this.c.currentTime + this.attackTime);
+    this.gain.gain.linearRampToValueAtTime(this.sustainValue, this.c.currentTime + this.attackTime + this.decayTime);
 
     this.osc.start();
 
@@ -250,23 +264,22 @@ export class ADSRComponent implements OnInit {
     this.gain.gain.linearRampToValueAtTime(0, this.c.currentTime + this.releaseTime);
     setTimeout(function () { this.osc.stop(); }, this.releaseTime * 1000);
   }
-
+ /*
   public offset(el) {
     const rect = el.getBoundingClientRect(),
       scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
       scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
   }
+  */
 
   public savePatch(): any {
-    const patch = { initTime: this.initTime,
-                    initValue: this.initValue,
-                    initDecayTime: this.initDecayTime,
-                    sustainValue: this.sustainValue,
-                    releaseTime: this.releaseTime
-
-    };
-    return patch;
+    console.log(this.points);
+    this.data.state.attackTime = this.points[0].x;
+    this.data.state.attackValue = this.points[0].y;
+    this.data.state.sustainValue = this.points[1].y;
+    this.data.state.releaseTime = this.points[1].x;
+    return this.data;
   }
 
 

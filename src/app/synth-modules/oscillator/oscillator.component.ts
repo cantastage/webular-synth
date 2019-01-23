@@ -20,7 +20,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   private active_voices: any;
   private frequency: any;
   private waveForm: any;
-  private midiData: any;
+  // private midiData: any;
   private maxVelocity: number;
   private addSemitone: number;
   private finePitch: number;
