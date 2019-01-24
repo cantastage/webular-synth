@@ -18,9 +18,9 @@ It is a modular synthesizer designed for passionate musicians, exploiting the pa
 
 ### Clock
 
-As in all the most known synthetizers, the clock module is a single instance which can be observed by objects who might desire a synchronization.
+As in all the most known synthesizers, the clock module is a single instance which can be observed by objects who might desire a synchronization.
 
-In our case, the sole module which needs temporization is the harmonic/melodic Sequencer.
+In our case, the sole module which needs temporization is the harmonic/melodic sequencer.
 
 **The `ClockComponent` builds an `IClock` instance thanks to the `ClockManagerService` service and the `ClockProvider` factory.**
 
@@ -38,7 +38,7 @@ Even in this case, the service sends messages to optional interested listeners c
 
 ### Sequencer
 
-The Sequencer is both synchronized with the click and, like the MIDI-IN Interface, capable of sending messages to listeners.
+The sequencer is both synchronized with the click and, like the MIDI-IN Interface, capable of sending messages to listeners.
 
 This last action is achieved via the `MidiContextManagerService` itself, following a sort of bus logic, which in future could be extended with MIDI channels discrimination.
 
