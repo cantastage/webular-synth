@@ -19,6 +19,7 @@ import { SynthModule } from '../interfaces/module.component';
 export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() synthModuleData: ModuleItem;
   @Input() index: number; // index in the array of created modules
+  @Input() listName: string; // name of the list where the wrapper is located
   private isViewInitialized = false;
   private cmpRef: ComponentRef<any>;
 
@@ -31,9 +32,11 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDes
     private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
-    console.log('Data provided to synth wrapper: ', this.synthModuleData);
-    this.contextManager.subject.subscribe((index) => {
-      if (index === this.index) {
+    // console.log('Data provided to synth wrapper: ', this.synthModuleData);
+    console.log('ListName provided to synthwrapper: ', this.listName);
+    this.contextManager.subject.subscribe((moduleInfo) => {
+      if ((moduleInfo.x === 'unconnectedModules' && moduleInfo.y === this.index) 
+      || moduleInfo.x === 'soundChain' && moduleInfo.y === this.index) {
         console.log('saving patch!');
         this.savePatch();
         console.log('saved patch parameters: ', this.synthModuleData.data);

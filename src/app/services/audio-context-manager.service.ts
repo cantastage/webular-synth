@@ -7,6 +7,7 @@ import { NumberValueAccessor } from '@angular/forms/src/directives';
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { PercentPipe } from '@angular/common';
 import { timingSafeEqual } from 'crypto';
+import { Pair } from '../model/pair';
 
 /**
  * This service provides access to a common audio context shared by all synth modules.
@@ -19,7 +20,7 @@ export class AudioContextManagerService {
   private _ctx: AudioContext;
   private soundChain: Array<SynthModule> = new Array<SynthModule>(0); // stores all the nodes in the audiochain
   private unconnectedModules: Array<SynthModule> = new Array<SynthModule>(0);
-  public subject: Subject<number>;
+  public subject: Subject<Pair<string, number>>;
 
   constructor() {
     this._ctx = new AudioContext();

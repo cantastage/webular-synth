@@ -5,6 +5,7 @@ import { AudioContextManagerService } from '../services/audio-context-manager.se
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ModuleItem } from '../model/module-item';
 import { ModuleManagerService } from '../services/module-manager.service';
+import { Pair } from '../model/pair';
 
 @Component({
   selector: 'app-synth-module-container',
@@ -42,8 +43,9 @@ export class SynthModuleContainerComponent implements OnInit {
       const listName = event.container.id;
       this.contextManager.reorderModule(listName, event.previousIndex, event.currentIndex);
     } else {
-      // Component will be destroyed, so I need to save the state of the synth module
-      this.contextManager.subject.next(event.currentIndex);
+      // Component will be destroyed, so I need to save the state of the synth module 
+      // TODO can be optimized without instantiating a new pair everytime
+      this.contextManager.subject.next(new Pair<string, number>(event.previousContainer.id, event.currentIndex));
       // console.log('moduleItem being passed: ', event.previousContainer.data[event.currentIndex]);
       transferArrayItem(event.previousContainer.data,
         event.container.data,
