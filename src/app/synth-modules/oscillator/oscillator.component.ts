@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 import { Voice } from 'src/app/synth-modules/oscillator/voice';
@@ -13,10 +13,11 @@ import { SynthModule } from 'src/app/interfaces/module.component';
 })
 
 export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number, boolean, number, number]>, SynthModule {
-
+  @ViewChild('envCanvas') public envCanvas: ElementRef;
   @Input() data: any;
   private c: AudioContext;
   private g: GainNode;
+
   private active_voices: any;
   private frequency: any;
   private waveForm: any;
@@ -25,6 +26,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   private addSemitone: number;
   private finePitch: number;
   private active: number;
+
   // private activeIndex: number;
   // private waveforms: Array<string> = ['SIN', 'SQR', 'SAW', 'TRI'];
 
@@ -50,15 +52,16 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     this.active_voices = [];
     this.c = this.contextManager.audioContext;
     this.g = this.c.createGain();
-    // let active = 0;
+    this.g.gain.setValueAtTime(0, this.c.currentTime + 2);
+    // this.g.gain.linearRampToValueAtTime(0, this.c.currentTime + 5);
+    this.g.connect(this.c.destination);
+
     if (this.data.waveForm !== undefined) {
       this.waveForm = this.data.waveForm;
     }
-    // this.waveForm = 'sine';
     this.maxVelocity = 100;
     this.addSemitone = 0;
     this.finePitch = 0;
-    // this.g.gain.setValueAtTime(0.5, this.c.currentTime);
 
     // this.midiManager.midiAccess();
     // this.midiFunction();
