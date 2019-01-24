@@ -1,12 +1,12 @@
-export interface ModuleComponent {
+export interface SynthModule {
     data: any;
     // loadPatch(): void;
     // savePatch(): any;
 
-    getInput(): AudioNode;
+    // getInput(): AudioNode;
     getOutput(): AudioNode;
     connectToSynthNode(node: AudioNode);
-    disconnectSynthModule();
+    // disconnectSynthModule();
 }
 
 // proposal

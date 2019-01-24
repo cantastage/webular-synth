@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, TemplateRef, OnDestroy, SimpleChanges, OnChanges } from '@angular/core';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
-import { ModuleComponent } from 'src/app/interfaces/module.component';
+import { SynthModule } from 'src/app/interfaces/module.component';
 
 @Component({
   selector: 'app-moog-ladder-filter',
   templateUrl: './moog-ladder-filter.component.html',
   styleUrls: ['./moog-ladder-filter.component.scss']
 })
-export class MoogLadderFilterComponent implements OnInit, ModuleComponent, OnDestroy, OnChanges {
+export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy, OnChanges {
   @Input() data: any;
   private _osc: OscillatorNode;
   private _scriptNode: ScriptProcessorNode;
@@ -111,5 +111,13 @@ export class MoogLadderFilterComponent implements OnInit, ModuleComponent, OnDes
   ngOnDestroy(): void {
     console.log('Ladder filter is being destroyed');
     // throw new Error('Method not implemented.');
+  }
+
+  public getOutput(): AudioNode {
+    return this._scriptNode;
+  }
+
+  public connectToSynthNode(node: AudioNode) {
+    node.connect(this._scriptNode);
   }
 }

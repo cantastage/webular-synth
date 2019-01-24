@@ -2,9 +2,10 @@ import {
   Component, OnInit, ViewChild, AfterViewInit, Input, ViewContainerRef,
   ComponentFactoryResolver, ChangeDetectorRef, Compiler, ComponentRef, OnDestroy
 } from '@angular/core';
-import { ModuleComponent } from '../interfaces/module.component';
 import { ModuleItem } from '../model/module-item';
 import { AudioContextManagerService } from '../services/audio-context-manager.service';
+import { SynthModule } from '../interfaces/module.component';
+
 
 /**
  * This component is a wrapper that contains a synth module inside.
@@ -67,7 +68,7 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDes
     }
     const factory = this.componentFactoryResolver.resolveComponentFactory(this.synthModuleData.component);
     this.cmpRef = this.target.createComponent(factory);
-    (<ModuleComponent>this.cmpRef.instance).data = this.synthModuleData.data;
+    (<SynthModule>this.cmpRef.instance).data = this.synthModuleData.data;
     this.cdRef.detectChanges();  // NB non rimuovere altrimenti la onInit del child view non viene chiamata.
   }
 

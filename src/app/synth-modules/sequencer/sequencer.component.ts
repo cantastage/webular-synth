@@ -10,14 +10,14 @@ import { Subdivision } from '../../model/modules/sequencer/Subdivision';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
-import { ModuleComponent } from 'src/app/interfaces/module.component';
+import { SynthModule } from 'src/app/interfaces/module.component';
 
 @Component({
   selector: 'app-sequencer',
   templateUrl: './sequencer.component.html',
   styleUrls: ['./sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit, IObserver<number>, ModuleComponent {
+export class SequencerComponent implements OnInit, IObserver<number> {
   @Input() data: any;
 
   // UI selections

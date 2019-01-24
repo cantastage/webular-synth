@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { SynthModuleContainerComponent } from './synth-module-container/synth-module-container.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MoogLadderFilterComponent } from './synth-modules/moog-ladder-filter/moog-ladder-filter.component';
-import { PolyphonicOscComponent } from './synth-modules/polyphonic-osc/polyphonic-osc.component';
 import { AddModuleDirective } from './directives/add-module.directive';
 import { KnobComponent } from './synth-modules/sub-components/knob/knob.component';
 import { FormsModule } from '@angular/forms';
@@ -25,7 +24,6 @@ import { AmplifierComponent } from './synth-modules/amplifier/amplifier.componen
     AppComponent,
     SynthModuleContainerComponent,
     MoogLadderFilterComponent,
-    PolyphonicOscComponent,
     AddModuleDirective,
     KnobComponent,
     SynthModuleWrapperComponent,

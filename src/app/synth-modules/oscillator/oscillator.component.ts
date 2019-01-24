@@ -4,7 +4,7 @@ import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrie
 import { Voice } from 'src/app/synth-modules/oscillator/voice';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
-import { ModuleComponent } from 'src/app/interfaces/module.component';
+import { SynthModule } from 'src/app/interfaces/module.component';
 
 @Component({
   selector: 'app-oscillator',
@@ -12,7 +12,7 @@ import { ModuleComponent } from 'src/app/interfaces/module.component';
   styleUrls: ['./oscillator.component.scss']
 })
 
-export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number, boolean, number, number]>, ModuleComponent {
+export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number, boolean, number, number]>, SynthModule {
 
   @Input() data: any;
   private c: AudioContext;
@@ -169,6 +169,14 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
                     addSemitone: this.addSemitone,
                     finePitch: this.finePitch };
     return patch;
+  }
+
+  public getOutput(): AudioNode {
+    return this.g;
+  }
+
+  public connectToSynthNode(node: AudioNode) {
+    node.connect(this.g);
   }
 
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { IModulableComponent } from 'src/app/synth-modules/Modulable';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 
-import { ModuleComponent } from 'src/app/interfaces/module.component';
+import { SynthModule } from 'src/app/interfaces/module.component';
 import { IUIAudioParameter, UIAudioParameter, ModulableAudioParameter, AudioParameterDescriptor } from '../Modulation';
 
 @Component({
@@ -10,7 +10,7 @@ import { IUIAudioParameter, UIAudioParameter, ModulableAudioParameter, AudioPara
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss', '../../app.component.scss']
 })
-export class FilterComponent implements OnInit, IModulableComponent, ModuleComponent {
+export class FilterComponent implements OnInit, IModulableComponent, SynthModule {
   @Input() data: any;
 
   private _testGeneratorNode: OscillatorNode;
@@ -77,5 +77,13 @@ export class FilterComponent implements OnInit, IModulableComponent, ModuleCompo
     this.data.state.hlFrequency = this.modulableParameters[0].hlValue;
     this.data.state.hlResonance = this.modulableParameters[1].hlValue;
     return this.data;
+  }
+
+  public getOutput(): AudioNode {
+    return this._filterNode;
+  }
+
+  public connectToSynthNode(node: AudioNode) {
+    node.connect(this._filterNode);
   }
 }

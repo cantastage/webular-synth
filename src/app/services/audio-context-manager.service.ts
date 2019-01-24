@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ModuleItem } from '../model/module-item';
 import { Subject } from 'rxjs';
-import { ModuleComponent } from '../interfaces/module.component';
+import { SynthModule } from '../interfaces/module.component';
 
 /**
  * This service provides access to a common audio context shared by all synth modules.
@@ -12,8 +12,8 @@ import { ModuleComponent } from '../interfaces/module.component';
 export class AudioContextManagerService {
   // private master_volume: GainNode;
   private _ctx: AudioContext;
-  private soundChain: Array<ModuleComponent> = new Array<ModuleComponent>(0); // stores all the nodes in the audiochain
-  private disconnectedNodes: Array<ModuleComponent> = new Array<ModuleComponent>(0);
+  private soundChain: Array<SynthModule> = new Array<SynthModule>(0); // stores all the nodes in the audiochain
+  private unconnectedModules: Array<SynthModule> = new Array<SynthModule>(0);
   public subject: Subject<number>;
 
   constructor() {
@@ -30,13 +30,6 @@ export class AudioContextManagerService {
     return this._ctx;
   }
 
-  /**
-   * Creates a polyphonic oscillator node
-   */
-  public createPolyphonicOscillator(): void {
-    // return this.createPoly
-  }
-
   // public createFilter(): BiquadFilterNode {
   //   const filter = this._ctx.createBiquadFilter();
   //   this.soundChain.push(filter);
@@ -48,8 +41,12 @@ export class AudioContextManagerService {
    * Adds a new audioNode without connecting it to the soundChain
    * @param module module that has to be created
    */
-  public addSynthModule<T extends ModuleComponent>(module: T) {
+  public addSynthModule<T extends SynthModule>(module: T, listName: string) {
+    if (listName === 'unconnectedModules') {
+      
+    } else if (listName === 'soundChain') {
 
+    }
   }
 
   /**
@@ -74,11 +71,11 @@ export class AudioContextManagerService {
   private updateConnections(): void {
     // The last element needs to be connected to the audio destination
     let i = 0;
-    while (i < this.soundChain.length - 1) {
-      this.soundChain[i].connect(this.soundChain[i + 1]);
-      i++;
-    }
-    // connects the last element to audio destination
-    this.soundChain[i].connect(this._ctx.destination);
+    // while (i < this.soundChain.length - 1) {
+    //   this.soundChain[i].connect(this.soundChain[i + 1]);
+    //   i++;
+    // }
+    // // connects the last element to audio destination
+    // this.soundChain[i].connect(this._ctx.destination);
   }
 }

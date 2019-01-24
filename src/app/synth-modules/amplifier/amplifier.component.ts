@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { IModulableComponent } from '../Modulable';
-import { ModuleComponent } from 'src/app/interfaces/module.component';
+import { SynthModule } from 'src/app/interfaces/module.component';
 import { IUIAudioParameter, ModulableAudioParameter, UIAudioParameter, AudioParameterDescriptor } from '../Modulation';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 
@@ -9,7 +9,7 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
   templateUrl: './amplifier.component.html',
   styleUrls: ['./amplifier.component.scss', '../../app.component.scss']
 })
-export class AmplifierComponent implements OnInit, IModulableComponent, ModuleComponent {
+export class AmplifierComponent implements OnInit, IModulableComponent, SynthModule {
   @Input() data: any;
 
   private _gainNode: GainNode;
@@ -58,5 +58,13 @@ export class AmplifierComponent implements OnInit, IModulableComponent, ModuleCo
     this.data.state.hlLevel = this.modulableParameters[0].hlValue;
     this.data.state.hlBalance = this.modulableParameters[1].hlValue;
     return this.data;
+  }
+
+  public getOutput(): AudioNode {
+    return this._gainNode;
+  }
+
+  public connectToSynthNode(node: AudioNode) {
+    node.connect(this._gainNode);
   }
 }

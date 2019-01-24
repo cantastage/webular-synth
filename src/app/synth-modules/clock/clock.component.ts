@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
-import { ModuleComponent } from 'src/app/interfaces/module.component';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 
 @Component({
@@ -8,7 +7,7 @@ import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
   templateUrl: './clock.component.html',
   styleUrls: ['./clock.component.scss', '../../app.component.scss']
 })
-export class ClockComponent implements OnInit, ModuleComponent, IObserver<number> {
+export class ClockComponent implements OnInit, IObserver<number> {
   @Input() data: any;
   private _on: boolean;
 

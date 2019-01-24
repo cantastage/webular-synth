@@ -1,8 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { IModulatorComponent, AttachableComponent } from '../Modulator';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
-import { ModuleComponent } from 'src/app/interfaces/module.component';
-import { IUIAudioParameter, IAudioParameter, AudioParameterDescriptor, UIAudioParameter, ModulableAudioParameter, IValuable, AudioParameter, Valuable } from '../Modulation';
+import { SynthModule } from 'src/app/interfaces/module.component';
+import {
+  IUIAudioParameter, IAudioParameter,
+  AudioParameterDescriptor, UIAudioParameter, ModulableAudioParameter, AudioParameter
+} from '../Modulation';
 
 @Component({
   selector: 'app-lfo',
@@ -10,7 +13,7 @@ import { IUIAudioParameter, IAudioParameter, AudioParameterDescriptor, UIAudioPa
   styleUrls: ['./lfo.component.scss', '../../app.component.scss']
 })
 export class LfoComponent extends AttachableComponent
-  implements OnInit, ModuleComponent, IModulatorComponent {
+  implements OnInit, IModulatorComponent {
   @Input() data: any;
   private _modulatedParameter: IUIAudioParameter<ModulableAudioParameter>;
 
@@ -52,11 +55,11 @@ export class LfoComponent extends AttachableComponent
     const negAmp: number = uiVal / max;
     const shift = negAmp / I;
     let tmpI: number, tmpO: number;
-    
-    for(let chi = 0; chi < ape.inputBuffer.numberOfChannels; chi++) {
+
+    for (let chi = 0; chi < ape.inputBuffer.numberOfChannels; chi++) {
       const inputSamples = ape.inputBuffer.getChannelData(chi);
       const outputSamples = ape.outputBuffer.getChannelData(chi);
-      for(let sampi = 0; sampi < inputSamples.length; sampi++) {
+      for (let sampi = 0; sampi < inputSamples.length; sampi++) {
         tmpI = inputSamples[sampi];
         tmpO = tmpI * (tmpI > 0 ? posAmp : negAmp);
         tmpO = tmpO + shift;
