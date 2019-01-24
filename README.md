@@ -38,7 +38,7 @@ Even in this case, the service sends messages to optional interested listeners c
 
 ### Sequencer
 
-The sequencer is both synchronized with the click and, like the MIDI-IN Interface, capable of sending messages to listeners.
+The sequencer is both synchronized with the click and, like the MIDI-IN interface, capable of sending messages to listeners.
 
 This last action is achieved via the `MidiContextManagerService` itself, following a sort of bus logic, which in future could be extended with MIDI channels discrimination.
 
