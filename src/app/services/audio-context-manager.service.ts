@@ -84,27 +84,12 @@ export class AudioContextManagerService {
     } else if (listName === 'soundChain') {
       this.reorderSynthModule(this.soundChain, previousIndex, currentIndex);
     }
-    this.updateConnections();
+    this.updateConnections(); // TODO can be optimized, call it only when you move elements inside soundchain
   }
 
   private reorderSynthModule(list: Array<SynthModule>, previousIndex: number, currentIndex: number) {
     moveItemInArray(list, previousIndex, currentIndex);
   }
-
-  // /**
-  //  * Adds an audionode in the desired position
-  //  * @param node the node to be added
-  //  * @param list_name the list where the node has to be added
-  //  * @param position index of the position
-  //  */
-  // public addSynthNode(node: AudioNode, list_name: string, position: number): void {
-  //   // if (list_name === 'soundChain') {
-  //   //   this.soundChain[]
-  //   // } else if (list_name === 'unconnectedList') {
-
-  //   // }
-  // }
-
 
   private disconnectAllListModules(list: Array<SynthModule>): void {
     for (let i = 0; i < list.length; i++) {
