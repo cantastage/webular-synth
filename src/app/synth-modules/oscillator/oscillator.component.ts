@@ -64,6 +64,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     // this.midiFunction();
 
     // createAudioNode in audio context manager service
+    this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
   }
 
   ngOnDestroy() {
@@ -177,6 +178,10 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
   public connectToSynthNode(node: AudioNode) {
     node.connect(this.g);
+  }
+
+  public disconnectSynthModule() {
+    this.g.disconnect();
   }
 
 }

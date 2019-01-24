@@ -38,18 +38,21 @@ export class SynthModuleContainerComponent implements OnInit {
     if (event.previousContainer === event.container) {
       // console.log('Reordering modules');
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      // move the correspondant audio node
+      // move the correspondant audio node in context manager service
+      const listName = event.container.id;
+      this.contextManager.reorderModule(listName, event.previousIndex, event.currentIndex);
     } else {
-      this.contextManager.subject.next(event.currentIndex);
-      console.log('moduleItem being passed: ', event.previousContainer.data[event.currentIndex]);
       // Component will be destroyed, so I need to save the state of the synth module
-      // tipo: audiocontextmanager
+      this.contextManager.subject.next(event.currentIndex);
+      // console.log('moduleItem being passed: ', event.previousContainer.data[event.currentIndex]);
       transferArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex);
       // update connections in audiocontextservice
-      // this.contextManager.
+      const previousListName = event.previousContainer.id;
+      const targetListName = event.container.id;
+      this.contextManager.moveSynthModule(previousListName, targetListName, event.previousIndex, event.currentIndex);
     }
   }
 

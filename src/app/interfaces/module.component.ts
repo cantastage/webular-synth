@@ -6,6 +6,7 @@ export interface SynthModule {
     // getInput(): AudioNode;
     getOutput(): AudioNode;
     connectToSynthNode(node: AudioNode);
+    disconnectSynthModule(): void;
     // disconnectSynthModule();
 }
 

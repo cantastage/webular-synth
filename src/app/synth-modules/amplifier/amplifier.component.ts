@@ -52,6 +52,7 @@ export class AmplifierComponent implements OnInit, IModulableComponent, SynthMod
     this._gainNode.connect(this._panNode);
     this._panNode.connect(this.contextManager.audioContext.destination);
     this.loadPatch();
+    this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
   }
 
   public savePatch(): any {
@@ -66,5 +67,9 @@ export class AmplifierComponent implements OnInit, IModulableComponent, SynthMod
 
   public connectToSynthNode(node: AudioNode) {
     node.connect(this._gainNode);
+  }
+
+  public disconnectSynthModule() {
+    this._gainNode.disconnect();
   }
 }
