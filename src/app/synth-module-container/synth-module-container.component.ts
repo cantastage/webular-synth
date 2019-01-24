@@ -38,6 +38,7 @@ export class SynthModuleContainerComponent implements OnInit {
     if (event.previousContainer === event.container) {
       // console.log('Reordering modules');
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      // move the correspondant audio node
     } else {
       this.contextManager.subject.next(event.currentIndex);
       console.log('moduleItem being passed: ', event.previousContainer.data[event.currentIndex]);

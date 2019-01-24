@@ -1,5 +1,5 @@
 .container{
-    position: absolute;
+    position: relative;
     width: 400px;
     height: 280px;
     border: 1px solid black;
@@ -8,7 +8,7 @@
   }
 
   #envelope {
-    position: absolute;
+    position: relative;
     display: block;
     margin-left: 10%;
     top: 30%;
@@ -17,7 +17,7 @@
 
   }
   button{
-      position: absolute;
+      position: relative;
       display: inline-block;
       transform: translateX(-100%);
       transform: translateY(-100%);

@@ -1,49 +1,53 @@
-<div class = "container">
-  <div class = "dot" [className] = "this.active == 0 ? 'dot active' : 'dot'" id = "sin-dot">
+<div class="container">
+
+  <div class="dot" [className]="this.active == 0 ? 'dot active' : 'dot'" id="sin-dot">
   </div>
-  <div class = "dot" [className] = "this.active == 1 ? 'dot active' : 'dot'" id = "sqr-dot">
+  <div class="dot" [className]="this.active == 1 ? 'dot active' : 'dot'" id="sqr-dot">
   </div>
-  <div class = "dot" [className] = "this.active == 2 ? 'dot active' : 'dot'" id = "saw-dot">
+  <div class="dot" [className]="this.active == 2 ? 'dot active' : 'dot'" id="saw-dot">
   </div>
-  <div class = "dot" [className] = "this.active == 3 ? 'dot active' : 'dot'" id = "tri-dot">
+  <div class="dot" [className]="this.active == 3 ? 'dot active' : 'dot'" id="tri-dot">
   </div>
-  
-  <div class = "button" id = "sin" (click) = "selectWaveform(0)">
+
+  <div class="button" id="sin" (click)="selectWaveform(0)">
     SIN
   </div>
-  <div class = "button" id = "sqr" (click) = "selectWaveform(1)">
+  <div class="button" id="sqr" (click)="selectWaveform(1)">
     SQR
   </div>
-  <div class = "button" id = "saw" (click) = "selectWaveform(2)">
+  <div class="button" id="saw" (click)="selectWaveform(2)">
     SAW
   </div>
-  <div class = "button" id = "tri" (click) = "selectWaveform(3)">
+  <div class="button" id="tri" (click)="selectWaveform(3)">
     TRI
   </div>
-  <knob class = "skin1" #volKnob id ="volumeKnob" [min]="0" [max]="127" [value]="100" [startDegree]="-120"  [endDegree]="120" (change) = "onVolumeChange(volKnob.meterValue)">
-    
+  <knob class="skin1" #volKnob id="volumeKnob" [min]="0" [max]="127" [value]="100" [startDegree]="-120" [endDegree]="120"
+    (change)="onVolumeChange(volKnob.meterValue)">
+
   </knob>
   <div id="label-volume">
     VOLUME
   </div>
-  
-  <knob class = "skin1" #crsKnob id ="coarseKnob" [min]="-12" [max]="12" [value]="0" [startDegree]="-120"  [endDegree]="120" (change) = "coarseTuneChange(crsKnob.meterValue)">
+
+  <knob class="skin1" #crsKnob id="coarseKnob" [min]="-12" [max]="12" [value]="0" [startDegree]="-120" [endDegree]="120"
+    (change)="coarseTuneChange(crsKnob.meterValue)">
 
   </knob>
 
-  <knob class = "skin1" #fnKnob id ="fineKnob" [min]="-10" [max]="10" [value]="0" [startDegree]="-120"  [endDegree]="120" (change) = "fineTuneChange(fnKnob.meterValue)">
-  
+  <knob class="skin1" #fnKnob id="fineKnob" [min]="-10" [max]="10" [value]="0" [startDegree]="-120" [endDegree]="120"
+    (change)="fineTuneChange(fnKnob.meterValue)">
+
   </knob>
-  <div id = "label-coarse">
+  <div id="label-coarse">
     FINE
   </div>
-  <div id = "label-fine">
+  <div id="label-fine">
     COARSE
   </div>
-  
- 
 
-  
+
+
+
 </div>
 
 <!--
