@@ -180,4 +180,8 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     node.connect(this.g);
   }
 
+  public disconnectSynthModule() {
+    this.g.disconnect();
+  }
+
 }

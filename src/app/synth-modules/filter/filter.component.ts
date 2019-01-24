@@ -87,4 +87,8 @@ export class FilterComponent implements OnInit, IModulableComponent, SynthModule
   public connectToSynthNode(node: AudioNode) {
     node.connect(this._filterNode);
   }
+
+  public disconnectSynthModule() {
+    this._filterNode.disconnect();
+  }
 }

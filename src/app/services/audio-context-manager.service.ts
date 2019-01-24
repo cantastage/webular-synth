@@ -6,6 +6,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { NumberValueAccessor } from '@angular/forms/src/directives';
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { PercentPipe } from '@angular/common';
+import { timingSafeEqual } from 'crypto';
 
 /**
  * This service provides access to a common audio context shared by all synth modules.
@@ -105,15 +106,24 @@ export class AudioContextManagerService {
   // }
 
 
-  // private disconnectAllModules(): void {
-  //   for (let i = 0; i < this.soundChain.lengt)
-  // }
+  private disconnectAllListModules(list: Array<SynthModule>): void {
+    for (let i = 0; i < list.length; i++) {
+      list[i].disconnectSynthModule();
+    }
+  }
 
-  // private updateModuleListConnections(list: Array<SynthModule>): void {
-  //   for (let i = 0; i < list.length; i++) {
-  //     list[i].
-  //   }
-  // }
+  private updateSoundChain(): void {
+    const list = this.soundChain;
+    let i = 0;
+    while (i < (list.length - 1)) {
+      list[i].disconnectSynthModule();
+      list[i + 1].connectToSynthNode(list[i].getOutput());
+      i++;
+    }
+    // Last element of the chain
+    list[i].disconnectSynthModule();
+    list[i].getOutput().connect(this._ctx.destination);
+  }
 
   /**
    * Updates connections when moving a synth module inside the chain
@@ -121,13 +131,7 @@ export class AudioContextManagerService {
    * @TODO establish if needs parameters (index of the moved element)
    */
   private updateConnections(): void {
-    // The last element needs to be connected to the audio destination
-    let i = 0;
-    // while (i < this.soundChain.length - 1) {
-    //   this.soundChain[i].connect(this.soundChain[i + 1]);
-    //   i++;
-    // }
-    // // connects the last element to audio destination
-    // this.soundChain[i].connect(this._ctx.destination);
+    this.disconnectAllListModules(this.unconnectedModules);
+    this.updateSoundChain();
   }
 }
