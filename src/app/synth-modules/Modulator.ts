@@ -1,77 +1,31 @@
 import { Input } from '@angular/core';
-import { AudioContextManagerService } from '../services/audio-context-manager.service';
-import { IModulableComponent } from './Modulable';
-import { IUIAudioParameter, ModulableAudioParameter, AudioParameter, UIAudioParameter, AudioParameterDescriptor } from './Modulation';
-import { ModuleComponent } from '../interfaces/module.component';
+import { IUIAudioParameter, ModulableAudioParameter } from './Modulation';
 
-export interface IModulatorComponent {
-  modulatedComponent: IModulableComponent;
-  modulatedParameter: IUIAudioParameter<ModulableAudioParameter>;
+export interface IAttachableComponent {
+  attachedComponent: IAttachableComponent;
 }
 
-export abstract class ModulatorComponent implements IModulatorComponent {
-  protected _intensityNode: GainNode;
-  private _intensity: IUIAudioParameter<AudioParameter>;
-  protected _modulatedComponent: IModulableComponent;
-  protected _modulatedParameter: IUIAudioParameter<ModulableAudioParameter>;
-
-  public get intensity(): IUIAudioParameter<AudioParameter> {
-    return this._intensity;
-  }
-  public get modulatedComponent(): IModulableComponent {
-    return this._modulatedComponent;
+export abstract class AttachableComponent {
+  protected _attachedComponent: IAttachableComponent;
+  public get attachedComponent(): IAttachableComponent {
+    return this._attachedComponent;
   }
   @Input()
-  public set modulatedComponent(mm: IModulableComponent) {
-    if (mm && mm != null) { // Attach
-      this._modulatedComponent = mm;
-      this.onModulatedComponentAttach();
+  public set attachedComponent(c: IAttachableComponent) {
+    if (c && c != null) { // Attach
+      this._attachedComponent = c;
+      // this.onComponentAttach();
     } else { // Detach
-      this.onModulatedComponentDetach();
-      this._modulatedComponent = null;
+      // this.onComponentDetach();
+      this._attachedComponent = null;
     }
   }
-  public get modulatedParameter(): IUIAudioParameter<ModulableAudioParameter> {
-    return this._modulatedParameter;
-  }
-  @Input()
-  // CHECK: think of all the combo modulatedParameter x mp
-  public set modulatedParameter(mp: IUIAudioParameter<ModulableAudioParameter>) {
-    if (mp && mp != null) { // Attach
-      this._modulatedParameter = mp;
+  // protected abstract onComponentAttach(): void;
+  // protected abstract onComponentDetach(): void;
 
-      this.modulatedParameter.audioParameter.beginModulationConfig();
-      this._intensity = new UIAudioParameter<AudioParameter>(
-        new AudioParameter(
-          'intensity',
-          new AudioParameterDescriptor(
-            this.modulatedParameter.audioParameter.llDescriptor.minValue,
-            this.modulatedParameter.audioParameter.llDescriptor.maxValue,
-            this.modulatedParameter.audioParameter.llDescriptor.maxValue,
-            this.modulatedParameter.audioParameter.llDescriptor.measurementUnit
-          ),
-          this._intensityNode.gain
-        ),
-        new AudioParameterDescriptor(0, 100, 100, '%')
-      );
-      this._intensityNode.connect(this.modulatedParameter.audioParameter.audioParam);
-      this.onModulatedParameterAttach();
-    } else { // Detach
-      this.onModulatedParameterDetach();
-      this._intensityNode.disconnect(this.modulatedParameter.audioParameter.audioParam);
-      this.intensity.hlValue = this.intensity.hlDescriptor.defaultValue;
-      this.modulatedParameter.audioParameter.endModulationConfig();
+  public constructor() { }
+}
 
-      this._modulatedParameter = null;
-    }
-  }
-
-  protected abstract onModulatedComponentAttach(): void;
-  protected abstract onModulatedComponentDetach(): void;
-  protected abstract onModulatedParameterAttach(): void;
-  protected abstract onModulatedParameterDetach(): void;
-
-  public constructor(contextManager: AudioContextManagerService) {
-    this._intensityNode = contextManager.audioContext.createGain();
-  }
+export interface IModulatorComponent extends IAttachableComponent {
+  modulatedParameter: IUIAudioParameter<ModulableAudioParameter>;
 }

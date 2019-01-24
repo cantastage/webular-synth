@@ -31,6 +31,9 @@ export class ModuleManagerService {
   private get filterDefaultState(): any {
     return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 5 };
   }
+  private get lfoDefaultState(): any {
+    return { waveShape: 'sine', hlIntensity: 100, hlRate: 10 };
+  }
   private get clockDefaultState(): any {
     return { bpm: ClockProvider.BEATS_DEFAULT };
   }
@@ -53,7 +56,7 @@ export class ModuleManagerService {
     return [
       new ModuleItem(MoogLadderFilterComponent, { name: 'filter', state: this.mlFilterDefaultState }),
       new ModuleItem(FilterComponent, { name: 'pesteneraFilter', state: this.filterDefaultState }),
-      new ModuleItem(LfoComponent, { name: 'lfo' }),
+      new ModuleItem(LfoComponent, { name: 'lfo', state: this.lfoDefaultState }),
       new ModuleItem(ClockComponent, { name: 'clock', state: this.clockDefaultState }),
       new ModuleItem(SequencerComponent, { name: 'sequencer', state: this.sequencerDefaultState }),
       new ModuleItem(ADSRComponent, { name: 'ADSR' }),
