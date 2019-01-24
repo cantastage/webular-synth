@@ -16,18 +16,19 @@ export class LfoComponent extends AttachableComponent
 
   private _lfoNode: OscillatorNode;
   private _lfoProcessor: ScriptProcessorNode;
+  private _processorAmplifier: GainNode;
   // how to extract a string[] from OscillatorType?!?!?! O.O
   private _waveShapes: OscillatorType[]; // readonly
-  private _intensity: IUIAudioParameter<IAudioParameter<IValuable>>; // readonly
+  private _intensity: IUIAudioParameter<IAudioParameter<AudioParam>>; // readonly
   private _rate: IUIAudioParameter<IAudioParameter<AudioParam>>; // readonly
 
   public get waveShapes(): OscillatorType[] {
     return this._waveShapes;
   }
-  public get intensity(): IUIAudioParameter<IAudioParameter<IValuable>> {
+  public get intensity(): IUIAudioParameter<IAudioParameter<AudioParam>> {
     return this._intensity;
   }
-  public get rate(): IUIAudioParameter<IAudioParameter<IValuable>> {
+  public get rate(): IUIAudioParameter<IAudioParameter<AudioParam>> {
     return this._rate;
   }
 
@@ -44,12 +45,12 @@ export class LfoComponent extends AttachableComponent
     }
   }
   private modulatingWaveShapeConfig(ape: AudioProcessingEvent): void {
-    const shift = this.modulatedParameter.audioParameter.llValue;
-    const posAmp: number = this.modulatedParameter.audioParameter.llDescriptor.maxValue -
-      shift;
-    const negAmp: number = shift -
-      this.modulatedParameter.audioParameter.llDescriptor.minValue;
-    const scaleFactor = this.intensity.audioParameter.llValue;
+    const I: number = this.intensity.audioParameter.llValue;
+    const max: number = this.modulatedParameter.audioParameter.llDescriptor.maxValue;
+    const uiVal: number = this.modulatedParameter.audioParameter.llValue;
+    const posAmp: number = (max - uiVal) / max;
+    const negAmp: number = uiVal / max;
+    const shift = negAmp / I;
     let tmpI: number, tmpO: number;
     
     for(let chi = 0; chi < ape.inputBuffer.numberOfChannels; chi++) {
@@ -58,7 +59,7 @@ export class LfoComponent extends AttachableComponent
       for(let sampi = 0; sampi < inputSamples.length; sampi++) {
         tmpI = inputSamples[sampi];
         tmpO = tmpI * (tmpI > 0 ? posAmp : negAmp);
-        tmpO = scaleFactor * tmpO + shift;
+        tmpO = tmpO + shift;
         outputSamples[sampi] = tmpO;
       }
     }
@@ -71,11 +72,16 @@ export class LfoComponent extends AttachableComponent
   public loadPatch(): void {
     this._lfoNode.type = 'sine'/*this.data.state.waveShape*/;
 
-    this._intensity = new UIAudioParameter<IAudioParameter<IValuable>>(
-      new AudioParameter<IValuable>(
+    this._intensity = new UIAudioParameter<IAudioParameter<AudioParam>>(
+      new AudioParameter<AudioParam>(
         'intensity',
-        new AudioParameterDescriptor(0, 1, 1, ''),
-        new Valuable(1)
+        new AudioParameterDescriptor(
+          this.modulatedParameter.audioParameter.llDescriptor.minValue,
+          this.modulatedParameter.audioParameter.llDescriptor.defaultValue,
+          this.modulatedParameter.audioParameter.llDescriptor.maxValue,
+          'Hz'
+        ),
+        this._processorAmplifier.gain
       ),
       new AudioParameterDescriptor(0, 100/*this.data.state.hlIntensity*/, 100, '%')
     );
@@ -97,13 +103,16 @@ export class LfoComponent extends AttachableComponent
     this._lfoProcessor.onaudioprocess = (arg: AudioProcessingEvent) => {
       this.modulatingWaveShapeConfig(arg);
     }
+    this._processorAmplifier = this.contextManager.audioContext.createGain();
+
     this._lfoNode.connect(this._lfoProcessor);
+    this._lfoProcessor.connect(this._processorAmplifier);
     this._lfoNode.start();
 
     this.loadPatch();
 
     if (this.modulatedParameter.audioParameter.beginModulationConfig()) {
-      this._lfoProcessor.connect(this.modulatedParameter.audioParameter.audioParam);
+      this._processorAmplifier.connect(this.modulatedParameter.audioParameter.audioParam);
     }
   }
 
