@@ -40,7 +40,8 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
     this._scriptNode.connect(this.contextManager.audioContext.destination);
     // this._osc.connect(this.contextManager.audioContext.destination);
     // this._osc.start();
-    console.log('Provided data in input: ', this.data);
+    // console.log('Provided data in input: ', this.data);
+    this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
   }
 
   ngOnChanges(changes: SimpleChanges): void {

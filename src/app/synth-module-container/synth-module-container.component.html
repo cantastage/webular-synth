@@ -32,7 +32,7 @@
   <h2>New modules</h2>
   <!-- List that represents new modules -->
   <div cdkDropList cdkDropListOrientation="horizontal" #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules"
-    [cdkDropListConnectedTo]="[connectedList]" class="example-list" (cdkDropListDropped)="drop($event)" id="unconnectedList">
+    [cdkDropListConnectedTo]="[connectedList]" class="example-list" (cdkDropListDropped)="drop($event)" id="unconnectedModules">
     <app-synth-module-wrapper cdkDrag *ngFor="let item of unconnectedModules; let i= index" [synthModuleData]="item"
       [index]="i"></app-synth-module-wrapper>
   </div>

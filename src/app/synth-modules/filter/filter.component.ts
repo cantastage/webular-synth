@@ -62,14 +62,15 @@ export class FilterComponent implements OnInit, IModulableComponent, SynthModule
     this.loadPatch();
 
     // remove below after tests...
-    this._testGeneratorNode = this.contextManager.audioContext.createOscillator();
-    this._testGeneratorNode.type = 'sine';
-    this._testGeneratorNode.frequency.value = 5500;
-    this._testGeneratorNode.start();
+    // this._testGeneratorNode = this.contextManager.audioContext.createOscillator();
+    // this._testGeneratorNode.type = 'sine';
+    // this._testGeneratorNode.frequency.value = 5500;
+    // this._testGeneratorNode.start();
 
-    this._testGeneratorNode.connect(this.innerNode);
-    this.innerNode.connect(this.contextManager.audioContext.destination);
+    // this._testGeneratorNode.connect(this.innerNode);
+    // this.innerNode.connect(this.contextManager.audioContext.destination);
     // disconnect both of them after tests...
+    this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
   }
 
   public savePatch(): any {
