@@ -13,6 +13,8 @@ import { IUIAudioParameter, UIAudioParameter, ModulableAudioParameter, AudioPara
 export class FilterComponent implements OnInit, IModulableComponent, ModuleComponent {
   @Input() data: any;
 
+  private _testGeneratorNode: OscillatorNode;
+
   private _filterNode: BiquadFilterNode;
   private _filterTypes: BiquadFilterType[]; // readonly
   private _modulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
@@ -41,13 +43,14 @@ export class FilterComponent implements OnInit, IModulableComponent, ModuleCompo
         ),
         new AudioParameterDescriptor(0, this.data.state.hlFrequency, 22000, 'Hz')
       ),
+      // ambiguous acceptation of Q as resonance/quality depending on the filter type
       new UIAudioParameter<ModulableAudioParameter>(
         new ModulableAudioParameter(
-          'resonance',
-          new AudioParameterDescriptor(0, 5, 100, ''),
+          'Q',
+          new AudioParameterDescriptor(0, 5, 30, ''),
           this._filterNode.Q
         ),
-        new AudioParameterDescriptor(0, this.data.state.hlResonance, 100, '')
+        new AudioParameterDescriptor(0, this.data.state.hlResonance, 30, '')
       )
     ];
   }
@@ -57,6 +60,16 @@ export class FilterComponent implements OnInit, IModulableComponent, ModuleCompo
     // how to extract a string[] from BiquadFilterType?!?!?! O.O
     this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
     this.loadPatch();
+
+    // remove below after tests...
+    this._testGeneratorNode = this.contextManager.audioContext.createOscillator();
+    this._testGeneratorNode.type = 'sine';
+    this._testGeneratorNode.frequency.value = 5500;
+    this._testGeneratorNode.start();
+
+    this._testGeneratorNode.connect(this.innerNode);
+    this.innerNode.connect(this.contextManager.audioContext.destination);
+    // disconnect both of them after tests...
   }
 
   public savePatch(): any {

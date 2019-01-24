@@ -28,17 +28,24 @@ export class AudioParameterDescriptor {
   }
 }
 
-export interface IAudioParameter {
+export interface IValuable {
+  value: number;
+}
+export class Valuable implements IValuable {
+  public constructor(public value: number) { }
+}
+
+export interface IAudioParameter<T extends AudioParam | IValuable> {
   readonly name: string;
   readonly llDescriptor: AudioParameterDescriptor;
-  readonly audioParam: AudioParam;
+  readonly audioParam: T;
   llValue: number; // indirection level 1 towards audioParam
 }
 
-export class AudioParameter implements IAudioParameter {
+export class AudioParameter<T extends AudioParam | IValuable> implements IAudioParameter<T> {
   private _name: string;
   private _llDescriptor: AudioParameterDescriptor;
-  private _audioParam: AudioParam;
+  private _audioParam: T;
 
   public get name(): string {
     return this._name;
@@ -46,7 +53,7 @@ export class AudioParameter implements IAudioParameter {
   public get llDescriptor(): AudioParameterDescriptor {
     return this._llDescriptor;
   }
-  public get audioParam(): AudioParam {
+  public get audioParam(): T {
     return this._audioParam;
   }
   public get llValue(): number {
@@ -59,7 +66,7 @@ export class AudioParameter implements IAudioParameter {
     this.audioParam.value = value;
   }
 
-  public constructor(name: string, llDescriptor: AudioParameterDescriptor, audioParam: AudioParam) {
+  public constructor(name: string, llDescriptor: AudioParameterDescriptor, audioParam: T) {
     this._name = name;
     this._llDescriptor = llDescriptor;
     this._audioParam = audioParam;
@@ -68,48 +75,33 @@ export class AudioParameter implements IAudioParameter {
   }
 }
 
-export interface IModulableAudioParameter extends IAudioParameter {
+export interface IModulableAudioParameter extends IAudioParameter<AudioParam> {
   readonly isModulated: boolean;
-  beginModulationConfig(): void;
-  endModulationConfig(): void;
-  // llValue override
+  beginModulationConfig(): boolean;
+  endModulationConfig(): boolean;
 }
 
-export class ModulableAudioParameter extends AudioParameter implements IModulableAudioParameter {
+export class ModulableAudioParameter extends AudioParameter<AudioParam>
+  implements IModulableAudioParameter {
   private _isModulated: boolean;
-  private _modulationCache: number;
 
   public get isModulated(): boolean {
     return this._isModulated;
   }
 
-  public get llValue(): number {
-    return this.audioParam.value;
-  }
-  public set llValue(value: number) {
-    if (value < this.llDescriptor.minValue || value > this.llDescriptor.maxValue) {
-      throw new Error('error while assigning the user value');
-    }
+  beginModulationConfig(): boolean {
     if (!this.isModulated) {
-      this.audioParam.value = value;
-    } else {
-      this._modulationCache = value;
-    }
-  }
-
-  public beginModulationConfig(): void {
-    if (!this._isModulated) {
-      this._modulationCache = this.llValue;
-      this.llValue = 0;
       this._isModulated = true;
+      return true;
     }
+    return false;
   }
-  public endModulationConfig(): void {
+  endModulationConfig(): boolean {
     if (this.isModulated) {
       this._isModulated = false;
-      this.llValue = this._modulationCache;
-      this._modulationCache = 0;
+      return true;
     }
+    return false;
   }
 
   constructor(name: string, llDescriptor: AudioParameterDescriptor, audioParam: AudioParam) {
@@ -117,13 +109,14 @@ export class ModulableAudioParameter extends AudioParameter implements IModulabl
   }
 }
 
-export interface IUIAudioParameter<T extends IAudioParameter> {
+export interface IUIAudioParameter<T extends IAudioParameter<AudioParam | IValuable>> {
   readonly audioParameter: T;
   readonly hlDescriptor: AudioParameterDescriptor;
   hlValue: number; // indirection level 2 towards audioParam
 }
 
-export class UIAudioParameter<T extends IAudioParameter> implements IUIAudioParameter<T> {
+export class UIAudioParameter<T extends IAudioParameter<AudioParam | IValuable>>
+  implements IUIAudioParameter<T> {
   private _audioParameter: T;
   private _hlDescriptor: AudioParameterDescriptor;
   private _hlValue: number;
