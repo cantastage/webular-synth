@@ -15,7 +15,7 @@ import {
 export class LfoComponent extends AttachableComponent
   implements OnInit, IModulatorComponent {
   @Input() data: any;
-  private _modulatedParameter: IUIAudioParameter<ModulableAudioParameter>;
+  private _modulatedParameter: ModulableAudioParameter;
 
   private _lfoNode: OscillatorNode;
   private _lfoProcessor: ScriptProcessorNode;
@@ -35,12 +35,12 @@ export class LfoComponent extends AttachableComponent
     return this._rate;
   }
 
-  public get modulatedParameter(): IUIAudioParameter<ModulableAudioParameter> {
+  public get modulatedParameter(): ModulableAudioParameter {
     return this._modulatedParameter;
   }
   @Input()
   // CHECK: think of all the combo modulatedParameter x mp
-  public set modulatedParameter(mp: IUIAudioParameter<ModulableAudioParameter>) {
+  public set modulatedParameter(mp: ModulableAudioParameter) {
     if (mp && mp != null) { // Attach
       this._modulatedParameter = mp;
     } else { // Detach
@@ -49,8 +49,8 @@ export class LfoComponent extends AttachableComponent
   }
   private modulatingWaveShapeConfig(ape: AudioProcessingEvent): void {
     const I: number = this.intensity.audioParameter.llValue;
-    const max: number = this.modulatedParameter.audioParameter.llDescriptor.maxValue;
-    const uiVal: number = this.modulatedParameter.audioParameter.llValue;
+    const max: number = this.modulatedParameter.llDescriptor.maxValue;
+    const uiVal: number = this.modulatedParameter.llValue;
     const posAmp: number = (max - uiVal) / max;
     const negAmp: number = uiVal / max;
     const shift = negAmp / I;
@@ -79,9 +79,9 @@ export class LfoComponent extends AttachableComponent
       new AudioParameter<AudioParam>(
         'intensity',
         new AudioParameterDescriptor(
-          this.modulatedParameter.audioParameter.llDescriptor.minValue,
-          this.modulatedParameter.audioParameter.llDescriptor.defaultValue,
-          this.modulatedParameter.audioParameter.llDescriptor.maxValue,
+          this.modulatedParameter.llDescriptor.minValue,
+          this.modulatedParameter.llDescriptor.defaultValue,
+          this.modulatedParameter.llDescriptor.maxValue,
           'Hz'
         ),
         this._processorAmplifier.gain
@@ -114,8 +114,8 @@ export class LfoComponent extends AttachableComponent
 
     this.loadPatch();
 
-    if (this.modulatedParameter.audioParameter.beginModulationConfig()) {
-      this._processorAmplifier.connect(this.modulatedParameter.audioParameter.audioParam);
+    if (this.modulatedParameter.beginModulationConfig()) {
+      this._processorAmplifier.connect(this.modulatedParameter.audioParam);
     }
   }
 

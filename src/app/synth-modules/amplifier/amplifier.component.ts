@@ -14,33 +14,42 @@ export class AmplifierComponent implements OnInit, IModulableComponent, SynthMod
 
   private _gainNode: GainNode;
   private _panNode: StereoPannerNode;
-  private _modulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
+
+  private _modulableParameters: ModulableAudioParameter[];
+  private _uiModulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
 
   public get innerNode(): AudioNode {
     return this._gainNode;
   }
-  public get modulableParameters(): IUIAudioParameter<ModulableAudioParameter>[] {
+  public get modulableParameters(): ModulableAudioParameter[] {
     return this._modulableParameters;
+  }
+  public get uiModulableParameters(): IUIAudioParameter<ModulableAudioParameter>[] {
+    return this._uiModulableParameters;
   }
 
   public constructor(private contextManager: AudioContextManagerService) { }
 
   public loadPatch(): void {
     this._modulableParameters = [
+      new ModulableAudioParameter(
+        'master',
+        new AudioParameterDescriptor(0, 1, 1, 'lvl'),
+        this._gainNode.gain
+      ),
+      new ModulableAudioParameter(
+        'pan',
+        new AudioParameterDescriptor(-1, 0, 1, 'balance'),
+        this._panNode.pan
+      )
+    ];
+    this._uiModulableParameters = [
       new UIAudioParameter<ModulableAudioParameter>(
-        new ModulableAudioParameter(
-          'master',
-          new AudioParameterDescriptor(0, 1, 1, 'lvl'),
-          this._gainNode.gain
-        ),
+        this.modulableParameters[0],
         new AudioParameterDescriptor(0, this.data.state.hlLevel, 10, 'dlvl'),
       ),
       new UIAudioParameter<ModulableAudioParameter>(
-        new ModulableAudioParameter(
-          'pan',
-          new AudioParameterDescriptor(-1, 0, 1, 'balance'),
-          this._panNode.pan
-        ),
+        this.modulableParameters[1],
         new AudioParameterDescriptor(-10, this.data.state.hlBalance, 10, 'dbalance'),
       )
     ];
@@ -56,8 +65,8 @@ export class AmplifierComponent implements OnInit, IModulableComponent, SynthMod
   }
 
   public savePatch(): any {
-    this.data.state.hlLevel = this.modulableParameters[0].hlValue;
-    this.data.state.hlBalance = this.modulableParameters[1].hlValue;
+    this.data.state.hlLevel = this.uiModulableParameters[0].hlValue;
+    this.data.state.hlBalance = this.uiModulableParameters[1].hlValue;
     return this.data;
   }
 

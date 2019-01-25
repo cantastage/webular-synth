@@ -98,15 +98,17 @@ The UI of the `AmplifierComponent` allows the state configuration:
 ~~The UI of the `LFOComponent` allows the state configuration:
 - FM wave shape selector: allows to choose among a variety of wave shapes;
 - FM intensity knob: variation around the modulated parameter value;
-- FM rate knob: sets the velocity of the variation above.
-
-**FINISH HERE OR IN MODULATION SECTION**~~
+- FM rate knob: sets the velocity of the variation above.~~
 
 ## Sound chain
 
 
 
-## Modulation
+## ~~Modulation~~
+
+
+
+### ~~Parameters Wrapping?~~
 
 
 

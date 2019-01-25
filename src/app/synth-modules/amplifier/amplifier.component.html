@@ -2,7 +2,7 @@
   <div class="component-header">
   </div>
   <div class="component-body">
-    <div class="component-body-sub" *ngFor="let mp of modulableParameters;">
+    <div class="component-body-sub" *ngFor="let mp of uiModulableParameters;">
       <div class="component-body-sub-info">
         <div class="component-body-sub-info-name" [ngClass]="{'modulated': mp.audioParameter.isModulated ? mp.audioParameter.isModulated : false}">{{mp.audioParameter.name}}</div>
         <div class="component-body-sub-info-value" [ngClass]="{'modulated': mp.audioParameter.isModulated ? mp.audioParameter.isModulated : false}">{{mp.hlValue}}{{mp.hlDescriptor.measurementUnit}}</div>          
@@ -16,7 +16,7 @@
   </div>
 </div>
 
-<!-- <app-lfo *ngFor="let mp of modulableParameters;" [modulatedComponent]="this" [modulatedParameter]="mp"></app-lfo> -->
+<!-- <app-lfo *ngFor="let mp of modulableParameters;" [attachedComponent]="this" [modulatedParameter]="mp"></app-lfo> -->
 
-<!-- <app-lfo [modulatedComponent]="this" [modulatedParameter]="modulableParameters[0]"></app-lfo> -->
-<!-- <app-lfo [modulatedComponent]="this" [modulatedParameter]="modulableParameters[1]"></app-lfo> -->
+<!-- <app-lfo [attachedComponent]="this" [modulatedParameter]="modulableParameters[0]"></app-lfo> -->
+<!-- <app-lfo [attachedComponent]="this" [modulatedParameter]="modulableParameters[1]"></app-lfo> -->
