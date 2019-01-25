@@ -16,7 +16,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   @ViewChild('envCanvas') public envCanvas: ElementRef;
   @Input() data: any;
   private c: AudioContext;
-  private g: GainNode;
+  private g: GainNode;  // Output gain
 
   private active_voices: any;
   private frequency: any;
@@ -54,7 +54,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     this.g = this.c.createGain();
     this.g.gain.setValueAtTime(0, this.c.currentTime + 2);
     // this.g.gain.linearRampToValueAtTime(0, this.c.currentTime + 5);
-    this.g.connect(this.c.destination);
+    // this.g.connect(this.c.destination);
 
     if (this.data.waveForm !== undefined) {
       this.waveForm = this.data.waveForm;
@@ -168,16 +168,21 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   }
 
   public savePatch(): any {
-    const patch = { waveForm: this.waveForm,
-                    maxVelocity: this.maxVelocity,
-                    addSemitone: this.addSemitone,
-                    finePitch: this.finePitch };
+    const patch = {
+      name: this.data.name,
+      waveForm: this.waveForm,
+      maxVelocity: this.maxVelocity,
+      addSemitone: this.addSemitone,
+      finePitch: this.finePitch
+    };
     return patch;
   }
 
   public getOutput(): AudioNode {
     return this.g;
   }
+
+  // Interface methods
 
   public connectToSynthNode(node: AudioNode) {
     node.connect(this.g);

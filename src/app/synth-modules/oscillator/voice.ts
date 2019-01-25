@@ -8,7 +8,7 @@ export class Voice {
     private waveForm: any;
     private fineTune: any;
 
-    constructor(c, g, waveform, finePitch) {
+    constructor(c: AudioContext, g: GainNode, waveform: string, finePitch: number) {
         const osc = c.createOscillator();
         const voiceGain = c.createGain();
         this.waveForm = waveform;

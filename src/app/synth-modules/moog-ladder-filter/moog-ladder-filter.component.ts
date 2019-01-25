@@ -24,9 +24,9 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
   }
 
   ngOnInit() {
-    this._osc = this.contextManager.audioContext.createOscillator();
-    this._osc.type = 'square';
-    this._osc.start();
+    // this._osc = this.contextManager.audioContext.createOscillator();
+    // this._osc.type = 'square';
+    // this._osc.start();
 
     this._scriptNode = this.contextManager.audioContext.createScriptProcessor(2048, 1, 1);
     this._scriptNode.onaudioprocess = ($event) => {
@@ -37,7 +37,7 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
 
 
     // this._osc.connect(this._scriptNode);
-    this._scriptNode.connect(this.contextManager.audioContext.destination);
+    // this._scriptNode.connect(this.contextManager.audioContext.destination);
     // this._osc.connect(this.contextManager.audioContext.destination);
     // this._osc.start();
     // console.log('Provided data in input: ', this.data);
@@ -101,13 +101,13 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
   //   this._osc.disconnect(this._scriptNode);
   // }
 
-  connectScriptNode(): void {
-    this._scriptNode.connect(this.contextManager.audioContext.destination);
-  }
+  // connectScriptNode(): void {
+  //   this._scriptNode.connect(this.contextManager.audioContext.destination);
+  // }
 
-  disconnectScriptNode(): void {
-    this._scriptNode.disconnect(this.contextManager.audioContext.destination);
-  }
+  // disconnectScriptNode(): void {
+  //   this._scriptNode.disconnect(this.contextManager.audioContext.destination);
+  // }
 
   ngOnDestroy(): void {
     console.log('Ladder filter is being destroyed');

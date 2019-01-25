@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Host } from '@angular/core';
 import { runInThisContext } from 'vm';
+import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 
 @Component({
   selector: 'app-adsr',
@@ -46,27 +47,29 @@ export class ADSRComponent implements OnInit {
   public scrollOffsetX: number;
 
   @HostListener('window:scroll', ['$event'])
-    checkScroll($event) {
-      this.scrollOffsetY = window.pageYOffset;
-      this.scrollOffsetX = window.pageXOffset;
-    }
+  checkScroll($event) {
+    this.scrollOffsetY = window.pageYOffset;
+    this.scrollOffsetX = window.pageXOffset;
+  }
   @HostListener('window:mousemove', ['$event'])
-    moveEvent(event: MouseEvent) {
-       this.movePoint(event);
-    }
+  moveEvent(event: MouseEvent) {
+    this.movePoint(event);
+  }
   @HostListener('window:mouseup', ['$event'])
-    upEvent(event: MouseEvent) {
-      this.fixPoint(event);
-    }
-    /*
-  @HostListener('window:mousedown', ['$event'])
-    downEvent(event: MouseEvent) {
-      this.selectPoint(event);
-    }
-    */
-  constructor(g: GainNode) {
-    this.gain = g;
-   }
+  upEvent(event: MouseEvent) {
+    this.fixPoint(event);
+  }
+  /*
+@HostListener('window:mousedown', ['$event'])
+  downEvent(event: MouseEvent) {
+    this.selectPoint(event);
+  }
+  */
+  // constructor(g: GainNode) {
+  //   this.gain = g;
+  //  }
+  constructor(private contextManger: AudioContextManagerService) {
+  }
 
 
   ngOnInit() {
@@ -120,7 +123,7 @@ export class ADSRComponent implements OnInit {
     this.drawAll();
 
     // NOT USED IN REAL APP
-    this.c = new AudioContext();
+    this.c = this.contextManger.audioContext;
     this.osc = this.c.createOscillator();
     this.gain = this.c.createGain();
 
@@ -155,7 +158,7 @@ export class ADSRComponent implements OnInit {
     e.stopImmediatePropagation();
     const pos = {
       x: e.clientX - this.envCanvas.nativeElement.offsetLeft - this.offsetParentLeft
-      + this.scrollOffsetX,
+        + this.scrollOffsetX,
       y: e.clientY - this.envCanvas.nativeElement.offsetTop - this.offsetParentTop + this.scrollOffsetY
 
     };
@@ -260,7 +263,7 @@ export class ADSRComponent implements OnInit {
     this.releaseTime = newInterval / this.envCanvas.nativeElement.width * 2;
   }
 
-// TODO remove after test
+  // TODO remove after test
   public playNote() {
     this.osc.frequency.value = 440;
     this.osc.connect(this.gain);

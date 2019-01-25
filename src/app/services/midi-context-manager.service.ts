@@ -74,7 +74,10 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
   }
   // RX
   private onMIDIMessage(ctx: MidiContextManagerService, midiMessageEventArg: any): void {
-    ctx.notify(MidiContextManagerService.extractMIDIFields(midiMessageEventArg));
+    const midiArgs = MidiContextManagerService.extractMIDIFields(midiMessageEventArg);
+    if (!isNaN(midiArgs[2]) && !isNaN(midiArgs[3])) {
+      ctx.notify(midiArgs);
+    }
   }
   // TX
   private sendRawNoteON(channel: number, midiNote: number, velocity: number): void {

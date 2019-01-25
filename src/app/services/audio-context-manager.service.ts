@@ -25,8 +25,10 @@ export class AudioContextManagerService {
   constructor() {
     this._ctx = new AudioContext();
     this.subject = new Subject();
+    // console.log(this._ctx.destination.numberOfInputs);
     // this.modules = [new ModuleItem(MoogLadderFilterComponent, { name: 'filter' })];
     // this._ctx.createGain();
+    // console.log('AAAA');
   }
 
   /**
@@ -84,8 +86,8 @@ export class AudioContextManagerService {
       this.reorderSynthModule(this.unconnectedModules, previousIndex, currentIndex);
     } else if (listName === 'soundChain') {
       this.reorderSynthModule(this.soundChain, previousIndex, currentIndex);
+      this.updateConnections(); // TODO can be optimized, call it only when you move elements inside soundchain
     }
-    this.updateConnections(); // TODO can be optimized, call it only when you move elements inside soundchain
   }
 
   private reorderSynthModule(list: Array<SynthModule>, previousIndex: number, currentIndex: number) {
@@ -99,16 +101,18 @@ export class AudioContextManagerService {
   }
 
   private updateSoundChain(): void {
-    const list = this.soundChain;
-    let i = 0;
-    while (i < (list.length - 1)) {
+    if (this.soundChain.length > 0) {
+      const list = this.soundChain;
+      let i = 0;
+      while (i < (list.length - 1)) {
+        list[i].disconnectSynthModule();
+        list[i + 1].connectToSynthNode(list[i].getOutput());
+        i++;
+      }
+      // Last element of the chain
       list[i].disconnectSynthModule();
-      list[i + 1].connectToSynthNode(list[i].getOutput());
-      i++;
+      list[i].getOutput().connect(this._ctx.destination);
     }
-    // Last element of the chain
-    list[i].disconnectSynthModule();
-    list[i].getOutput().connect(this._ctx.destination);
   }
 
   /**
