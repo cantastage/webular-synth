@@ -41,7 +41,7 @@ export class ClockProvider { // singleton pattern
 
   private static _hiddenClock: IClock;
   private static initialize(): void {
-    if (!this._hiddenClock) {
+    if (this._hiddenClock === undefined) {
       this._hiddenClock = new Clock(Clock.BEATS_DEFAULT);
     }
   }

@@ -38,13 +38,10 @@ export class ModuleManagerService {
     return { bpm: ClockProvider.BEATS_DEFAULT };
   }
   private get sequencerDefaultState(): any {
-    const scale: Scale = new Scale(
-      PitchClassesProvider.retrieveInstance('C'),
-      HarmonizationsProvider.retrieveInstance('M')
-    );
     return new Sequencer(
-      scale,
-      new Measure(Measure.generateSubdivisionVector(Measure.METRIC_MIN, scale.harmonization.pattern.length + 1))
+      PitchClassesProvider.retrieveInstance('C'),
+      HarmonizationsProvider.retrieveInstance('M'),
+      Measure.METRIC_MIN
     );
   }
   private get amplifierDefaultState(): any {

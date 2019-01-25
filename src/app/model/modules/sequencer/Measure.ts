@@ -10,7 +10,7 @@ export class Measure {
         return this._subdivisions;
     }
     public set subdivisions(subdivisions: Subdivision[]) {
-        if (subdivisions == null || subdivisions.length < Measure.METRIC_MIN || subdivisions.length > Measure.METRIC_MAX) {
+        if (subdivisions === undefined || subdivisions.length < Measure.METRIC_MIN || subdivisions.length > Measure.METRIC_MAX) {
             throw new Error('error while assigning the subdivision values');
         }
         this._subdivisions = subdivisions;

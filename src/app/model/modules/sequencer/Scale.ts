@@ -1,9 +1,8 @@
-import { ICache } from '../../../system2/utilities/ICache';
 import { PitchClassesProvider } from './PitchClassesProvider';
 import { IPitchClass, SD } from './IPitchClass';
 import { IHarmonization } from './IHarmonization';
 
-export class Scale implements ICache {
+export class Scale {
     private _key: IPitchClass;
     private _harmonization: IHarmonization;
 
@@ -14,7 +13,7 @@ export class Scale implements ICache {
         return this._key;
     }
     public set key(key: IPitchClass) {
-        if (key == null) {
+        if (key === undefined) {
             throw new Error('error while assigning the key value');
         }
         this._key = key;
@@ -26,7 +25,7 @@ export class Scale implements ICache {
         return this._harmonization;
     }
     public set harmonization(harmonization: IHarmonization) {
-        if (harmonization == null) {
+        if (harmonization === undefined) {
             throw new Error('error while assigning the harmonization value');
         }
         this._harmonization = harmonization;
@@ -38,7 +37,7 @@ export class Scale implements ICache {
         return this._diatonicNotes;
     }
 
-    public _updateCache(): void {
+    private _updateCache(): void {
         if (!this.diatonicNotes) {
             this._diatonicNotes = new Array<IPitchClass>();
         }

@@ -9,14 +9,13 @@
           <!-- <td>midiCh</td> -->
         </tr>
         <tr>
-            <td><select id="key" [(ngModel)]="this._sequencer.scale.key">
+            <td><select id="key" [(ngModel)]="_sequencer.key">
               <option *ngFor="let pitchClass of _pitchClasses;" [ngValue]="pitchClass">{{pitchClass.pitchClassName}}</option>
             </select></td>
-            <td><select id="harmonization" [(ngModel)]="this._sequencer.scale.harmonization"
-              (ngModelChange)="morethanHarmonizationChange($event)">
+            <td><select id="harmonization" [(ngModel)]="_sequencer.harmonization">
                 <option *ngFor="let harmonization of _harmonizations;" [ngValue]="harmonization">{{harmonization.name}}</option>
             </select></td>
-            <td><select id="metric" [(ngModel)]="this._metric"
+            <td><select id="metric" [(ngModel)]="_sequencer.metric"
               (ngModelChange)="morethanMetricChange($event)">
                 <option *ngFor="let metric of _metrics;" [ngValue]="metric">{{metric}}</option>
             </select></td>
@@ -31,10 +30,10 @@
   <table class="wborderedcells">
     <tbody id="measure">
       <tr *ngFor="let diatonicNote of _sequencer.scale.diatonicNotes; let notei = index;">
-        <!-- RISOLVERE QUESTIONE NOMI -->
+        <!-- ENHARMONIC NAMES -->
         <td class="column-off">{{diatonicNote.pitchClassName}}</td>
         <td *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;"
-        [ngClass]="{'column-off': !(subdivisioni === this._subdivisionCounter), 'column-on': (subdivisioni == this._subdivisionCounter)}">
+        [ngClass]="{'column-off': !(subdivisioni === _subdivisionCounter), 'column-on': (subdivisioni == _subdivisionCounter)}">
           <select [(ngModel)]="subdivision.octaves[notei]">
               <option *ngFor="let possibleOctave of _possibleOctaves;" [ngValue]="possibleOctave">{{possibleOctave}}</option>
           </select>

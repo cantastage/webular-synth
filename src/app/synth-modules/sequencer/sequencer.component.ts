@@ -27,14 +27,12 @@ export class SequencerComponent implements OnInit, IObserver<number> {
   private _possibleOctaves: number[];
   private _subdivisionCounter: number;
 
-  private _metric: number; // used as redundancy, useful for the UI
   private _sequencer: ISequencer;
 
   constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService) { }
 
   public loadPatch(): void {
     this._sequencer = this.data.state;
-    this._metric = this._sequencer.measure.subdivisions.length;
     this.clockManager.attach(this);
   }
 
@@ -89,29 +87,7 @@ export class SequencerComponent implements OnInit, IObserver<number> {
     }
   }
 
-  morethanHarmonizationChange(eventArg: IHarmonization): void {
-    const l = this._sequencer.measure.subdivisions.length;
-    this._sequencer.measure.subdivisions.splice(0, l);
-    for (const sub of Measure.generateSubdivisionVector(l,
-      this._sequencer.scale.harmonization.pattern.length + 1)) {
-      this._sequencer.measure.subdivisions.push(sub);
-    }
-  }
   morethanMetricChange(eventArg: any): void {
-    const m = Number(eventArg);
-    while (this._sequencer.measure.subdivisions.length !== m) {
-      if (this._sequencer.measure.subdivisions.length > m) {
-        this._sequencer.measure.subdivisions.pop();
-      } else {
-        this._sequencer.measure.subdivisions.push(
-          new Subdivision(
-            Subdivision.generateOctaveVector(this._sequencer.scale.harmonization.pattern.length + 1),
-            Subdivision.DURATION_MIN,
-            Subdivision.VELOCITY_MAX
-          )
-        );
-      }
-    }
     this.clockManager.restart();
   }
 }

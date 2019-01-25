@@ -1,7 +1,7 @@
 <div class="component-block">
 
   <div class="component-header">
-      <select [(ngModel)]="this._lfoNode.type">
+      <select [(ngModel)]="_lfoNode.type">
           <option *ngFor="let waveShape of waveShapes;" [ngValue]="waveShape">{{waveShape}}</option>
       </select>
   </div>

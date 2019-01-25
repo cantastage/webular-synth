@@ -1,9 +1,8 @@
 import { sealed } from '../../../system2/utilities/ClassDecorators';
 import { IPitchClass, NoteNames, EnharmonicNames, A4, SD } from './IPitchClass';
-import { ICache } from '../../../system2/utilities/ICache';
 
 @sealed
-class PitchClass implements IPitchClass, ICache {
+class PitchClass implements IPitchClass {
     private _pitchClass: NoteNames;
 
     // cache fields depending on private ones
@@ -35,7 +34,7 @@ class PitchClass implements IPitchClass, ICache {
     public get referralFrequency(): number {
         return this._referralFrequency;
     }
-    _updateCache(): void {
+    private _updateCache(): void {
         // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         this._enharmonicName = String(EnharmonicNames[this.pitchClassValue]) !== 'undefined' ?
             this.pitchClassValue : EnharmonicNames.nd;
