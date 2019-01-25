@@ -8,7 +8,7 @@ class Harmonization implements IHarmonization {
         return this._name;
     }
     public set name(name: string) {
-        if (name == null || name === '') {
+        if (name === undefined || name === '') {
             throw new Error('error while assigning the tonality value');
         }
         this._name = name;
@@ -17,7 +17,7 @@ class Harmonization implements IHarmonization {
         return this._pattern;
     }
     public set pattern(pattern: number[]) {
-        let validPattern = pattern != null;
+        let validPattern = pattern !== undefined;
         if (validPattern) {
             pattern.forEach(element => {
                 if (!Number.isInteger(Number(element))) {
