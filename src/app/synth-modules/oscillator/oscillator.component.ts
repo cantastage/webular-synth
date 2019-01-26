@@ -5,6 +5,8 @@ import { Voice } from 'src/app/synth-modules/oscillator/voice';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { SynthModule } from 'src/app/interfaces/module.component';
+import { Subscription } from 'rxjs';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-oscillator',
@@ -21,19 +23,23 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   private active_voices: any;
   private frequency: any;
   private waveForm: any;
-  // private midiData: any;
   private maxVelocity: number;
   private addSemitone: number;
   private finePitch: number;
   private active: number;
+
+  private message: any;
+  private subscription: Subscription;
 
   // private activeIndex: number;
   // private waveforms: Array<string> = ['SIN', 'SQR', 'SAW', 'TRI'];
 
   constructor(
     private contextManager: AudioContextManagerService,
+    private messageService: MessageService,
     private midiManager: MidiContextManagerService) {
     midiManager.attach(this);
+    this.subscription = this.messageService.getMessage().subscribe(message => { this.message = message; });
   }
 
   update(arg: [number, boolean, number, number]): void {
@@ -48,13 +54,15 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
   // la onInit leggerà tutti i valori da synthModuleData.data
   ngOnInit() {
+    if (this.message === undefined) {
+      this.message = { message: [0.2, 0, 1, 0.2]};
+    }
     this.active = 0;
     this.active_voices = [];
     this.c = this.contextManager.audioContext;
     this.g = this.c.createGain();
-    this.g.gain.setValueAtTime(0, this.c.currentTime + 2);
-    // this.g.gain.linearRampToValueAtTime(0, this.c.currentTime + 5);
-    // this.g.connect(this.c.destination);
+    this.g.gain.setValueAtTime(1, this.c.currentTime);
+    this.g.connect(this.c.destination);
 
     if (this.data.waveForm !== undefined) {
       this.waveForm = this.data.waveForm;
@@ -71,6 +79,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   }
 
   ngOnDestroy() {
+    this.subscription.unsubscribe();
     // this.g.disconnect();
   }
 
@@ -92,9 +101,8 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   public noteOn(midiNote, velocity) {
     this.g.gain.value = velocity / 127 * this.maxVelocity / 127;
     this.frequency = MidiContextManagerService.midiNoteToFrequency(midiNote + this.addSemitone) + this.finePitch;
-    // 440 * Math.pow(2, ((midiNote + this.addSemitone) - 69) / 12) + this.finePitch;
-    console.log(this.waveForm);
-    const note = new Voice(this.c, this.g, this.waveForm, this.finePitch);
+    console.log(this.message.message);
+    const note = new Voice(this.c, this.g, this.waveForm, this.message.message);
     this.active_voices[midiNote] = note;
     note.playNote(this.frequency);
   }

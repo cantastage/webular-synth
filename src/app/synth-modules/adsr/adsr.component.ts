@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Host } from '@angular/core';
 import { runInThisContext } from 'vm';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-adsr',
@@ -31,6 +32,7 @@ export class ADSRComponent implements OnInit {
   public decayTime: number;
   public sustainValue: number;
   public releaseTime: number;
+  public values: any;
 
   // constraints
   public maxAttTime: number;
@@ -68,7 +70,9 @@ export class ADSRComponent implements OnInit {
   // constructor(g: GainNode) {
   //   this.gain = g;
   //  }
-  constructor(private contextManger: AudioContextManagerService) {
+  constructor(
+    private contextManger: AudioContextManagerService,
+    private messageService: MessageService) {
   }
 
 
@@ -113,13 +117,13 @@ export class ADSRComponent implements OnInit {
     this.interruptNote = false;
 
     // parameters
-    this.attackTime = (this.points[0].x - this.minDist) / this.maxAttTime * 2;
-    this.attackValue = (canvas.height - this.points[0].y) / canvas.height * 2;
-    this.sustainValue = (canvas.height - this.points[1].y) / canvas.height * 2;
-    this.releaseTime = (canvas.width - this.points[1].x) / canvas.width * 2;
-    this.decayTime = (this.points[1].x - this.points[0].x) / canvas.width * 1;
-
-
+    this.attackTime = Math.round(((this.points[0].x - this.minDist) / this.maxAttTime * 2) * 100) / 100;
+    this.attackValue = Math.round(((canvas.height - this.points[0].y) / canvas.height * 2) * 100) / 100;
+    this.sustainValue = Math.round(((canvas.height - this.points[1].y) / canvas.height * 2) * 100) / 100;
+    this.releaseTime = Math.round(((canvas.width - this.points[1].x) / canvas.width * 2) * 100) / 100;
+    this.decayTime = Math.round(((this.points[1].x - this.points[0].x) / canvas.width * 1) * 100) / 100;
+    this.values = [this.attackTime, this.decayTime, this.sustainValue, this.releaseTime];
+    this.sendMessage();
     this.drawAll();
 
     // NOT USED IN REAL APP
@@ -233,6 +237,7 @@ export class ADSRComponent implements OnInit {
       this.updateDecayTime((this.points[1].x - this.points[0].x));
       this.updateSustainValue(this.points[1].y);
       this.updateReleaseTime((this.envCanvas.nativeElement.width - this.points[1].x));
+      this.updateADSR();
     }
   }
 
@@ -240,9 +245,16 @@ export class ADSRComponent implements OnInit {
     this.flagDown = false;
   }
 
+  public updateADSR() {
+    this.values = [this.attackTime, this.decayTime, this.sustainValue, this.releaseTime];
+    this.sendMessage();
+  }
+
   public updateAttackTime(maxValue: number, newValue: number) {
     this.maxAttTime = maxValue;
     this.attackTime = (newValue - (this.minDist - 2)) / this.maxAttTime * 2;
+    this.attackTime = Math.round(this.attackTime * 100) / 100;
+    // console.log(this.attackTime);
   }
 
   public updateAttackValue(newValue: number) {
@@ -252,15 +264,21 @@ export class ADSRComponent implements OnInit {
 
   public updateDecayTime(newInterval: number) {
     this.decayTime = newInterval / this.envCanvas.nativeElement.width * 1;
+    this.decayTime = Math.round(this.decayTime * 100) / 100;
+
   }
 
   public updateSustainValue(newValue: number) {
     this.sustainValue = (this.envCanvas.nativeElement.height - newValue) / this.envCanvas.nativeElement.height * 2;
+    this.sustainValue = Math.round(this.sustainValue * 100) / 100;
+
   }
 
 
   public updateReleaseTime(newInterval: number) {
     this.releaseTime = newInterval / this.envCanvas.nativeElement.width * 2;
+    this.releaseTime = Math.round(this.releaseTime * 100) / 100;
+
   }
 
   // TODO remove after test
@@ -271,7 +289,8 @@ export class ADSRComponent implements OnInit {
     this.gain.gain.setValueAtTime(0, this.c.currentTime);
     this.gain.gain.linearRampToValueAtTime(this.attackValue, this.c.currentTime + this.attackTime);
     this.gain.gain.linearRampToValueAtTime(this.sustainValue, this.c.currentTime + this.attackTime + this.decayTime);
-
+    // console.log(this.attackTime);
+    this.sendMessage();
     this.osc.start();
 
   }
@@ -291,6 +310,14 @@ export class ADSRComponent implements OnInit {
     this.data.state.sustainValue = this.points[1].y;
     this.data.state.releaseTime = this.points[1].x;
     return this.data;
+  }
+
+  sendMessage(): void {
+    this.messageService.sendMessage(this.values);
+  }
+
+  clearMessage(): void {
+    this.messageService.clearMessage();
   }
 
 
