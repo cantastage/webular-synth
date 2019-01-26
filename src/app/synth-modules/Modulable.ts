@@ -1,7 +1,8 @@
-import { IUIAudioParameter, ModulableAudioParameter } from './Modulation';
+import { ModulableAudioParameter, IUIAudioParameter } from './Modulation';
 
 
 export interface IModulableComponent {
   readonly innerNode: AudioNode;
-  readonly modulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
+  readonly modulableParameters: ModulableAudioParameter[];
+  readonly uiModulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
 }

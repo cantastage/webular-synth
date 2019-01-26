@@ -1,5 +1,5 @@
 import { Input } from '@angular/core';
-import { IUIAudioParameter, ModulableAudioParameter } from './Modulation';
+import { ModulableAudioParameter } from './Modulation';
 
 export interface IAttachableComponent {
   attachedComponent: IAttachableComponent;
@@ -27,5 +27,5 @@ export abstract class AttachableComponent {
 }
 
 export interface IModulatorComponent extends IAttachableComponent {
-  modulatedParameter: IUIAudioParameter<ModulableAudioParameter>;
+  modulatedParameter: ModulableAudioParameter;
 }

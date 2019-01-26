@@ -17,7 +17,9 @@ export class FilterComponent implements OnInit, IModulableComponent, SynthModule
 
   private _filterNode: BiquadFilterNode;
   private _filterTypes: BiquadFilterType[]; // readonly
-  private _modulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
+
+  private _modulableParameters: ModulableAudioParameter[];
+  private _uiModulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
 
   public get filterTypes(): string[] {
     return this._filterTypes;
@@ -26,8 +28,11 @@ export class FilterComponent implements OnInit, IModulableComponent, SynthModule
   public get innerNode(): AudioNode {
     return this._filterNode;
   }
-  public get modulableParameters(): IUIAudioParameter<ModulableAudioParameter>[] {
+  public get modulableParameters(): ModulableAudioParameter[] {
     return this._modulableParameters;
+  }
+  public get uiModulableParameters(): IUIAudioParameter<ModulableAudioParameter>[] {
+    return this._uiModulableParameters;
   }
 
   public constructor(private contextManager: AudioContextManagerService) { }
@@ -35,21 +40,25 @@ export class FilterComponent implements OnInit, IModulableComponent, SynthModule
   public loadPatch(): void {
     this._filterNode.type = this.data.state.filterType;
     this._modulableParameters = [
+      new ModulableAudioParameter(
+        'frequency',
+        new AudioParameterDescriptor(0, 5500, 22000, 'Hz'),
+        this._filterNode.frequency
+      ),
+      new ModulableAudioParameter(
+        'Q',
+        new AudioParameterDescriptor(0, 5, 30, ''),
+        this._filterNode.Q
+      )
+    ];
+    this._uiModulableParameters = [
       new UIAudioParameter<ModulableAudioParameter>(
-        new ModulableAudioParameter(
-          'frequency',
-          new AudioParameterDescriptor(0, 5500, 22000, 'Hz'),
-          this._filterNode.frequency
-        ),
+        this.modulableParameters[0],
         new AudioParameterDescriptor(0, this.data.state.hlFrequency, 22000, 'Hz')
       ),
       // ambiguous acceptation of Q as resonance/quality depending on the filter type
       new UIAudioParameter<ModulableAudioParameter>(
-        new ModulableAudioParameter(
-          'Q',
-          new AudioParameterDescriptor(0, 5, 30, ''),
-          this._filterNode.Q
-        ),
+        this.modulableParameters[1],
         new AudioParameterDescriptor(0, this.data.state.hlResonance, 30, '')
       )
     ];
@@ -75,8 +84,8 @@ export class FilterComponent implements OnInit, IModulableComponent, SynthModule
 
   public savePatch(): any {
     this.data.state.filterType = this._filterNode.type;
-    this.data.state.hlFrequency = this.modulableParameters[0].hlValue;
-    this.data.state.hlResonance = this.modulableParameters[1].hlValue;
+    this.data.state.hlFrequency = this.uiModulableParameters[0].hlValue;
+    this.data.state.hlResonance = this.uiModulableParameters[1].hlValue;
     return this.data;
   }
 

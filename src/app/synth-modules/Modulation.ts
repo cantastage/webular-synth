@@ -106,6 +106,7 @@ export class ModulableAudioParameter extends AudioParameter<AudioParam>
 
   constructor(name: string, llDescriptor: AudioParameterDescriptor, audioParam: AudioParam) {
       super(name, llDescriptor, audioParam);
+      this._isModulated = false;
   }
 }
 

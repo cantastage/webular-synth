@@ -5,7 +5,7 @@
       </select>
   </div>
   <div class="component-body">
-    <div class="component-body-sub" *ngFor="let mp of modulableParameters;">
+    <div class="component-body-sub" *ngFor="let mp of uiModulableParameters;">
       <div class="component-body-sub-info">
         <div class="component-body-sub-info-name" [ngClass]="{'modulated': mp.audioParameter.isModulated ? mp.audioParameter.isModulated : false}">{{mp.audioParameter.name}}</div>
         <div class="component-body-sub-info-value" [ngClass]="{'modulated': mp.audioParameter.isModulated ? mp.audioParameter.isModulated : false}">{{mp.hlValue}}{{mp.hlDescriptor.measurementUnit}}</div>          
