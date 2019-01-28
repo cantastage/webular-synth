@@ -7,6 +7,7 @@ import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { SynthModule } from 'src/app/interfaces/module.component';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'src/app/services/message.service';
+import { KnobComponent } from '../sub-components/knob/knob.component';
 
 @Component({
   selector: 'app-oscillator',
@@ -15,7 +16,6 @@ import { MessageService } from 'src/app/services/message.service';
 })
 
 export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number, boolean, number, number]>, SynthModule {
-  @ViewChild('envCanvas') public envCanvas: ElementRef;
   @Input() data: any;
   private c: AudioContext;
   private g: GainNode;  // Output gain
@@ -99,10 +99,10 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
 
   public noteOn(midiNote, velocity) {
-    this.g.gain.value = velocity / 127 * this.maxVelocity / 127;
+    this.g.gain.value = this.maxVelocity / 127;
     this.frequency = MidiContextManagerService.midiNoteToFrequency(midiNote + this.addSemitone) + this.finePitch;
-    console.log(this.message.message);
-    const note = new Voice(this.c, this.g, this.waveForm, this.message.message);
+    console.log(velocity);
+    const note = new Voice(this.c, this.g, (velocity), this.waveForm, this.message.message);
     this.active_voices[midiNote] = note;
     note.playNote(this.frequency);
   }
@@ -162,6 +162,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     // console.log(value);
     this.maxVelocity = value;
     this.g.gain.value = this.maxVelocity / 127;
+    // this.g.gain.value = this.maxVelocity / 127;
     // this.noteOn(66,this.maxVelocity);
   }
 
@@ -174,6 +175,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     this.addSemitone = value;
     // console.log(this.addSemitone);
   }
+
 
   public savePatch(): any {
     const patch = {

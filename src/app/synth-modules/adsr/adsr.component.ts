@@ -299,8 +299,8 @@ export class ADSRComponent implements OnInit {
     this.gain.gain.cancelScheduledValues(this.c.currentTime);
     this.gain.gain.setValueAtTime(this.gain.gain.value, this.c.currentTime);
     console.log(this.releaseTime);
-    this.gain.gain.linearRampToValueAtTime(0, this.c.currentTime + this.releaseTime);
-    setTimeout(function () { this.osc.stop(); }, this.releaseTime * 1000);
+    this.gain.gain.linearRampToValueAtTime(0, this.c.currentTime + this.releaseTime + 1);
+    setTimeout(function () { this.osc.stop(); }, this.releaseTime * 1000 + 0.2);
   }
 
   public savePatch(): any {
