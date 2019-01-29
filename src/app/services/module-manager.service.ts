@@ -61,7 +61,6 @@ export class ModuleManagerService {
       new ModuleItem(SequencerComponent, { name: 'sequencer', state: this.sequencerDefaultState }),
       new ModuleItem(ADSRComponent, { name: 'ADSR', state: this.adsrDefaultState }),
       new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', state: this.oscillatorDefaultState }),
-      new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', waveForm: 'sine', maxVelocity: 100, addSemitone: 0, finePitch: 0 }),
       new ModuleItem(ADSRComponent, { name: 'ADSR', state: this.adsrDefaultState }),
       new ModuleItem(MoogLadderFilterComponent, { name: 'filter', state: this.mlFilterDefaultState }),
       new ModuleItem(FilterComponent, { name: 'pesteneraFilter', state: this.filterDefaultState }),
