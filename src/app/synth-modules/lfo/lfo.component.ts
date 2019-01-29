@@ -1,21 +1,20 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IModulatorComponent, AttachableComponent } from '../Modulator';
+import { IModulatorComponent } from '../IModulatorComponent';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
-import { SynthModule } from 'src/app/interfaces/module.component';
+
 import {
   IUIAudioParameter, IAudioParameter,
-  AudioParameterDescriptor, UIAudioParameter, ModulableAudioParameter, AudioParameter
-} from '../Modulation';
+  AudioParameterDescriptor, UIAudioParameter, IModulableAudioParameter, AudioParameter
+} from '../AudioParameter';
 
 @Component({
   selector: 'app-lfo',
   templateUrl: './lfo.component.html',
   styleUrls: ['./lfo.component.scss', '../../app.component.scss']
 })
-export class LfoComponent extends AttachableComponent
-  implements OnInit, IModulatorComponent {
-  @Input() data: any;
-  private _modulatedParameter: ModulableAudioParameter;
+// STRICT ASSUMPTION, I'M ALWAYS ATTACHED TO SOME OTHER MODULABLE COMPONENT
+export class LfoComponent implements OnInit, IModulatorComponent {
+  private _modulatedParameter: IModulableAudioParameter;
 
   private _lfoNode: OscillatorNode;
   private _lfoProcessor: ScriptProcessorNode;
@@ -35,16 +34,21 @@ export class LfoComponent extends AttachableComponent
     return this._rate;
   }
 
-  public get modulatedParameter(): ModulableAudioParameter {
+  public get modulatedParameter(): IModulableAudioParameter {
     return this._modulatedParameter;
   }
   @Input()
   // CHECK: think of all the combo modulatedParameter x mp
-  public set modulatedParameter(mp: ModulableAudioParameter) {
-    if (mp && mp != null) { // Attach
+  public set modulatedParameter(mp: IModulableAudioParameter) {
+    if (this.modulatedParameter !== undefined && this.modulatedParameter.endModulationConfig()) {
+      this._processorAmplifier.disconnect(this.modulatedParameter.audioParam);
+    }
+    if(mp !== undefined) {
       this._modulatedParameter = mp;
-    } else { // Detach
-      this._modulatedParameter = null;
+      this.loadPatch();
+      if (this.modulatedParameter.beginModulationConfig()) {
+        this._processorAmplifier.connect(this.modulatedParameter.audioParam);
+      }
     }
   }
   private modulatingWaveShapeConfig(ape: AudioProcessingEvent): void {
@@ -69,12 +73,22 @@ export class LfoComponent extends AttachableComponent
   }
 
   public constructor(private contextManager: AudioContextManagerService) {
-    super();
+    this._waveShapes = ['sine', 'square', 'sawtooth', 'triangle'];
+
+    this._lfoNode = this.contextManager.audioContext.createOscillator();
+    this._lfoNode.type = 'sine';
+    this._lfoProcessor = this.contextManager.audioContext.createScriptProcessor(2 ** 11);
+    this._lfoProcessor.onaudioprocess = (arg: AudioProcessingEvent) => {
+      this.modulatingWaveShapeConfig(arg);
+    }
+    this._processorAmplifier = this.contextManager.audioContext.createGain();
+
+    this._lfoNode.connect(this._lfoProcessor);
+    this._lfoProcessor.connect(this._processorAmplifier);
+    this._lfoNode.start();
   }
 
   public loadPatch(): void {
-    this._lfoNode.type = 'sine'/*this.data.state.waveShape*/;
-
     this._intensity = new UIAudioParameter<IAudioParameter<AudioParam>>(
       new AudioParameter<AudioParam>(
         'intensity',
@@ -86,7 +100,7 @@ export class LfoComponent extends AttachableComponent
         ),
         this._processorAmplifier.gain
       ),
-      new AudioParameterDescriptor(0, 100/*this.data.state.hlIntensity*/, 100, '%')
+      new AudioParameterDescriptor(0, 0, 100, '%')
     );
     this._rate = new UIAudioParameter<IAudioParameter<AudioParam>>(
       new AudioParameter<AudioParam>(
@@ -94,35 +108,10 @@ export class LfoComponent extends AttachableComponent
         new AudioParameterDescriptor(0, 1, 20, 'Hz'),
         this._lfoNode.frequency
       ),
-      new AudioParameterDescriptor(0, 10/*this.data.state.hlRate*/, 200, 'dHz')
+      new AudioParameterDescriptor(0, 10, 200, 'dHz')
     );
   }
 
   public ngOnInit() {
-    this._waveShapes = ['sine', 'square', 'sawtooth', 'triangle'];
-
-    this._lfoNode = this.contextManager.audioContext.createOscillator();
-    this._lfoProcessor = this.contextManager.audioContext.createScriptProcessor(2 ** 11);
-    this._lfoProcessor.onaudioprocess = (arg: AudioProcessingEvent) => {
-      this.modulatingWaveShapeConfig(arg);
-    }
-    this._processorAmplifier = this.contextManager.audioContext.createGain();
-
-    this._lfoNode.connect(this._lfoProcessor);
-    this._lfoProcessor.connect(this._processorAmplifier);
-    this._lfoNode.start();
-
-    this.loadPatch();
-
-    if (this.modulatedParameter.beginModulationConfig()) {
-      this._processorAmplifier.connect(this.modulatedParameter.audioParam);
-    }
-  }
-
-  public savePatch(): any {
-    this.data.state.waveShape = this._lfoNode.type;
-    this.data.state.hlIntensity = this.intensity.hlValue;
-    this.data.state.hlRate = this.rate.hlValue;
-    return this.data;
   }
 }

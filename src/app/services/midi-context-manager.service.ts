@@ -37,10 +37,13 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
           input.value.onmidimessage = this.onMIDIMessage.bind(null, this);
         }
       }, (message: any): void => {
-        throw new Error('unable to acquire MIDI resource: ' + message);
+        // throw new Error('unable to acquire MIDI resource: ' + message);
+        // we don't throw the exception because we need the service
+        console.log('unable to acquire MIDI resource: ' + message);
       });
     } else {
-      throw new Error('MIDI is not supported');
+      // throw new Error('MIDI is not supported');
+      console.log('MIDI is not supported');
     }
   }
 

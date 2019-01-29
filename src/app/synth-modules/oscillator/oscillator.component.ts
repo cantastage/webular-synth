@@ -62,7 +62,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     this.c = this.contextManager.audioContext;
     this.g = this.c.createGain();
     this.g.gain.setValueAtTime(1, this.c.currentTime);
-    this.g.connect(this.c.destination);
+    // this.g.connect(this.c.destination);
     /*
     if (this.data.waveForm !== undefined) {
       this.waveForm = this.data.state.waveForm;

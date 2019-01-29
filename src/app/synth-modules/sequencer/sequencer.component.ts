@@ -10,7 +10,7 @@ import { Subdivision } from '../../model/modules/sequencer/Subdivision';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
-import { SynthModule } from 'src/app/interfaces/module.component';
+// I NEED TO BE INFORMED ABOUT MY PRESENCE IN SOUND CHAIN OR NOT!!!!!!
 
 @Component({
   selector: 'app-sequencer',
@@ -33,7 +33,7 @@ export class SequencerComponent implements OnInit, IObserver<number> {
 
   public loadPatch(): void {
     this._sequencer = this.data.state;
-    this.clockManager.attach(this);
+    this.clockManager.attach(this); // THIS SHOULD BE DONE WHEN ENTERING THE SOUND CHAIN
   }
 
   ngOnInit() {
@@ -58,7 +58,7 @@ export class SequencerComponent implements OnInit, IObserver<number> {
   }
 
   public savePatch(): any {
-    this.clockManager.detach(this);
+    this.clockManager.detach(this); // THIS SHOULD BE DONE WHEN LEAVING THE SOUND CHAIN
     this.data.state = this._sequencer;
     return this.data;
   }
