@@ -25,6 +25,7 @@ export class ADSRComponent implements OnInit {
   private offsetParentTop: number;
   private rightMargin: number;
   private bottomMargin: number;
+  private maxAttackPoint: number;
 
   // parameters
   public attackTime: number;
@@ -40,11 +41,6 @@ export class ADSRComponent implements OnInit {
   public minDecayTime: number;
   public stopOsc: boolean;
   public interruptNote: boolean;
-
-  // NOT USED IN REAL APP
-  public c: AudioContext;
-  public osc: OscillatorNode;
-  public gain: GainNode;
   public scrollOffsetY: number;
   public scrollOffsetX: number;
 
@@ -61,18 +57,8 @@ export class ADSRComponent implements OnInit {
   upEvent(event: MouseEvent) {
     this.fixPoint(event);
   }
-  /*
-@HostListener('window:mousedown', ['$event'])
-  downEvent(event: MouseEvent) {
-    this.selectPoint(event);
-  }
-  */
-  // constructor(g: GainNode) {
-  //   this.gain = g;
-  //  }
-  constructor(
-    private contextManger: AudioContextManagerService,
-    private messageService: MessageService) {
+
+  constructor(private messageService: MessageService) {
   }
 
 
@@ -100,7 +86,7 @@ export class ADSRComponent implements OnInit {
         id: '1'
       },
       {
-        x: this.data.state.releaseTime,
+        x: this.data.state.releaseTime + 50,
         y: this.data.state.sustainValue,
         radius: 10,
         color: 'red',
@@ -115,6 +101,7 @@ export class ADSRComponent implements OnInit {
     this.minDecayTime = this.points[0].x + 10;
     this.stopOsc = false;
     this.interruptNote = false;
+    this.maxAttackPoint = 150;
 
     // parameters
     this.attackTime = Math.round(((this.points[0].x - this.minDist) / this.maxAttTime * 2) * 100) / 100;
@@ -125,12 +112,6 @@ export class ADSRComponent implements OnInit {
     this.values = [this.attackTime, this.decayTime, this.sustainValue, this.releaseTime];
     this.sendMessage();
     this.drawAll();
-
-    // NOT USED IN REAL APP
-    this.c = this.contextManger.audioContext;
-    this.osc = this.c.createOscillator();
-    this.gain = this.c.createGain();
-
   }
 
   public drawAll() {
@@ -154,7 +135,6 @@ export class ADSRComponent implements OnInit {
   }
 
   public isIntersect(mouse, circle) {
-    // console.log(Math.sqrt((mouse.x - circle.x) ** 2 + (mouse.y - circle.y) ** 2) < circle.radius);
     return Math.sqrt((mouse.x - circle.x) ** 2 + (mouse.y - circle.y) ** 2) < circle.radius;
   }
 
@@ -201,6 +181,11 @@ export class ADSRComponent implements OnInit {
           this.lastX[this.selectedPoint] = this.points[this.selectedPoint].x - 1;
         }
 
+        if (this.lastX[this.selectedPoint] > this.maxAttackPoint - this.minDist) {
+          this.points[this.selectedPoint].x = this.maxAttackPoint - this.minDist;
+          this.lastX[this.selectedPoint] = this.points[this.selectedPoint].x - 1;
+        }
+
 
       }
 
@@ -233,7 +218,6 @@ export class ADSRComponent implements OnInit {
       // redraw all the circles
       this.drawAll();
       this.updateAttackTime(this.points[1].x, this.points[0].x);
-      this.updateAttackValue(this.points[0].y);
       this.updateDecayTime((this.points[1].x - this.points[0].x));
       this.updateSustainValue(this.points[1].y);
       this.updateReleaseTime((this.envCanvas.nativeElement.width - this.points[1].x));
@@ -251,56 +235,25 @@ export class ADSRComponent implements OnInit {
   }
 
   public updateAttackTime(maxValue: number, newValue: number) {
-    this.maxAttTime = maxValue;
+    this.maxAttTime = this.maxAttackPoint;
     this.attackTime = (newValue - (this.minDist - 2)) / this.maxAttTime * 2;
     this.attackTime = Math.round(this.attackTime * 100) / 100;
-    // console.log(this.attackTime);
   }
-
-  public updateAttackValue(newValue: number) {
-    this.attackValue = (this.envCanvas.nativeElement.height - newValue) / this.envCanvas.nativeElement.height * 2;
-  }
-
 
   public updateDecayTime(newInterval: number) {
     this.decayTime = newInterval / this.envCanvas.nativeElement.width * 1;
     this.decayTime = Math.round(this.decayTime * 100) / 100;
-
   }
 
   public updateSustainValue(newValue: number) {
     this.sustainValue = (this.envCanvas.nativeElement.height - newValue) / this.envCanvas.nativeElement.height * 2;
     this.sustainValue = Math.round(this.sustainValue * 100) / 100;
-
   }
 
 
   public updateReleaseTime(newInterval: number) {
     this.releaseTime = newInterval / this.envCanvas.nativeElement.width * 2;
     this.releaseTime = Math.round(this.releaseTime * 100) / 100;
-
-  }
-
-  // TODO remove after test
-  public playNote() {
-    this.osc.frequency.value = 440;
-    this.osc.connect(this.gain);
-    this.gain.connect(this.c.destination);
-    this.gain.gain.setValueAtTime(0, this.c.currentTime);
-    this.gain.gain.linearRampToValueAtTime(this.attackValue, this.c.currentTime + this.attackTime);
-    this.gain.gain.linearRampToValueAtTime(this.sustainValue, this.c.currentTime + this.attackTime + this.decayTime);
-    // console.log(this.attackTime);
-    this.sendMessage();
-    this.osc.start();
-
-  }
-
-  public stopNote() {
-    this.gain.gain.cancelScheduledValues(this.c.currentTime);
-    this.gain.gain.setValueAtTime(this.gain.gain.value, this.c.currentTime);
-    console.log(this.releaseTime);
-    this.gain.gain.linearRampToValueAtTime(0, this.c.currentTime + this.releaseTime);
-    setTimeout(function () { this.osc.stop(); }, this.releaseTime * 1000);
   }
 
   public savePatch(): any {

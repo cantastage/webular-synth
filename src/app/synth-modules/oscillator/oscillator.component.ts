@@ -7,6 +7,7 @@ import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { SynthModule } from 'src/app/interfaces/module.component';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'src/app/services/message.service';
+import { KnobComponent } from '../sub-components/knob/knob.component';
 
 @Component({
   selector: 'app-oscillator',
@@ -15,7 +16,6 @@ import { MessageService } from 'src/app/services/message.service';
 })
 
 export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number, boolean, number, number]>, SynthModule {
-  @ViewChild('envCanvas') public envCanvas: ElementRef;
   @Input() data: any;
   private c: AudioContext;
   private g: GainNode;  // Output gain
@@ -44,7 +44,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
   update(arg: [number, boolean, number, number]): void {
     // throw new Error('Method not implemented.');
-    console.log(arg);
+    // console.log(arg);
     if (arg[1] === true) {
       this.noteOn(arg[2], arg[3]);
     } else {
@@ -71,9 +71,6 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     this.addSemitone = 0;
     this.finePitch = 0;
 
-    // this.midiManager.midiAccess();
-    // this.midiFunction();
-
     // createAudioNode in audio context manager service
     this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
   }
@@ -99,10 +96,9 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
 
   public noteOn(midiNote, velocity) {
-    this.g.gain.value = velocity / 127 * this.maxVelocity / 127;
+    this.g.gain.value = this.maxVelocity / 127;
     this.frequency = MidiContextManagerService.midiNoteToFrequency(midiNote + this.addSemitone) + this.finePitch;
-    console.log(this.message.message);
-    const note = new Voice(this.c, this.g, this.waveForm, this.message.message);
+    const note = new Voice(this.c, this.g, (velocity), this.waveForm, this.message.message);
     this.active_voices[midiNote] = note;
     note.playNote(this.frequency);
   }
@@ -111,69 +107,20 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     this.active_voices[midiNote].stopNote();
     delete this.active_voices[midiNote];
   }
-  /*
-    public checkMidi() {
-      if (navigator['requestMIDIAccess']) {
-        navigator['requestMIDIAccess']({
-          sysex: false
-        }).then(this.onMIDISuccess.bind(this), this.onMIDIFailure.bind(this));
-      } else {
-        alert('No MIDI support in your browser.');
-      }
-    }
-
-    public onMIDISuccess(midiAccess) {
-      console.log(midiAccess);
-      let midi;
-      midi = midiAccess;
-      const inputs = midi.inputs.values();
-      for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
-        console.log(input.value);
-        input.value.onmidimessage = this.onMIDIMessage.bind(this);
-      }
-    }
-
-    public onMIDIFailure(error) {
-      console.log('No access to MIDI devices or your browser doesn\'t support WebMIDI API. Please use WebMIDIAPIShim ' + error);
-    }
-
-    public onMIDIMessage(event) {
-      // console.log('message');
-
-      this.midiData = event.data;
-      const channel = this.midiData[0] & 0xf;
-      const type = this.midiData[0] & 0xf0;
-      const note = this.midiData[1];
-      const velocity = this.midiData[2];
-
-      switch (type) {
-        case 144: // noteOn message
-          this.noteOn(note, velocity);
-          break;
-        case 128: // noteOff message
-          this.noteOff(note, velocity);
-          break;
-      }
-
-    }
-    */
 
   public onVolumeChange(value) {
-    // console.log(value);
     this.maxVelocity = value;
     this.g.gain.value = this.maxVelocity / 127;
-    // this.noteOn(66,this.maxVelocity);
   }
 
   public fineTuneChange(value) {
     this.finePitch = value;
-    // console.log(this.finePitch);
   }
 
   public coarseTuneChange(value) {
     this.addSemitone = value;
-    // console.log(this.addSemitone);
   }
+
 
   public savePatch(): any {
     const patch = {
