@@ -100,11 +100,11 @@ The UI of the `AmplifierComponent` allows the state configuration:
 - FM intensity knob: variation around the modulated parameter value;
 - FM rate knob: sets the velocity of the variation above.~~
 
+### ~~Modulation logic~~
+
+
+
 ## Sound chain
-
-
-
-## ~~Modulation~~
 
 
 

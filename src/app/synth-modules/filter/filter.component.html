@@ -20,7 +20,8 @@
   </div>
 </div>
 
-<!-- <app-lfo *ngFor="let mp of modulableParameters;" [attachedComponent]="this" [modulatedParameter]="mp"></app-lfo> -->
+<select [(ngModel)]="selectedModulableParameter">
+  <option *ngFor="let mp of modulableParameters;" [ngValue]="mp">{{mp.name}}</option>
+</select>
 
-<app-lfo [attachedComponent]="this" [modulatedParameter]="modulableParameters[0]"></app-lfo>
-<!-- <app-lfo [attachedComponent]="this" [modulatedParameter]="modulableParameters[1]"></app-lfo> -->
+<app-lfo [modulatedParameter]="selectedModulableParameter"></app-lfo>

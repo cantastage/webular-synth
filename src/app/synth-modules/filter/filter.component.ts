@@ -1,37 +1,34 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IModulableComponent } from 'src/app/synth-modules/Modulable';
+import { IModulableComponent } from 'src/app/synth-modules/IModulableComponent';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 
-import { SynthModule } from 'src/app/interfaces/module.component';
-import { IUIAudioParameter, UIAudioParameter, ModulableAudioParameter, AudioParameterDescriptor } from '../Modulation';
+import {
+  IUIAudioParameter, UIAudioParameter, IModulableAudioParameter, ModulableAudioParameter, AudioParameterDescriptor
+} from '../AudioParameter';
 
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss', '../../app.component.scss']
 })
-export class FilterComponent implements OnInit, IModulableComponent, SynthModule {
+export class FilterComponent implements OnInit, IModulableComponent {
   @Input() data: any;
-
-  private _testGeneratorNode: OscillatorNode;
 
   private _filterNode: BiquadFilterNode;
   private _filterTypes: BiquadFilterType[]; // readonly
 
-  private _modulableParameters: ModulableAudioParameter[];
-  private _uiModulableParameters: IUIAudioParameter<ModulableAudioParameter>[];
+  private _modulableParameters: IModulableAudioParameter[];
+  private _uiModulableParameters: IUIAudioParameter<IModulableAudioParameter>[];
+  selectedModulableParameter: IModulableAudioParameter;
 
   public get filterTypes(): string[] {
     return this._filterTypes;
   }
 
-  public get innerNode(): AudioNode {
-    return this._filterNode;
-  }
-  public get modulableParameters(): ModulableAudioParameter[] {
+  public get modulableParameters(): IModulableAudioParameter[] {
     return this._modulableParameters;
   }
-  public get uiModulableParameters(): IUIAudioParameter<ModulableAudioParameter>[] {
+  public get uiModulableParameters(): IUIAudioParameter<IModulableAudioParameter>[] {
     return this._uiModulableParameters;
   }
 
@@ -51,13 +48,15 @@ export class FilterComponent implements OnInit, IModulableComponent, SynthModule
         this._filterNode.Q
       )
     ];
+    this.selectedModulableParameter = this.data.state.modulatedParameter === 'frequency' ?
+      this.modulableParameters[0] : this.modulableParameters[1];
     this._uiModulableParameters = [
-      new UIAudioParameter<ModulableAudioParameter>(
+      new UIAudioParameter<IModulableAudioParameter>(
         this.modulableParameters[0],
         new AudioParameterDescriptor(0, this.data.state.hlFrequency, 22000, 'Hz')
       ),
       // ambiguous acceptation of Q as resonance/quality depending on the filter type
-      new UIAudioParameter<ModulableAudioParameter>(
+      new UIAudioParameter<IModulableAudioParameter>(
         this.modulableParameters[1],
         new AudioParameterDescriptor(0, this.data.state.hlResonance, 30, '')
       )
@@ -70,15 +69,6 @@ export class FilterComponent implements OnInit, IModulableComponent, SynthModule
     this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
     this.loadPatch();
 
-    // remove below after tests...
-    // this._testGeneratorNode = this.contextManager.audioContext.createOscillator();
-    // this._testGeneratorNode.type = 'sine';
-    // this._testGeneratorNode.frequency.value = 5500;
-    // this._testGeneratorNode.start();
-
-    // this._testGeneratorNode.connect(this.innerNode);
-    // this.innerNode.connect(this.contextManager.audioContext.destination);
-    // disconnect both of them after tests...
     this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
   }
 
@@ -86,9 +76,13 @@ export class FilterComponent implements OnInit, IModulableComponent, SynthModule
     this.data.state.filterType = this._filterNode.type;
     this.data.state.hlFrequency = this.uiModulableParameters[0].hlValue;
     this.data.state.hlResonance = this.uiModulableParameters[1].hlValue;
+    this.data.state.modulatedParameter = this.selectedModulableParameter.name;
     return this.data;
   }
 
+  public getInput(): AudioNode {
+    return this._filterNode;
+  }
   public getOutput(): AudioNode {
     return this._filterNode;
   }
