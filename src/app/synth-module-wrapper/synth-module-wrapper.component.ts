@@ -46,7 +46,7 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDes
 
   ngOnDestroy(): void {
     // console.log('module wrapper is being destroyed');
-    this.contextManager.subject.unsubscribe();
+    // this.contextManager.subject.unsubscribe();
   }
 
 
