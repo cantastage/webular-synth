@@ -57,19 +57,21 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     if (this.message === undefined) {
       this.message = { message: [0.2, 0, 1, 0.2]};
     }
-    this.active = 0;
+    this.active = this.data.state.active;
     this.active_voices = [];
     this.c = this.contextManager.audioContext;
     this.g = this.c.createGain();
     this.g.gain.setValueAtTime(1, this.c.currentTime);
     this.g.connect(this.c.destination);
-
+    /*
     if (this.data.waveForm !== undefined) {
-      this.waveForm = this.data.waveForm;
+      this.waveForm = this.data.state.waveForm;
     }
-    this.maxVelocity = 100;
-    this.addSemitone = 0;
-    this.finePitch = 0;
+    */
+    this.waveForm = this.data.state.waveForm;
+    this.maxVelocity = this.data.state.maxVelocity;
+    this.addSemitone = this.data.state.addSemitone;
+    this.finePitch = this.data.state.finePitch;
 
     // createAudioNode in audio context manager service
     this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
@@ -123,6 +125,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
 
   public savePatch(): any {
+    /*
     const patch = {
       name: this.data.name,
       waveForm: this.waveForm,
@@ -130,7 +133,15 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
       addSemitone: this.addSemitone,
       finePitch: this.finePitch
     };
-    return patch;
+    */
+   // console.log(this.waveForm);
+    // this.data.name = this.data.name;
+    this.data.state.waveForm = this.waveForm;
+    this.data.state.maxVelocity = this.maxVelocity;
+    this.data.state.addSemitone = this.addSemitone;
+    this.data.state.finePitch = this.finePitch;
+    this.data.state.active = this.active;
+    return this.data;
   }
 
   public getOutput(): AudioNode {

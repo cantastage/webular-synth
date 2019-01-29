@@ -1,12 +1,12 @@
 <div class="container">
 
-  <div class="dot" [className]="this.active == 0 ? 'dot active' : 'dot'" id="sin-dot">
+  <div class="dot" [ngClass]="this.active == 0 ? 'dot active' : 'dot'" id="sin-dot">
   </div>
-  <div class="dot" [className]="this.active == 1 ? 'dot active' : 'dot'" id="sqr-dot">
+  <div class="dot" [ngClass]="this.active == 1 ? 'dot active' : 'dot'" id="sqr-dot">
   </div>
-  <div class="dot" [className]="this.active == 2 ? 'dot active' : 'dot'" id="saw-dot">
+  <div class="dot" [ngClass]="this.active == 2 ? 'dot active' : 'dot'" id="saw-dot">
   </div>
-  <div class="dot" [className]="this.active == 3 ? 'dot active' : 'dot'" id="tri-dot">
+  <div class="dot" [ngClass]="this.active == 3 ? 'dot active' : 'dot'" id="tri-dot">
   </div>
 
   <div class="button" id="sin" (click)="selectWaveform(0)">
@@ -22,7 +22,7 @@
     TRI
   </div>
   <knob class="skin1" #volKnob id="volumeKnob" [min]="0" [max]="127" [value]="100" [startDegree]="-120" [endDegree]="120"
-    (change)="onVolumeChange(volKnob.meterValue)">
+    (change)="onVolumeChange(volKnob.meterValue)" [(ngModel)]="maxVelocity">
 
   </knob>
   <div id="label-volume">
@@ -30,12 +30,12 @@
   </div>
 
   <knob class="skin1" #crsKnob id="coarseKnob" [min]="-12" [max]="12" [value]="0" [startDegree]="-120" [endDegree]="120"
-    (change)="coarseTuneChange(crsKnob.meterValue)">
+    (change)="coarseTuneChange(crsKnob.meterValue)" [(ngModel)]="addSemitone">
 
   </knob>
 
   <knob class="skin1" #fnKnob id="fineKnob" [min]="-10" [max]="10" [value]="0" [startDegree]="-120" [endDegree]="120"
-    (change)="fineTuneChange(fnKnob.meterValue)">
+    (change)="fineTuneChange(fnKnob.meterValue)" [(ngModel)]="finePitch">
 
   </knob>
   <div id="label-coarse">

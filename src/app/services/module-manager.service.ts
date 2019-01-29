@@ -26,10 +26,10 @@ export class ModuleManagerService {
 
   // a fly-weight factory could be used
   private get mlFilterDefaultState(): any {
-    return;
+    return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 0.2 };
   }
   private get filterDefaultState(): any {
-    return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 5 };
+    return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 1 };
   }
   private get lfoDefaultState(): any {
     return { waveShape: 'sine', hlIntensity: 100, hlRate: 10 };
@@ -52,6 +52,10 @@ export class ModuleManagerService {
     return { attackTime: 50, attackValue: 10, sustainValue: 80, releaseTime: 180 };
   }
 
+  private get oscillatorDefaultState(): any {
+    return { waveForm: 'sine', maxVelocity: 100, addSemitone: 0, finePitch: 0, active: 0 };
+  }
+
   public getModules(): ModuleItem[] {
     // return this.modules;
     return [
@@ -61,7 +65,7 @@ export class ModuleManagerService {
       new ModuleItem(ClockComponent, { name: 'clock', state: this.clockDefaultState }),
       new ModuleItem(SequencerComponent, { name: 'sequencer', state: this.sequencerDefaultState }),
       new ModuleItem(ADSRComponent, { name: 'ADSR', state: this.adsrDefaultState }),
-      new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', waveForm: 'sine', maxVelocity: 100, addSemitone: 0, finePitch: 0 }),
+      new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', state: this.oscillatorDefaultState }),
       new ModuleItem(AmplifierComponent, { name: 'final', state:  this.amplifierDefaultState })
     ];
   }

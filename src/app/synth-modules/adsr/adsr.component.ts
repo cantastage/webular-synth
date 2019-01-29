@@ -86,7 +86,7 @@ export class ADSRComponent implements OnInit {
         id: '1'
       },
       {
-        x: this.data.state.releaseTime + 50,
+        x: this.data.state.releaseTime,
         y: this.data.state.sustainValue,
         radius: 10,
         color: 'red',
