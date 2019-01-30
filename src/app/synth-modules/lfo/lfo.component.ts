@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { IModulatorComponent } from '../IModulatorComponent';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
-import { MatButtonModule } from '@angular/material/button';
 
 import {
   IUIAudioParameter, IAudioParameter,
