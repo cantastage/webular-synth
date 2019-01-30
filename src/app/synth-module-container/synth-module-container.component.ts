@@ -61,8 +61,15 @@ export class SynthModuleContainerComponent implements OnInit {
           event.container.data,
           event.previousIndex,
           event.currentIndex);
+        return;
       } else {
         // trasferisco da soundchain ad unconnected e distruggo il componente
+        transferArrayItem(event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex);
+        this.contextManager.deleteSynthModule(event.previousIndex);
+        event.container.data.splice(event.currentIndex, 1);
       }
     }
   }

@@ -17,10 +17,9 @@ import { nextContext } from '@angular/core/src/render3';
   providedIn: 'root'
 })
 export class AudioContextManagerService {
-  // private master_volume: GainNode;
   private _ctx: AudioContext;
   private soundChain: Array<SynthModule> = new Array<SynthModule>(0); // stores all the nodes in the audiochain
-  private unconnectedModules: Array<SynthModule> = new Array<SynthModule>(0);
+  // private unconnectedModules: Array<SynthModule> = new Array<SynthModule>(0);
   public subject: Subject<Pair<string, number>>;
 
   constructor() {
@@ -133,5 +132,31 @@ export class AudioContextManagerService {
 
     // update dell'indice del componente
     this.soundChain[currentIndex].position = currentIndex;
+  }
+  public deleteSynthModule(position: number): void {
+    const soundChainLength = this.soundChain.length;
+    // disconnessione del modulo dalla previous position
+    if (position === 0 && soundChainLength === 1) {
+      // caso in cui sia l'unico elemento nella lista
+      this.soundChain[position].disconnectSynthModule();
+      return;
+    }
+    if (position === (soundChainLength - 1)) {
+      const prev = this.soundChain[position - 1];
+      prev.disconnectSynthModule();
+      prev.getOutput().connect(this._ctx.destination); // collego l'output dell'ultimo modulo a destination.
+      this.soundChain[position].disconnectSynthModule();
+    } else if (position === 0) {
+      this.soundChain[position].disconnectSynthModule();
+    } else {
+      // caso di scollegamento in mezzo alla lista
+      this.soundChain[position].disconnectSynthModule();
+      const prev = this.soundChain[position - 1];
+      prev.disconnectSynthModule();
+      const next = this.soundChain[position + 1];
+      next.connectToSynthNode(prev.getOutput());
+    }
+    // cancellazione del modulo
+    this.soundChain.splice(position, 1);
   }
 }
