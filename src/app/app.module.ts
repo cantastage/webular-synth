@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { KnobModule } from 'ng2-knob';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -44,6 +45,7 @@ import { AmplifierComponent } from './synth-modules/amplifier/amplifier.componen
     DragDropModule,
     FormsModule,
     KnobModule,
+    MatButtonToggleModule
   ],
   providers: [
   ],
