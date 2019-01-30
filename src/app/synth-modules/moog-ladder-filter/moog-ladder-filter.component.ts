@@ -9,6 +9,8 @@ import { SynthModule } from 'src/app/interfaces/module.component';
 })
 export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy, OnChanges {
   @Input() data: any;
+  @Input() isInSoundChain: boolean;
+  @Input() position: number;
   private _oscTest: OscillatorNode;
   private _scriptNode: ScriptProcessorNode;
   public cutoff_freq: number;
@@ -33,7 +35,9 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
     this.Q = this.data.state.hlResonance;
 
     console.log('Provided data in input: ', this.data);
-    this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
+    if (this.isInSoundChain) {
+      this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

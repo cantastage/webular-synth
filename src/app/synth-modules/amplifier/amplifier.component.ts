@@ -13,6 +13,8 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
 })
 export class AmplifierComponent implements OnInit, IModulableComponent {
   @Input() data: any;
+  @Input() isInSoundChain: boolean;
+  @Input() position: number;
 
   private _gainNode: GainNode;
   private _panNode: StereoPannerNode;
@@ -62,7 +64,9 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
     this._panNode = this.contextManager.audioContext.createStereoPanner();
     this.getInput().connect(this.getOutput());
     this.loadPatch();
-    this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
+    if (this.isInSoundChain) {
+      this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
+    }
   }
 
   public savePatch(): any {

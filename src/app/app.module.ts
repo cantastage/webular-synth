@@ -19,7 +19,8 @@ import { SequencerComponent } from './synth-modules/sequencer/sequencer.componen
 import { ADSRComponent } from './synth-modules/adsr/adsr.component';
 import { OscillatorComponent } from './synth-modules/oscillator/oscillator.component';
 import { AmplifierComponent } from './synth-modules/amplifier/amplifier.component';
-
+import { ScrollDispatchModule } from '@angular/cdk/scrolling';
+import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
 @NgModule({
   declarations: [
     AppComponent,

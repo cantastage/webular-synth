@@ -17,6 +17,8 @@ import { KnobComponent } from '../sub-components/knob/knob.component';
 
 export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number, boolean, number, number]>, SynthModule {
   @Input() data: any;
+  @Input() isInSoundChain: boolean;
+  @Input() position: number;
   private c: AudioContext;
   private g: GainNode;  // Output gain
 
@@ -74,7 +76,9 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     this.finePitch = this.data.state.finePitch;
 
     // createAudioNode in audio context manager service
-    this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
+    if (this.isInSoundChain) {
+      this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
+    }
   }
 
   ngOnDestroy() {

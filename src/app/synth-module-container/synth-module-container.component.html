@@ -27,22 +27,21 @@
       <!-- List that represents the sound chain -->
       <div cdkDropList cdkDropListOrientation="horizontal" #connectedList="cdkDropList" [cdkDropListData]="soundChain"
         [cdkDropListConnectedTo]="[unconnectedList]" class="rack-list" (cdkDropListDropped)="drop($event)" id="soundChain">
-        <div class="inner"></div>
         <h2 class="module-list-title">Synth Modules</h2>
         <app-synth-module-wrapper cdkDrag [synthModuleData]="item" *ngFor="let item of soundChain; let i = index"
-          [index]="i" [listName]="connectedList.id"></app-synth-module-wrapper>
+          [index]="i" [listName]="connectedList.id" [isInSoundChain]="true"></app-synth-module-wrapper>
       </div>
     </div>
 
 
     <!-- <button type="button" (click)="loadComponent()">Load Component</button> -->
     <div class="col-4 full-height-col">
-      <h2>New modules</h2>
       <!-- List that represents new modules -->
-      <div cdkDropList cdkDropListOrientation="horizontal" #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules"
-        [cdkDropListConnectedTo]="[connectedList]" class="example-list" (cdkDropListDropped)="drop($event)" id="unconnectedModules">
-        <app-synth-module-wrapper cdkDrag *ngFor="let item of unconnectedModules; let i= index" [synthModuleData]="item"
-          [index]="i" [listName]="unconnectedList.id"></app-synth-module-wrapper>
+      <div cdkDropList #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules" [cdkDropListConnectedTo]="[connectedList]"
+        class="new-module-list" (cdkDropListDropped)="drop($event)" id="unconnectedModules">
+        <h2 class="module-list-title">New modules</h2>
+          <app-synth-module-wrapper cdkDrag *ngFor="let item of unconnectedModules; let i= index" [synthModuleData]="item"
+            [index]="i" [listName]="unconnectedList.id" [isInSoundChain]="false"></app-synth-module-wrapper>
       </div>
     </div>
   </div>
