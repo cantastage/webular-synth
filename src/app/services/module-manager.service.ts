@@ -46,7 +46,7 @@ export class ModuleManagerService {
     );
   }
   private get adsrDefaultState(): any {
-    return { attackTime: 50, attackValue: 10, sustainValue: 80, releaseTime: 180 };
+    return { attackTime: 50, attackValue: 10, sustainValue: 50, releaseTime: 220 };
   }
 
   private get oscillatorDefaultState(): any {
@@ -59,7 +59,6 @@ export class ModuleManagerService {
       // NBNB: ClockComponent should be in the UI by default, out of any chain!!!
       // new ModuleItem(ClockComponent, { name: 'clock', state: this.clockDefaultState }),
       new ModuleItem(SequencerComponent, { name: 'sequencer', state: this.sequencerDefaultState }),
-      new ModuleItem(ADSRComponent, { name: 'ADSR', state: this.adsrDefaultState }),
       new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', state: this.oscillatorDefaultState }),
       new ModuleItem(ADSRComponent, { name: 'ADSR', state: this.adsrDefaultState }),
       new ModuleItem(MoogLadderFilterComponent, { name: 'filter', state: this.mlFilterDefaultState }),

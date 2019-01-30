@@ -1,9 +1,27 @@
 .container{
+    // display: inline-block;
     position: relative;
     width: 400px;
     height: 280px;
-    border: 1px solid black;
+    border: 2px solid rgb(10, 10, 10);
     border-radius: 5px;
+    background-color: #8c8c8c;
+    background-image: url('src/assets/brushed-alum-dark.png');
+    font-family: Futura;
+    font-weight: 700;
+}
+#title{
+  // display: inline-block;
+  position: relative;
+  width: 400px;
+  height: 25px;
+  border: 2px solid rgb(10, 10, 10);
+  border-radius: 5px;
+  background-color: #4a4a4c;
+  color: #8c8c8c;
+  font-family: Futura;
+  font-weight: 700;
+  text-align: center;
 }
 
 #label-fine{
@@ -35,10 +53,18 @@
   }
 
   .button{
-    border: 1px solid black;
+    // border: 1px solid black;
     border-radius: 5px;
+    box-shadow: inset 0 -2px 2px rgba(0, 0, 0, 0.06), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+    background: #282828;
     width: 35px;
+    height: 25px;
     text-align: center;
+    color: #D5D3C9;
+  }
+
+  img{
+    height: 110%;
   }
   
   #sin{
@@ -78,7 +104,7 @@
     width: 15px;
     border-radius: 50%;
     background-color: #7c3030;
-    border: 1px solid black;
+    border: 2px rgba(0, 0, 0, 0.15) solid;
   }
   
   #sin-dot{
@@ -103,7 +129,8 @@
   }
   
   .active{
-    background-color: red;
+    background-color: #fe5532;
+    box-shadow: 0 0 10px rgba(255, 48, 68, 0.5);
   }
   
   #but{
@@ -121,14 +148,14 @@
 }
 
 knob.skin1{
-    background: url('ng2-knob/skins/skin1_back.svg');
+    // background: url('ng2-knob/skins/skin1_back.svg');
     background-size: contain;    
 }
 knob.skin1 /deep/ .knob{
-    background: url('ng2-knob/skins/skin1_front.svg');
+    background: url('src/assets/knob.png');
     background-size: contain;    
 }
-
+/*
 knob.skin4{
   background:url('ng2-knob/skins/skin4_back.svg');
   background-size: contain;    
@@ -141,7 +168,7 @@ knob.skin4 /deep/ .knob{
   width:200px;
   height:200px;
 }
-
+*/
 #volumeKnob{
   width: 80px;
   height: 80px;

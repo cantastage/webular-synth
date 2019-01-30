@@ -1,21 +1,46 @@
 .container{
+    // display: inline-block;
     position: relative;
     width: 400px;
     height: 280px;
-    border: 1px solid black;
+    border: 2px solid black;
     border-radius: 5px;
-    background: #f2ede0;
+    background-color: #8c8c8c;
+    // background: #f2ede0;
+    background-image: url('src/assets/brushed-alum-dark.png');
+  }
+
+  #title{
+    position: relative;
+    width: 400px;
+    height: 25px;
+    border: 2px solid rgb(10, 10, 10);
+    border-radius: 5px;
+    background-color: #4a4a4c;
+    color: #8c8c8c;
+    font-family: Futura;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  #text{
+    position: relative;
+    text-align: center;
+    font-family: Futura;
+    font-weight: 700;
+    margin-top: 30px;
   }
 
   #envelope {
     position: relative;
     display: block;
-    margin-left: 10%;
-    top: 30%;
+    margin-left: 20px;
+    top: 30px;
     border: 1px solid black;
     background: #282828;
 
   }
+  /*
   button{
       position: relative;
       display: inline-block;
@@ -24,3 +49,4 @@
       left: 90%;
       top:100%;
   }
+  */

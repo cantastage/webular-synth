@@ -13,14 +13,14 @@ export abstract class Observable<notifyType> implements IObservable<notifyType> 
     }
 
     public attach(observer: IObserver<notifyType>): void {
-        if (observer == null) {
-          throw new Error('the observer cannot be null');
+        if (observer === undefined) {
+          throw new Error('the observer cannot be undefined');
         }
         this._observers.push(observer);
     }
     public detach(observer: IObserver<notifyType>): void {
         let i;
-        if (observer == null || (i = this._observers.indexOf(observer)) < 0) {
+        if (observer === undefined || (i = this._observers.indexOf(observer)) < 0) {
           throw new Error('observer null or not found');
         } else {
           this._observers.splice(i, 1);

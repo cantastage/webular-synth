@@ -1,38 +1,37 @@
 <div class="component-block">
-
+  <div class="component-title">LFO</div>
   <div class="component-header">
-      <select [(ngModel)]="_lfoNode.type">
-          <option *ngFor="let waveShape of waveShapes;" [ngValue]="waveShape">{{waveShape}}</option>
-      </select>
+      <!-- PUT THE FUCKING THING HERE. -->
+      <button mat-button class="wave-shape" [ngClass]="{'active-wave-shape': waveShape === _lfoNode.type}"
+      *ngFor="let waveShape of waveShapes;">
+          <img src="./assets/{{waveShape}}.png">
+      </button>
   </div>
-
   <div class="component-body">
-
     <div class="component-body-sub">
       <div class="component-body-sub-info">
           <div class="component-body-sub-info-name">{{intensity.audioParameter.name}}</div>
           <div class="component-body-sub-info-value">{{intensity.hlValue}}{{intensity.hlDescriptor.measurementUnit}}</div>          
       </div>
       <div class="component-body-sub-selector">
-          <knob class="skin2" [min]="intensity.hlDescriptor.minValue" [max]="intensity.hlDescriptor.maxValue"
+          <knob class="skin1" [min]="intensity.hlDescriptor.minValue" [max]="intensity.hlDescriptor.maxValue"
           [(ngModel)]="intensity.hlValue"
           [startDegree]="-120" [endDegree]="120"
           [intensive]="true"></knob>
       </div>
     </div>
-
     <div class="component-body-sub">
       <div class="component-body-sub-info">
           <div class="component-body-sub-info-name">{{rate.audioParameter.name}}</div>
           <div class="component-body-sub-info-value">{{rate.hlValue}}{{rate.hlDescriptor.measurementUnit}}</div>          
       </div>
       <div class="component-body-sub-selector">
-          <knob class="skin2" [min]="rate.hlDescriptor.minValue" [max]="rate.hlDescriptor.maxValue"
+          <knob class="skin1" [min]="rate.hlDescriptor.minValue" [max]="rate.hlDescriptor.maxValue"
           [(ngModel)]="rate.hlValue"
           [startDegree]="-120" [endDegree]="120"
           [intensive]="true"></knob>
       </div>
     </div>
-
   </div>
+  <div class="component-footer"></div>
 </div>
