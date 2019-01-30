@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, ComponentFactoryResolver, ComponentRef, ViewChildren,
+  Component, OnInit, ComponentFactoryResolver
 } from '@angular/core';
 import { AudioContextManagerService } from '../services/audio-context-manager.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -7,10 +7,11 @@ import { ModuleItem } from '../model/module-item';
 import { ModuleManagerService } from '../services/module-manager.service';
 import { Pair } from '../model/pair';
 
+
 @Component({
   selector: 'app-synth-module-container',
   templateUrl: './synth-module-container.component.html',
-  styleUrls: ['./synth-module-container.component.scss']
+  styleUrls: ['./synth-module-container.component.scss'],
 })
 /**
  * This component contains all synth modules
@@ -34,33 +35,40 @@ export class SynthModuleContainerComponent implements OnInit {
   /**
    * Method called when an element is dropped
    * @param event the drop event
+   *
    */
   drop(event: CdkDragDrop<Array<ModuleItem>>): void {
+    // caso in cui mi trovo a riordinare gli elementi nello stesso container
     if (event.previousContainer === event.container) {
-      // console.log('Reordering modules');
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      // move the correspondant audio node in context manager service
-      const listName = event.container.id;
-      this.contextManager.reorderModule(listName, event.previousIndex, event.currentIndex);
+
+      if (event.previousIndex !== event.currentIndex) {
+        // console.log('Reordering modules');
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        // move the correspondant SynthModule in context manager service ONLY IF IN SOUND CHAIN
+        if (event.container.id === 'soundChain') {
+          // update position, index of the synthmodule and update connections.
+          this.contextManager.moveSynthModuleInSoundChain(event.previousIndex, event.currentIndex);
+        }
+      } else {
+        return;
+      }
     } else {
-      // Component will be destroyed, so I need to save the state of the synth module 
-      // TODO can be optimized without instantiating a new pair everytime
-      this.contextManager.subject.next(new Pair<string, number>(event.previousContainer.id, event.currentIndex));
-      // console.log('moduleItem being passed: ', event.previousContainer.data[event.currentIndex]);
-      transferArrayItem(event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex);
-      // update connections in audiocontextservice
-      const previousListName = event.previousContainer.id;
-      const targetListName = event.container.id;
-      this.contextManager.moveSynthModule(previousListName, targetListName, event.previousIndex, event.currentIndex);
+      // TODO can be optimized without instantiating a new pair everytim
+      // save the status only when going from unconnected to new modules, else the module will be destroyed.
+      if (event.previousContainer.id === 'unconnectedModules') {
+        this.contextManager.subject.next(new Pair<string, number>(event.previousContainer.id, event.previousIndex));
+        transferArrayItem(event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex);
+      } else {
+        // trasferisco da soundchain ad unconnected e distruggo il componente
+      }
     }
   }
 
   // Adds a module into the array of unconnectedModules
   loadComponent(index: number): void {
-    // const adItem = this.modules[0]; // chooses first element to load
     const adItem = this.modules[index];
     this.unconnectedModules.push(adItem);
   }

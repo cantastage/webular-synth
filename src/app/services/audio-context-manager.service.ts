@@ -8,6 +8,7 @@ import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { PercentPipe } from '@angular/common';
 import { timingSafeEqual } from 'crypto';
 import { Pair } from '../model/pair';
+import { nextContext } from '@angular/core/src/render3';
 
 /**
  * This service provides access to a common audio context shared by all synth modules.
@@ -25,10 +26,6 @@ export class AudioContextManagerService {
   constructor() {
     this._ctx = new AudioContext();
     this.subject = new Subject();
-    // console.log(this._ctx.destination.numberOfInputs);
-    // this.modules = [new ModuleItem(MoogLadderFilterComponent, { name: 'filter' })];
-    // this._ctx.createGain();
-    // console.log('AAAA');
   }
 
   /**
@@ -38,90 +35,103 @@ export class AudioContextManagerService {
     return this._ctx;
   }
 
-  // public createFilter(): BiquadFilterNode {
-  //   const filter = this._ctx.createBiquadFilter();
-  //   this.soundChain.push(filter);
-  //   filter.connect(this._ctx.destination);
-  //   return filter;
-  // }
-
   /**
-   * Adds a new audioNode without connecting it to the soundChain
+   * Insert a synth module in the soundchain
    * @param module module that has to be created
    */
-  public addSynthModule<T extends SynthModule>(module: T) {
-    // if (listName === 'unconnectedModules') {
-    //   this.unconnectedModules.push(module);
-    // } else if (listName === 'soundChain') {
-    //   this.soundChain.push(module);
-    // }
-    this.unconnectedModules.push(module);
-  }
+  public addSynthModule<T extends SynthModule>(module: T, position: number): void {
+    // this.unconnectedModules.push(module);
+    /**
+     * gestione 4 casi:
+     * inserimento in lista vuota
+     * inserimento in coda
+     * inserimento in testa
+     * inserimento in mezzo
+     */
 
-  /**
-   * Transfer a synth module from list to list.
-   * 
-   * @param previousListName 
-   * @param currentListName 
-   * @param previousIndex 
-   * @param currentIndex 
-   */
-  public moveSynthModule(previousListName: string, currentListName: string, previousIndex: number, currentIndex: number) {
-    if (previousListName === 'soundChain') {
-      transferArrayItem(this.soundChain, this.unconnectedModules, previousIndex, currentIndex);
-    } else {
-      transferArrayItem(this.unconnectedModules, this.soundChain, previousIndex, currentIndex);
-    }
-    this.updateConnections();
-  }
-
-  /**
-   * Reorder elements in the synth modules lists.
-   * @param listName 
-   * @param previousIndex 
-   * @param currentIndex 
-   */
-  public reorderModule(listName: string, previousIndex: number, currentIndex: number) {
-    if (listName === 'unconnectedModules') {
-      this.reorderSynthModule(this.unconnectedModules, previousIndex, currentIndex);
-    } else if (listName === 'soundChain') {
-      this.reorderSynthModule(this.soundChain, previousIndex, currentIndex);
-      this.updateConnections(); // TODO can be optimized, call it only when you move elements inside soundchain
-    }
-  }
-
-  private reorderSynthModule(list: Array<SynthModule>, previousIndex: number, currentIndex: number) {
-    moveItemInArray(list, previousIndex, currentIndex);
-  }
-
-  private disconnectAllListModules(list: Array<SynthModule>): void {
-    for (let i = 0; i < list.length; i++) {
-      list[i].disconnectSynthModule();
-    }
-  }
-
-  private updateSoundChain(): void {
-    if (this.soundChain.length > 0) {
-      const list = this.soundChain;
-      let i = 0;
-      while (i < (list.length - 1)) {
-        list[i].disconnectSynthModule();
-        list[i + 1].connectToSynthNode(list[i].getOutput());
-        i++;
+    // empty soundchain case
+    const chainLength = this.soundChain.length;
+    this.soundChain.splice(position, 0, module); // posiziono il synthmodule nell'array, poi update connessioni
+    if (chainLength === 0) {
+      this.soundChain[0].getOutput().connect(this._ctx.destination);
+      return;
+    } else if (chainLength > 0) {
+      // NB la condizione è così perchè chainLength viene prima dell'inserimento
+      if (position === (chainLength)) {
+        // caso inserimento in coda
+        const prev = this.soundChain[(position - 1)];
+        prev.disconnectSynthModule();
+        module.connectToSynthNode(prev.getOutput());
+        this.soundChain[position].getOutput().connect(this._ctx.destination);
+        return;
+      } else if (position === 0) {
+        // caso inserimento in testa
+        const next = this.soundChain[1];
+        next.connectToSynthNode(module.getOutput());
+        return;
+      } else {
+        // inserimento in mezzo
+        const prev = this.soundChain[(position - 1)];
+        const next = this.soundChain[(position + 1)];
+        prev.disconnectSynthModule();
+        next.connectToSynthNode(module.getOutput());
+        module.connectToSynthNode(prev.getOutput());
       }
-      // Last element of the chain
-      list[i].disconnectSynthModule();
-      list[i].getOutput().connect(this._ctx.destination);
     }
   }
 
   /**
-   * Updates connections when moving a synth module inside the chain
-   * maybe can return a boolean or a number
-   * @TODO establish if needs parameters (index of the moved element)
+   * Moves a synth module in the soundchain, then updates audio connections.
+   * @param previousIndex 
+   * @param currentIndex 
    */
-  private updateConnections(): void {
-    this.disconnectAllListModules(this.unconnectedModules);
-    this.updateSoundChain();
+  public moveSynthModuleInSoundChain(previousIndex: number, currentIndex: number) {
+    const soundChainLength = this.soundChain.length;
+    /**
+     * update delle connessioni
+     * 3 casi:
+     * spostamento in testa
+     * spostamento in coda
+     * spostamento in mezzo
+     *
+     */
+    // disconnessione del modulo dalla previous position
+    if (previousIndex === (soundChainLength - 1)) {
+      const prev = this.soundChain[previousIndex - 1];
+      prev.disconnectSynthModule();
+      prev.getOutput().connect(this._ctx.destination); // collego l'output dell'ultimo modulo a destination.
+      this.soundChain[previousIndex].disconnectSynthModule();
+    } else if (previousIndex === 0) {
+      this.soundChain[previousIndex].disconnectSynthModule();
+    } else {
+      // caso di scollegamento in mezzo alla lista
+      this.soundChain[previousIndex].disconnectSynthModule();
+      const prev = this.soundChain[previousIndex - 1];
+      prev.disconnectSynthModule();
+      const next = this.soundChain[previousIndex + 1];
+      next.connectToSynthNode(prev.getOutput());
+    }
+    moveItemInArray(this.soundChain, previousIndex, currentIndex); // sposto l'elemento nella soundchain
+    // ricollego l'elemento nella catena
+    if (currentIndex === 0) {
+      // collega in testa
+      const next = this.soundChain[currentIndex + 1];
+      next.connectToSynthNode(this.soundChain[currentIndex].getOutput());
+    } else if (currentIndex === (soundChainLength - 1)) {
+      const prev = this.soundChain[currentIndex - 1];
+      prev.disconnectSynthModule();
+      this.soundChain[currentIndex].connectToSynthNode(prev.getOutput());
+      this.soundChain[currentIndex].getOutput().connect(this._ctx.destination);
+    } else {
+      // inserimento in mezzo
+      const prev = this.soundChain[currentIndex - 1];
+      const next = this.soundChain[currentIndex + 1];
+      prev.disconnectSynthModule();
+      this.soundChain[currentIndex].connectToSynthNode(prev.getOutput());
+      next.connectToSynthNode(this.soundChain[currentIndex].getOutput());
+    }
+
+    // update dell'indice del componente
+    this.soundChain[currentIndex].position = currentIndex;
   }
 }

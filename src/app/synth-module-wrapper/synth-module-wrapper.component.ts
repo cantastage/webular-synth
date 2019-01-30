@@ -20,6 +20,7 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDes
   @Input() synthModuleData: ModuleItem;
   @Input() index: number; // index in the array of created modules
   @Input() listName: string; // name of the list where the wrapper is located
+  @Input() isInSoundChain: boolean;
   private isViewInitialized = false;
   private cmpRef: ComponentRef<any>;
 
@@ -33,13 +34,13 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDes
 
   ngOnInit() {
     // console.log('Data provided to synth wrapper: ', this.synthModuleData);
-    console.log('ListName provided to synthwrapper: ', this.listName);
+    // console.log('ListName provided to synthwrapper: ', this.listName);
     this.contextManager.subject.subscribe((moduleInfo) => {
       if ((moduleInfo.x === 'unconnectedModules' && moduleInfo.y === this.index) 
       || moduleInfo.x === 'soundChain' && moduleInfo.y === this.index) {
-        console.log('saving patch!');
+        // console.log('saving patch!');
         this.savePatch();
-        console.log('saved patch parameters: ', this.synthModuleData.data);
+        // console.log('saved patch parameters: ', this.synthModuleData.data);
       }
     });
   }
@@ -71,6 +72,8 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDes
     const factory = this.componentFactoryResolver.resolveComponentFactory(this.synthModuleData.component);
     this.cmpRef = this.target.createComponent(factory);
     (<SynthModule>this.cmpRef.instance).data = this.synthModuleData.data;
+    (<SynthModule>this.cmpRef.instance).isInSoundChain = this.isInSoundChain;
+    (<SynthModule>this.cmpRef.instance).position = this.index;
     this.cdRef.detectChanges();  // NB non rimuovere altrimenti la onInit del child view non viene chiamata.
   }
 
@@ -78,7 +81,7 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit, OnDes
    * Returns the parameters of the wrapped synth module for save purposes.
    */
   public savePatch(): void {
-    console.log('enters save patch');
+    // console.log('enters save patch');
     this.synthModuleData.data = this.cmpRef.instance.savePatch();
   }
 }

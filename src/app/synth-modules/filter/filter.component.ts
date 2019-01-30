@@ -13,6 +13,8 @@ import {
 })
 export class FilterComponent implements OnInit, IModulableComponent {
   @Input() data: any;
+  @Input() isInSoundChain: boolean;
+  @Input() position: number;
 
   private _filterNode: BiquadFilterNode;
   private _filterTypes: BiquadFilterType[]; // readonly
@@ -69,7 +71,9 @@ export class FilterComponent implements OnInit, IModulableComponent {
     this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
     this.loadPatch();
 
-    this.contextManager.addSynthModule(this); // Adds the module to the audio context manager service
+    if (this.isInSoundChain) {
+      this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
+    }
   }
 
   public savePatch(): any {
