@@ -1,6 +1,6 @@
 .example-box {
-    // width: 200px;
-    // height: 200px;
+    width: 400px;
+    height: 280px;
     border: solid 1px #ccc;
     color: rgba(0, 0, 0, 0.87);
     cursor: move;
@@ -8,19 +8,61 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    background: #fff;
-    border-radius: 4px;
+    background-color: #8c8c8c;
+    background-image: url('src/assets/brushed-alum-dark.png');
+    border: 2px solid black;
+    border-radius: 5px;
     position: relative;
     z-index: 1;
     transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
                 0 2px 2px 0 rgba(0, 0, 0, 0.14),
                 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  }
+    font-family: Futura;
+    font-weight: 700;
+}
   
   .example-box:active {
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
                 0 8px 10px 1px rgba(0, 0, 0, 0.14),
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  }
-  
+}
+
+#title{
+  position: relative;
+  width: 400px;
+  height: 25px;
+  border: 2px solid rgb(10, 10, 10);
+  border-radius: 5px;
+  background-color: #4a4a4c;
+  color: #8c8c8c;
+  font-family: Futura;
+  font-weight: 700;
+  text-align: center;
+}
+.slider_container{
+  display: inline-block;
+  margin-top: 100px;
+}
+.slider{
+  -webkit-appearance: none;  /* Override default CSS styles */
+  transform: rotate(270deg);
+  width: 100%;
+  height: 10px;
+  background: #c4c3c1;
+  outline: none;
+  border-radius: 5px;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 35px; /* Set a specific slider handle width */
+  height: 35px; /* Slider handle height */
+  background: url('src/assets/slider.png') center no-repeat; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.parameter{
+  margin-top: 55px;
+}

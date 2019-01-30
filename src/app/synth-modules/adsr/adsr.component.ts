@@ -82,14 +82,14 @@ export class ADSRComponent implements OnInit {
         x: this.data.state.attackTime,
         y: this.data.state.attackValue,
         radius: 10,
-        color: 'red',
+        color: '#fe5532',
         id: '1'
       },
       {
         x: this.data.state.releaseTime,
         y: this.data.state.sustainValue,
         radius: 10,
-        color: 'red',
+        color: '#fe5532',
         id: '2'
       }
     ];

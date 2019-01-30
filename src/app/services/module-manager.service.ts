@@ -46,7 +46,7 @@ export class ModuleManagerService {
     );
   }
   private get adsrDefaultState(): any {
-    return { attackTime: 50, attackValue: 10, sustainValue: 80, releaseTime: 180 };
+    return { attackTime: 50, attackValue: 10, sustainValue: 50, releaseTime: 220 };
   }
 
   private get oscillatorDefaultState(): any {
