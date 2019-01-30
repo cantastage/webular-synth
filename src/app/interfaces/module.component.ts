@@ -1,5 +1,6 @@
 export interface SynthModule {
     data: any;
+    // isInSoundChain: boolean; TODO aggiungere get e set
     // loadPatch(): void;
     // savePatch(): any;
 
