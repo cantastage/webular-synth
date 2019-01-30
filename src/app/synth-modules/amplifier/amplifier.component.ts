@@ -8,7 +8,8 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
 @Component({
   selector: 'app-amplifier',
   templateUrl: './amplifier.component.html',
-  styleUrls: ['./amplifier.component.scss', '../../app.component.scss']
+  styleUrls: ['./amplifier.component.scss',
+    '../../app.component.scss', '../filter/filter.component.scss']
 })
 export class AmplifierComponent implements OnInit, IModulableComponent {
   @Input() data: any;
@@ -47,11 +48,11 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
     this._uiModulableParameters = [
       new UIAudioParameter<IModulableAudioParameter>(
         this.modulableParameters[0],
-        new AudioParameterDescriptor(0, this.data.state.hlLevel, 10, 'd'),
+        new AudioParameterDescriptor(0, this.data.state.hlLevel, 10, ''),
       ),
       new UIAudioParameter<IModulableAudioParameter>(
         this.modulableParameters[1],
-        new AudioParameterDescriptor(-10, this.data.state.hlBalance, 10, 'd'),
+        new AudioParameterDescriptor(-10, this.data.state.hlBalance, 10, ''),
       )
     ];
   }

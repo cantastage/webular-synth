@@ -17,10 +17,10 @@
     <img src = './assets/square.png'>
   </div>
   <div class="button" id="saw" (click)="selectWaveform(2)">
-    <img src = './assets/saw.png'>
+    <img src = './assets/sawtooth.png'>
   </div>
   <div class="button" id="tri" (click)="selectWaveform(3)">
-      <img src = './assets/tri.png'>
+      <img src = './assets/triangle.png'>
   </div>
   <knob class="skin1" #volKnob id="volumeKnob" [min]="0" [max]="127" [value]="100" [startDegree]="-120" [endDegree]="120"
     (change)="onVolumeChange(volKnob.meterValue)" [(ngModel)]="maxVelocity">

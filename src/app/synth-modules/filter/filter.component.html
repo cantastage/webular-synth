@@ -1,4 +1,7 @@
 <div class="component-block">
+  <div class="component-title">
+    FILTER
+  </div>
   <div class="component-header">
       <select [(ngModel)]="_filterNode.type">
           <option *ngFor="let filterType of filterTypes;" [ngValue]="filterType">{{filterType}}</option>
@@ -11,17 +14,18 @@
         <div class="component-body-sub-info-value" [ngClass]="{'modulated': mp.audioParameter.isModulated ? mp.audioParameter.isModulated : false}">{{mp.hlValue}}{{mp.hlDescriptor.measurementUnit}}</div>          
       </div>
       <div class="component-body-sub-selector">
-          <knob class="skin2" [min]="mp.hlDescriptor.minValue" [max]="mp.hlDescriptor.maxValue"
+          <knob class="skin1" [min]="mp.hlDescriptor.minValue" [max]="mp.hlDescriptor.maxValue"
           [(ngModel)]="mp.hlValue"
           [startDegree]="-120" [endDegree]="120"
           [intensive]="true"></knob>
       </div>
     </div>
   </div>
+  <div class="component-footer">
+    <select [(ngModel)]="selectedModulableParameter">
+      <option *ngFor="let mp of modulableParameters;" [ngValue]="mp">{{mp.name}}</option>
+    </select>
+  </div>
 </div>
-
-<select [(ngModel)]="selectedModulableParameter">
-  <option *ngFor="let mp of modulableParameters;" [ngValue]="mp">{{mp.name}}</option>
-</select>
 
 <app-lfo [modulatedParameter]="selectedModulableParameter"></app-lfo>

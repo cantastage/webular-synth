@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { IModulatorComponent } from '../IModulatorComponent';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { MatButtonModule } from '@angular/material/button';
 
 import {
   IUIAudioParameter, IAudioParameter,
@@ -12,7 +13,7 @@ import {
   templateUrl: './lfo.component.html',
   styleUrls: ['./lfo.component.scss', '../../app.component.scss']
 })
-// STRICT ASSUMPTION, I'M ALWAYS ATTACHED TO SOME OTHER MODULABLE COMPONENT
+// ASSUMPTION: I'M ALWAYS ATTACHED TO SOME OTHER MODULABLE COMPONENT
 export class LfoComponent implements OnInit, IModulatorComponent {
   private _modulatedParameter: IModulableAudioParameter;
 
@@ -54,9 +55,10 @@ export class LfoComponent implements OnInit, IModulatorComponent {
   private modulatingWaveShapeConfig(ape: AudioProcessingEvent): void {
     const I: number = this.intensity.audioParameter.llValue;
     const max: number = this.modulatedParameter.llDescriptor.maxValue;
-    const uiVal: number = this.modulatedParameter.llValue;
-    const posAmp: number = (max - uiVal) / max;
-    const negAmp: number = uiVal / max;
+    const min: number = this.modulatedParameter.llDescriptor.minValue;
+    const current: number = this.modulatedParameter.llValue;
+    const posAmp: number = (max - current) / (max - min);
+    const negAmp: number = (current - min) / (max - min);
     const shift = negAmp / I;
     let tmpI: number, tmpO: number;
 
@@ -92,12 +94,7 @@ export class LfoComponent implements OnInit, IModulatorComponent {
     this._intensity = new UIAudioParameter<IAudioParameter<AudioParam>>(
       new AudioParameter<AudioParam>(
         'intensity',
-        new AudioParameterDescriptor(
-          this.modulatedParameter.llDescriptor.minValue,
-          this.modulatedParameter.llDescriptor.defaultValue,
-          this.modulatedParameter.llDescriptor.maxValue,
-          'Hz'
-        ),
+        this.modulatedParameter.llDescriptor,
         this._processorAmplifier.gain
       ),
       new AudioParameterDescriptor(0, 0, 100, '%')

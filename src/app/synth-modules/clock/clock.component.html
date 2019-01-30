@@ -1,4 +1,7 @@
 <div class="component-block">
+  <div class="component-title">
+    CLOCK
+  </div>
   <div class="component-header">
     <div id="led" [ngClass]="{'led-off': !_on, 'led-on': _on}"></div>
   </div>
@@ -9,11 +12,13 @@
         <div class="component-body-sub-info-value">{{clockManager.bpm}}bpm</div>          
       </div>
       <div class="component-body-sub-selector">
-          <knob class="skin2" [min]="clockManager.minValue" [max]="clockManager.maxValue"
+          <knob class="skin1" [min]="clockManager.minValue" [max]="clockManager.maxValue"
           [(ngModel)]="clockManager.bpm"
           [startDegree]="-120" [endDegree]="120"
           [intensive]="true"></knob>
       </div>
     </div>
+  </div>
+  <div class="component-footer">
   </div>
 </div>
