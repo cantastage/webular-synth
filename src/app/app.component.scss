@@ -1,3 +1,7 @@
+.fill {
+    min-height: 100%;
+}
+
 knob {
     display: block;
     background-size:contain;
@@ -58,3 +62,7 @@ knob.skin2 /deep/ .knob {
     height: 50%;
     color: white;
 }
+
+// .app-component {
+//     background-color: grey;
+// }

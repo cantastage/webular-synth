@@ -1,42 +1,49 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">Modules</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<div class="container-fluid full-dim-container">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Modules</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item" *ngFor="let item of modules; let i = index">
-        <button type="button" class="btn btn-primary" (click)="loadComponent(i)">
-          {{item.data.name}}
-        </button>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-<app-clock></app-clock>
-
-<div class="example-container">
-  <h2>Synth Modules</h2>
-
-  <!-- List that represents the sound chain -->
-  <div cdkDropList cdkDropListOrientation="horizontal" #connectedList="cdkDropList" [cdkDropListData]="soundChain"
-    [cdkDropListConnectedTo]="[unconnectedList]" class="example-list" (cdkDropListDropped)="drop($event)" id="soundChain">
-    <app-synth-module-wrapper cdkDrag [synthModuleData]="item" *ngFor="let item of soundChain; let i = index"
-      [index]="i" [listName]="connectedList.id"></app-synth-module-wrapper>
-  </div>
-</div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item" *ngFor="let item of modules; let i = index">
+          <button type="button" class="btn btn-primary" (click)="loadComponent(i)">
+            {{item.data.name}}
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
 
 
-<!-- <button type="button" (click)="loadComponent()">Load Component</button> -->
-<div class="add-module-example">
-  <h2>New modules</h2>
-  <!-- List that represents new modules -->
-  <div cdkDropList cdkDropListOrientation="horizontal" #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules"
-    [cdkDropListConnectedTo]="[connectedList]" class="example-list" (cdkDropListDropped)="drop($event)" id="unconnectedModules">
-    <app-synth-module-wrapper cdkDrag *ngFor="let item of unconnectedModules; let i= index"
-      [synthModuleData]="item" [index]="i" [listName]="unconnectedList.id"></app-synth-module-wrapper>
+
+  <div class="row list-container">
+    <!-- TODO uncomment clock -->
+    <!-- <app-clock></app-clock> -->
+
+    <div class="col-8 full-height-col">
+      <!-- List that represents the sound chain -->
+      <div cdkDropList cdkDropListOrientation="horizontal" #connectedList="cdkDropList" [cdkDropListData]="soundChain"
+        [cdkDropListConnectedTo]="[unconnectedList]" class="rack-list" (cdkDropListDropped)="drop($event)" id="soundChain">
+        <div class="inner"></div>
+        <h2 class="module-list-title">Synth Modules</h2>
+        <app-synth-module-wrapper cdkDrag [synthModuleData]="item" *ngFor="let item of soundChain; let i = index"
+          [index]="i" [listName]="connectedList.id"></app-synth-module-wrapper>
+      </div>
+    </div>
+
+
+    <!-- <button type="button" (click)="loadComponent()">Load Component</button> -->
+    <div class="col-4 full-height-col">
+      <h2>New modules</h2>
+      <!-- List that represents new modules -->
+      <div cdkDropList cdkDropListOrientation="horizontal" #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules"
+        [cdkDropListConnectedTo]="[connectedList]" class="example-list" (cdkDropListDropped)="drop($event)" id="unconnectedModules">
+        <app-synth-module-wrapper cdkDrag *ngFor="let item of unconnectedModules; let i= index" [synthModuleData]="item"
+          [index]="i" [listName]="unconnectedList.id"></app-synth-module-wrapper>
+      </div>
+    </div>
   </div>
 </div>
