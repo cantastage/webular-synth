@@ -33,9 +33,12 @@ knob.skin1 /deep/ .knob {
     padding: 2px;
 }
 
-.component-block .component-title {
+.alignment-container{
+    display: block;
+    float: left;
+}
+.component-title {
     height: 15%;
-    border-radius: 5px;
     background-color: #4a4a4c;
     color: #8c8c8c;
     border: 1px solid rgb(10, 10, 10);

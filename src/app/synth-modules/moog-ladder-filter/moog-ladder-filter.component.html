@@ -1,5 +1,8 @@
-<div id="title">MOOG LADDER FILTER</div>
+<!-- <div id="titleBox">MOOG LADDER FILTER</div> -->
 <div class="container example-box">
+  <div class="component-title">
+    MOOG LADDER FILTER
+  </div>
   <div class="slider_container">
     <input type="range" class="slider" id="cutoff" (mousedown)="$event.stopPropagation()" (input)="onCutoffChange($event)" min="1000"
     max="22050" step="1" [(ngModel)]="cutoff_freq"/>

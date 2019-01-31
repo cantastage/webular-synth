@@ -1,27 +1,29 @@
 .oscBlock{
-    // display: block;
+    display: block;
     position: relative;
     width: 400px;
     height: 280px;
-    border: 2px solid rgb(10, 10, 10);
+    border: 1px solid rgb(10, 10, 10);
     border-radius: 5px;
     background-color: #8c8c8c;
     background-image: url('src/assets/brushed-alum-dark.png');
     font-family: Futura;
     font-weight: 700;
+    padding: 2px;
     float: left;
 }
-#title{
+.component-name{
   position: relative;
-  width: 400px;
-  height: 25px;
-  border: 2px solid rgb(10, 10, 10);
+  // width: 400px;
+  height: 30px;
+  border: 1px solid rgb(10, 10, 10);
   border-radius: 5px;
   background-color: #4a4a4c;
   color: #8c8c8c;
   font-family: Futura;
   font-weight: 700;
   text-align: center;
+  padding: 2px;
 }
 
 #label-fine{
@@ -30,7 +32,7 @@
   transform: translateX(-50%);
   position: absolute;
   left: 18%;
-  top: 90%;
+  top: 252px;
 }
   
 #label-coarse{
@@ -39,7 +41,7 @@
   transform: translateX(-50%);
   position: absolute;
   left: 80%;
-  top: 90%;
+  top: 252px;
 }
   
   #label-volume{
@@ -48,7 +50,7 @@
     text-align: center;
     transform: translateX(-50%);
     left: 50%;
-    top: 70%;
+    top: 206px;
     
   }
 
@@ -70,14 +72,14 @@
   
   #sin{
     position: absolute;
-    top: 5%;
+    top: 44px;
     left: 25%;
     
   }
   
   #sqr{
     position: absolute;
-    top: 15%;
+    top: 72px;
     left: 25%;
     
   }
@@ -85,7 +87,7 @@
   #saw{
     width: 35px;
     position: absolute;
-    top: 5%;
+    top: 44px;
     left: 65%;
     
     
@@ -94,7 +96,7 @@
   #tri{
     width: 35px;
     position: absolute;
-    top: 15%;
+    top: 72px;
     left: 65%;
    
   }
@@ -110,23 +112,23 @@
   
   #sin-dot{
     left: 65px;
-    top: 8%;
+    top: 53px;
   }
   
   #sqr-dot{
     left: 65px;
-    top: 17%;
+    top: 77.6px;
   }
   
   #saw-dot{
     right: 65px;
-    top: 8%;
+    top: 53px;
     
   }
   
   #tri-dot{
     right: 65px;
-    top: 17%;
+    top: 77.6px;
   }
   
   .active{
@@ -173,7 +175,7 @@ knob.skin4 /deep/ .knob{
 #volumeKnob{
   width: 80px;
   height: 80px;
-  top: 35%;
+  top: 108px;
   left: 50%;
   align-content: center;
   position: absolute;
@@ -185,7 +187,7 @@ knob.skin4 /deep/ .knob{
   height: 50px;
   left: 20%;
   transform: translateX(-50%);
-  top: 65%;
+  top: 182px;
 }
 
 #fineKnob{
@@ -193,6 +195,6 @@ knob.skin4 /deep/ .knob{
   height: 50px;
   width: 50px;
   left: 80%;
-  top: 65%;
+  top: 182px;
   transform: translateX(-50%);
 }
