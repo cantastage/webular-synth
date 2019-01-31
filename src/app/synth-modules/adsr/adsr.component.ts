@@ -19,10 +19,10 @@ export class ADSRComponent implements OnInit {
   private minDist: number;
   private lastX: any;
   private lastY: any;
-  private offsetX: number;
-  private offsetY: number;
-  private offsetParentLeft: number;
-  private offsetParentTop: number;
+  // private offsetX: number;
+  // private offsetY: number;
+  // private offsetParentLeft: number;
+  // private offsetParentTop: number;
   private rightMargin: number;
   private bottomMargin: number;
   private maxAttackPoint: number;
@@ -43,6 +43,8 @@ export class ADSRComponent implements OnInit {
   public interruptNote: boolean;
   public scrollOffsetY: number;
   public scrollOffsetX: number;
+  public boxRectangle: any;
+
 
   @HostListener('window:scroll', ['$event'])
   checkScroll($event) {
@@ -51,6 +53,7 @@ export class ADSRComponent implements OnInit {
   }
   @HostListener('window:mousemove', ['$event'])
   moveEvent(event: MouseEvent) {
+    // console.log(event.clientX);
     this.movePoint(event);
   }
   @HostListener('window:mouseup', ['$event'])
@@ -63,19 +66,20 @@ export class ADSRComponent implements OnInit {
 
 
   ngOnInit() {
+    this.boxRectangle = this.envCanvas.nativeElement.getBoundingClientRect();
     this.scrollOffsetY = 0;
     this.scrollOffsetX = 0;
     const canvas: HTMLCanvasElement = this.envCanvas.nativeElement;
     this.rightMargin = canvas.width;
     this.bottomMargin = canvas.height;
-    this.offsetParentLeft = canvas.parentElement.offsetLeft;
-    this.offsetParentTop = canvas.parentElement.offsetTop;
+    // this.offsetParentLeft = canvas.parentElement.offsetLeft;
+    // this.offsetParentTop = canvas.parentElement.offsetTop;
     this.ctx = canvas.getContext('2d');
     this.flagDown = false;
     this.minDist = 10;
     this.selectedPoint = 0;
-    this.offsetX = this.envCanvas.nativeElement.offsetLeft;
-    this.offsetY = this.envCanvas.nativeElement.offsetTop;
+    // this.offsetX = this.envCanvas.nativeElement.offsetLeft;
+    // this.offsetY = this.envCanvas.nativeElement.offsetTop;
 
     this.points = [
       {
@@ -139,13 +143,18 @@ export class ADSRComponent implements OnInit {
   }
 
   public selectPoint(e: MouseEvent) {
+    console.log(this.boxRectangle);
+    // console.log(e.clientX);
     e.stopImmediatePropagation();
     const pos = {
-      x: e.clientX - this.envCanvas.nativeElement.offsetLeft - this.offsetParentLeft
-        + this.scrollOffsetX,
-      y: e.clientY - this.envCanvas.nativeElement.offsetTop - this.offsetParentTop + this.scrollOffsetY
+      x: e.clientX - this.boxRectangle.x,
+      // - this.envCanvas.nativeElement.offsetLeft - this.offsetParentLeft + this.scrollOffsetX,
+      y: e.clientY - this.boxRectangle.y
+      // - this.envCanvas.nativeElement.offsetTop - this.offsetParentTop + this.scrollOffsetY
 
     };
+    console.log(pos.y);
+    // console.log(this.points.y);
 
     this.points.forEach(point => {
       if (this.isIntersect(pos, point)) {
@@ -160,8 +169,8 @@ export class ADSRComponent implements OnInit {
     if (!this.flagDown) {
       return;
     } else {
-      const mouseX = e.clientX - this.offsetX - this.offsetParentLeft + this.scrollOffsetX;
-      const mouseY = e.clientY - this.offsetY - this.offsetParentTop + this.scrollOffsetY;
+      const mouseX = e.clientX - this.boxRectangle.x; // this.offsetX - this.offsetParentLeft + this.scrollOffsetX;
+      const mouseY = e.clientY - this.boxRectangle.y; // this.offsetY - this.offsetParentTop + this.scrollOffsetY;
       const dx = mouseX - this.lastX[this.selectedPoint];
       const dy = mouseY - this.lastY[this.selectedPoint];
 
@@ -191,10 +200,10 @@ export class ADSRComponent implements OnInit {
 
       if (this.selectedPoint === 1) {
         if (this.lastY[this.selectedPoint] > this.minDist) {
-          if (this.lastY[this.selectedPoint] < this.bottomMargin) {
+          if (this.lastY[this.selectedPoint] < this.bottomMargin - this.minDist) {
             this.points[this.selectedPoint].y += dy;
           } else {
-            this.points[this.selectedPoint].y = this.bottomMargin;
+            this.points[this.selectedPoint].y = this.bottomMargin - this.minDist;
             this.lastY[this.selectedPoint] = this.points[this.selectedPoint].y - 1;
           }
         } else {
@@ -212,7 +221,6 @@ export class ADSRComponent implements OnInit {
           this.points[this.selectedPoint].x = this.points[1 - this.selectedPoint].x + this.minDist;
           this.lastX[this.selectedPoint] = this.points[this.selectedPoint].x - 1;
         }
-
       }
 
       // redraw all the circles
@@ -257,7 +265,6 @@ export class ADSRComponent implements OnInit {
   }
 
   public savePatch(): any {
-    console.log(this.points);
     this.data.state.attackTime = this.points[0].x;
     this.data.state.attackValue = this.points[0].y;
     this.data.state.sustainValue = this.points[1].y;

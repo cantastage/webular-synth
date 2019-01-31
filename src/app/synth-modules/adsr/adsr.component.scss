@@ -1,5 +1,4 @@
-.container{
-    // display: inline-block;
+.adsrBlock{
     position: relative;
     width: 400px;
     height: 280px;
@@ -8,6 +7,7 @@
     background-color: #8c8c8c;
     // background: #f2ede0;
     background-image: url('src/assets/brushed-alum-dark.png');
+    float: left;
   }
 
   #title{
@@ -23,7 +23,7 @@
     text-align: center;
   }
 
-  #text{
+  #textElement{
     position: relative;
     text-align: center;
     font-family: Futura;

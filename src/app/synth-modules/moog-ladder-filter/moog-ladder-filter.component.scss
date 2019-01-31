@@ -4,7 +4,7 @@
     border: solid 1px #ccc;
     color: rgba(0, 0, 0, 0.87);
     cursor: move;
-    display: block;
+    // display: inline-block;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -20,6 +20,7 @@
                 0 1px 5px 0 rgba(0, 0, 0, 0.12);
     font-family: Futura;
     font-weight: 700;
+    float: left;
 }
   
   .example-box:active {

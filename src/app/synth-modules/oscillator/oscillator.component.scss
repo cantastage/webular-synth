@@ -1,5 +1,5 @@
-.container{
-    // display: inline-block;
+.oscBlock{
+    // display: block;
     position: relative;
     width: 400px;
     height: 280px;
@@ -9,9 +9,9 @@
     background-image: url('src/assets/brushed-alum-dark.png');
     font-family: Futura;
     font-weight: 700;
+    float: left;
 }
 #title{
-  // display: inline-block;
   position: relative;
   width: 400px;
   height: 25px;
@@ -144,7 +144,7 @@
 
     position: absolute;
     transform: translateX(-50%);
-    display: inline-block;
+    display: block;
     background-size:contain;
 }
 

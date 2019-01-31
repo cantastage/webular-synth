@@ -48,6 +48,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     // throw new Error('Method not implemented.');
     // console.log(arg);
     if (arg[1] === true) {
+      // console.log(arg);
       this.noteOn(arg[2], arg[3]);
     } else {
       this.noteOff(arg[2]);
@@ -57,7 +58,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   // la onInit leggerà tutti i valori da synthModuleData.data
   ngOnInit() {
     if (this.message === undefined) {
-      this.message = { message: [0.2, 0, 1, 0.2]};
+      this.message = { message: [0, 0, 1, 0]};
     }
     this.active = this.data.state.active;
     this.active_voices = [];
@@ -106,11 +107,13 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     this.frequency = MidiContextManagerService.midiNoteToFrequency(midiNote + this.addSemitone) + this.finePitch;
     const note = new Voice(this.c, this.g, (velocity), this.waveForm, this.message.message);
     this.active_voices[midiNote] = note;
+    console.log(this.active_voices);
     note.playNote(this.frequency);
   }
 
   public noteOff(midiNote) {
     this.active_voices[midiNote].stopNote();
+    console.log(this.active_voices);
     delete this.active_voices[midiNote];
   }
 
