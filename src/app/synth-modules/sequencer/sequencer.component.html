@@ -1,6 +1,7 @@
-<div id="sequencer">
-  <div id="selector">
-    <table class="wborderedcells">
+<div class="sequencer">
+  <div class="title">SEQ</div>
+  <div class="selector">
+    <table class="table1 wborderedcells">
       <tbody>
         <tr>
           <td>key</td>
@@ -9,17 +10,17 @@
           <!-- <td>midiCh</td> -->
         </tr>
         <tr>
-            <td><select id="key" [(ngModel)]="_sequencer.key">
+            <td><select class="key" [(ngModel)]="_sequencer.key">
               <option *ngFor="let pitchClass of _pitchClasses;" [ngValue]="pitchClass">{{pitchClass.pitchClassName}}</option>
             </select></td>
-            <td><select id="harmonization" [(ngModel)]="_sequencer.harmonization">
+            <td><select class="harmonization" [(ngModel)]="_sequencer.harmonization">
                 <option *ngFor="let harmonization of _harmonizations;" [ngValue]="harmonization">{{harmonization.name}}</option>
             </select></td>
-            <td><select id="metric" [(ngModel)]="_sequencer.metric"
+            <td><select class="metric" [(ngModel)]="_sequencer.metric"
               (ngModelChange)="morethanMetricChange($event)">
                 <option *ngFor="let metric of _metrics;" [ngValue]="metric">{{metric}}</option>
             </select></td>
-            <!-- <td><select id="midiCh">
+            <!-- <td><select class="midiCh">
               TO ADD
             </select></td> -->
         </tr>
@@ -27,8 +28,8 @@
     </table>
   </div>
 
-  <table class="wborderedcells">
-    <tbody id="measure">
+  <table class="table2 wborderedcells">
+    <tbody class="measure">
       <tr *ngFor="let diatonicNote of _sequencer.scale.diatonicNotes; let notei = index;">
         <!-- ENHARMONIC NAMES -->
         <td class="column-off">{{diatonicNote.pitchClassName}}</td>

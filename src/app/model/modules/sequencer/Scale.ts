@@ -18,7 +18,7 @@ export class Scale {
         }
         this._key = key;
         if (this.harmonization) {
-            this._updateCache();
+            this.updateCache();
         }
     }
     public get harmonization(): IHarmonization {
@@ -30,14 +30,14 @@ export class Scale {
         }
         this._harmonization = harmonization;
         if (this.key) {
-            this._updateCache();
+            this.updateCache();
         }
     }
     public get diatonicNotes(): IPitchClass[] {
         return this._diatonicNotes;
     }
 
-    private _updateCache(): void {
+    private updateCache(): void {
         if (!this.diatonicNotes) {
             this._diatonicNotes = new Array<IPitchClass>();
         }
