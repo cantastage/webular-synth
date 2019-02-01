@@ -83,15 +83,15 @@ export class ADSRComponent implements OnInit {
 
     this.points = [
       {
-        x: this.data.state.attackTime,
-        y: this.data.state.attackValue,
+        x: 50,
+        y: 10,
         radius: 10,
         color: '#fe5532',
         id: '1'
       },
       {
-        x: this.data.state.releaseTime,
-        y: this.data.state.sustainValue,
+        x: 220,
+        y: 50,
         radius: 10,
         color: '#fe5532',
         id: '2'
@@ -119,6 +119,7 @@ export class ADSRComponent implements OnInit {
   }
 
   public drawAll() {
+    console.log('draw');
     this.ctx.clearRect(0, 0, this.envCanvas.nativeElement.width, this.envCanvas.nativeElement.height);
     for (let i = 0; i < this.points.length; i++) {
       const circle = this.points[i];
@@ -143,6 +144,7 @@ export class ADSRComponent implements OnInit {
   }
 
   public selectPoint(e: MouseEvent) {
+    this.boxRectangle = this.envCanvas.nativeElement.getBoundingClientRect();
     console.log(this.boxRectangle);
     // console.log(e.clientX);
     e.stopImmediatePropagation();
@@ -153,8 +155,6 @@ export class ADSRComponent implements OnInit {
       // - this.envCanvas.nativeElement.offsetTop - this.offsetParentTop + this.scrollOffsetY
 
     };
-    console.log(pos.y);
-    // console.log(this.points.y);
 
     this.points.forEach(point => {
       if (this.isIntersect(pos, point)) {
@@ -270,6 +270,10 @@ export class ADSRComponent implements OnInit {
     this.data.state.sustainValue = this.points[1].y;
     this.data.state.releaseTime = this.points[1].x;
     return this.data;
+  }
+
+  public dragEnd() {
+    console.log('fine');
   }
 
   sendMessage(): void {

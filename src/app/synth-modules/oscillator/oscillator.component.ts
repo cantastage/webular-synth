@@ -40,8 +40,6 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     private contextManager: AudioContextManagerService,
     private messageService: MessageService,
     private midiManager: MidiContextManagerService) {
-    midiManager.attach(this);
-    this.subscription = this.messageService.getMessage().subscribe(message => { this.message = message; });
   }
 
   update(arg: [number, boolean, number, number]): void {
@@ -57,6 +55,10 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
   // la onInit leggerà tutti i valori da synthModuleData.data
   ngOnInit() {
+    this.subscription = this.messageService.getMessage().subscribe(message => { this.message = message; });
+    if (this.isInSoundChain === true) {
+      this.midiManager.attach(this);
+    }
     console.log(this.isInSoundChain);
     if (this.message === undefined) {
       this.message = { message: [0, 0, 1, 0]};
@@ -85,12 +87,10 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    // this.g.disconnect();
-    this.midiManager.detach(this);
-  }
-
-  public midiFunction() {
-    // prova;
+    this.g.disconnect();
+    if (this.isInSoundChain === true) {
+      this.midiManager.detach(this);
+    }
   }
 
   public selectWaveform(data) {

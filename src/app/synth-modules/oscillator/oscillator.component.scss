@@ -1,3 +1,6 @@
+.container-block{
+  float: left;
+}
 .oscBlock{
     display: block;
     position: relative;
@@ -10,7 +13,7 @@
     font-family: Futura;
     font-weight: 700;
     padding: 2px;
-    float: left;
+    // float: left;
 }
 .component-name{
   position: relative;
