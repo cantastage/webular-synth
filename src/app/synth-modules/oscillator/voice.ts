@@ -46,6 +46,7 @@ export class Voice {
             this.oscillators[i].gain.gain.cancelScheduledValues(this.ac.currentTime);
             this.oscillators[i].gain.gain.setValueAtTime(this.oscillators[i].gain.gain.value, this.ac.currentTime);
             this.oscillators[i].gain.gain.exponentialRampToValueAtTime(0.001, this.ac.currentTime + this.envelope[3]);
+            this.oscillators[i].gain.disconnect();
             this.oscillators[i].oscillator.stop(this.ac.currentTime + this.envelope[3] + 0.1);
         }
 
