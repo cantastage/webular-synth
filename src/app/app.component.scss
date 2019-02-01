@@ -34,8 +34,9 @@ knob.skin1 /deep/ .knob {
 }
 
 .alignment-container{
-    display: block;
-    float: left;
+    display: inline-flex;
+    flex-direction: column;
+    // float: left;
 }
 .component-title {
     height: 15%;

@@ -1,3 +1,6 @@
+.container-block{
+  display: inline-flex;
+}
 .example-box {
     display: block;
     width: 250px;
@@ -20,7 +23,7 @@
                 0 1px 5px 0 rgba(0, 0, 0, 0.12);
     font-family: Futura;
     font-weight: 700;
-    float: left;
+    // float: left;
 }
   
   .example-box:active {

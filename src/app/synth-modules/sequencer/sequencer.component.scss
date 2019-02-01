@@ -8,6 +8,11 @@
     font-weight: 700;
     text-align: center;
     padding: 2px;
+    // float: left;
+}
+
+.container-block{
+    display: inline-flex;
 }
 .sequencer .title {
     background-color: #4a4a4c;

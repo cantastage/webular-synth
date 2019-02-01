@@ -1,5 +1,8 @@
 .container-block{
-  float: left;
+  // float: left;
+  display: inline-flex;
+  flex-direction: column;
+  // zoom: 0.5;
 }
 .oscBlock{
     display: block;
