@@ -53,22 +53,28 @@ export class LfoComponent implements OnInit, IModulatorComponent {
   }
   private modulatingWaveShapeConfig(ape: AudioProcessingEvent): void {
     const I: number = this.intensity.audioParameter.llValue;
-    const max: number = this.modulatedParameter.llDescriptor.maxValue;
-    const min: number = this.modulatedParameter.llDescriptor.minValue;
-    const current: number = this.modulatedParameter.llValue;
-    const posAmp: number = (max - current) / (max - min);
-    const negAmp: number = (current - min) / (max - min);
-    const shift = negAmp / I;
-    let tmpI: number, tmpO: number;
+    if (I !== 0) {
+      const max: number = this.modulatedParameter.llDescriptor.maxValue;
+      const min: number = this.modulatedParameter.llDescriptor.minValue;
+      const current: number = this.modulatedParameter.llValue;
 
-    for (let chi = 0; chi < ape.inputBuffer.numberOfChannels; chi++) {
-      const inputSamples = ape.inputBuffer.getChannelData(chi);
-      const outputSamples = ape.outputBuffer.getChannelData(chi);
-      for (let sampi = 0; sampi < inputSamples.length; sampi++) {
-        tmpI = inputSamples[sampi];
-        tmpO = tmpI * (tmpI > 0 ? posAmp : negAmp);
-        tmpO = tmpO + shift;
-        outputSamples[sampi] = tmpO;
+      const posAmp: number = (max - current) / max;
+      const negAmp: number = (current - min) / max;
+      const shift = this.modulatedParameter.name === 'level' ? 0 : // modulation by sum :'(
+        current / (max * I); // modulation by product
+      
+      let tmpI: number, tmpO: number;
+      for (let chi = 0; chi < ape.inputBuffer.numberOfChannels; chi++) {
+        const inputSamples = ape.inputBuffer.getChannelData(chi);
+        const outputSamples = ape.outputBuffer.getChannelData(chi);
+        for (let sampi = 0; sampi < inputSamples.length; sampi++) {
+          tmpI = inputSamples[sampi] * 1.177; // input wave in [-1,1], necessary because of the square wave range
+          if (Math.abs(tmpI) > 1) tmpI = Math.sign(tmpI); // acceptable clipping
+          tmpO = tmpI * (tmpI > 0 ? posAmp : negAmp);
+          tmpO = tmpO + shift;
+          if (Math.abs(tmpO) > 1) tmpO = Math.sign(tmpO);
+          outputSamples[sampi] = tmpO;
+        }
       }
     }
   }

@@ -19,6 +19,7 @@ import { MidiContextManagerService } from 'src/app/services/midi-context-manager
 export class SequencerComponent implements OnInit, IObserver<number> {
   @Input() data: any;
   @Input() isInSoundChain: boolean;
+  @Input() position: number;
 
   // UI selections
   private _pitchClasses: IPitchClass[];

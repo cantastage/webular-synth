@@ -19,6 +19,8 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
   private _gainNode: GainNode;
   private _panNode: StereoPannerNode;
 
+// private _testnode: OscillatorNode;
+
   private _modulableParameters: IModulableAudioParameter[];
   private _uiModulableParameters: IUIAudioParameter<IModulableAudioParameter>[];
   selectedModulableParameter: IModulableAudioParameter;
@@ -64,6 +66,11 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
     this._panNode = this.contextManager.audioContext.createStereoPanner();
     this.getInput().connect(this.getOutput());
     this.loadPatch();
+
+// this._testnode = this.contextManager.audioContext.createOscillator();
+// this._testnode.start();
+// this._testnode.connect(this.getInput());
+
     if (this.isInSoundChain) {
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
     }

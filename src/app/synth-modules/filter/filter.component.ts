@@ -16,6 +16,8 @@ export class FilterComponent implements OnInit, IModulableComponent {
   @Input() isInSoundChain: boolean;
   @Input() position: number;
 
+// private _testnode: OscillatorNode;
+
   private _filterNode: BiquadFilterNode;
   private _filterTypes: BiquadFilterType[]; // readonly
 
@@ -45,7 +47,7 @@ export class FilterComponent implements OnInit, IModulableComponent {
         this._filterNode.frequency
       ),
       new ModulableAudioParameter(
-        'Q',
+        'resonance',
         new AudioParameterDescriptor(0, 5, 30, ''),
         this._filterNode.Q
       )
@@ -70,6 +72,10 @@ export class FilterComponent implements OnInit, IModulableComponent {
     // how to extract a string[] from BiquadFilterType?!?!?! O.O
     this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
     this.loadPatch();
+
+// this._testnode = this.contextManager.audioContext.createOscillator();
+// this._testnode.start();
+// this._testnode.connect(this.getInput());
 
     if (this.isInSoundChain) {
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
