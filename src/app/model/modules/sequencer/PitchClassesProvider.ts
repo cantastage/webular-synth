@@ -20,7 +20,7 @@ class PitchClass implements IPitchClass {
     }
     public set pitchClass(pitchClass: NoteNames) {
         this._pitchClass = pitchClass;
-        this._updateCache();
+        this.updateCache();
     }
     private enharmonicNameKey(): string {
         return EnharmonicNames[this._enharmonicName];
@@ -34,7 +34,7 @@ class PitchClass implements IPitchClass {
     public get referralFrequency(): number {
         return this._referralFrequency;
     }
-    private _updateCache(): void {
+    private updateCache(): void {
         // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         this._enharmonicName = String(EnharmonicNames[this.pitchClassValue]) !== 'undefined' ?
             this.pitchClassValue : EnharmonicNames.nd;
