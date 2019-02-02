@@ -5,7 +5,7 @@
     display: block;
     width: 250px;
     height: 200px;
-    border: solid 1px #ccc;
+    border: solid 1px black;
     color: rgba(0, 0, 0, 0.87);
     cursor: move;
     justify-content: center;
@@ -13,15 +13,15 @@
     text-align: center;
     background-color: #8c8c8c;
     background-image: url('src/assets/brushed-alum-dark.png');
-    border: 2px solid black;
+    // border: 2px solid black;
     border-radius: 5px;
     position: relative;
     padding: 2px;
-    transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-                0 2px 2px 0 rgba(0, 0, 0, 0.14),
-                0 1px 5px 0 rgba(0, 0, 0, 0.12);
-    font-family: Futura;
+    // transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+    //box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    //            0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    //            0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    font-family: webular;
     font-weight: 700;
     // float: left;
 }

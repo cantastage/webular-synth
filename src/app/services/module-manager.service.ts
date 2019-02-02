@@ -59,9 +59,9 @@ export class ModuleManagerService {
       // NBNB: ClockComponent should be in the UI by default, out of any chain!!!
       // new ModuleItem(ClockComponent, { name: 'clock', state: this.clockDefaultState }),
       new ModuleItem(SequencerComponent, { name: 'sequencer', state: this.sequencerDefaultState }),
-      new ModuleItem(OscillatorComponent, { name: 'poly-oscillator', state: this.oscillatorDefaultState }),
-      new ModuleItem(ADSRComponent, { name: 'ADSR', state: this.adsrDefaultState }),
-      new ModuleItem(MoogLadderFilterComponent, { name: 'filter', state: this.mlFilterDefaultState }),
+      new ModuleItem(OscillatorComponent, { name: 'Oscillator', state: this.oscillatorDefaultState }),
+      // new ModuleItem(ADSRComponent, { name: 'ADSR', state: this.adsrDefaultState }),
+      new ModuleItem(MoogLadderFilterComponent, { name: 'Moog Ladder Filter', state: this.mlFilterDefaultState }),
       new ModuleItem(FilterComponent, { name: 'pesteneraFilter', state: this.filterDefaultState }),
       // LfoComponent is embedded into the modulated modules
       // new ModuleItem(LfoComponent, { name: 'lfo', state: this.lfoDefaultState }),
