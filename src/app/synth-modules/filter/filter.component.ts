@@ -98,8 +98,8 @@ export class FilterComponent implements OnInit, IModulableComponent {
     return this._filterNode;
   }
 
-  public connectToSynthNode(node: SynthModule) {
-    node.getOutput().connect(this.getInput());
+  public connectSynthModule(inputModule: SynthModule) {
+    inputModule.getOutput().connect(this.getInput());
   }
 
   public disconnectSynthModule() {

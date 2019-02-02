@@ -152,7 +152,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   }
 
 
-  public connectToSynthNode(node: SynthModule) {
+  public connectSynthModule(inputModule: SynthModule) {
     if (this.isInSoundChain) {
       this.midiManager.attach(this);
     }

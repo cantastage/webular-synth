@@ -120,8 +120,8 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
     return this._scriptNode;
   }
 
-  public connectToSynthNode(node: SynthModule) {
-    node.getOutput().connect(this.getInput());
+  public connectSynthModule(inputModule: SynthModule) {
+    inputModule.getOutput().connect(this.getInput());
   }
 
   public disconnectSynthModule() {

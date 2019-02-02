@@ -10,13 +10,15 @@ import { Subdivision } from '../../model/modules/sequencer/Subdivision';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
+import { SynthModule } from 'src/app/interfaces/module.component';
+import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 
 @Component({
   selector: 'app-sequencer',
   templateUrl: './sequencer.component.html',
   styleUrls: ['./sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit, IObserver<number> {
+export class SequencerComponent implements OnInit, IObserver<number>, SynthModule {
   @Input() data: any;
   @Input() isInSoundChain: boolean;
   @Input() position: number;
@@ -30,19 +32,17 @@ export class SequencerComponent implements OnInit, IObserver<number> {
 
   private _sequencer: ISequencer;
 
-  constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService) { }
+  constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
+    private contextManager: AudioContextManagerService) { }
 
   public loadPatch(): void {
     this._sequencer = this.data.state;
-    // if (this.isInSoundChain) {
-      this.clockManager.attach(this);
-    // }
   }
 
   ngOnInit() {
     this._pitchClasses = PitchClassesProvider.retrieveInstances();
     this._harmonizations = HarmonizationsProvider.retrieveInstances();
-    this._metrics = function(): number[] {
+    this._metrics = function (): number[] {
       const ret: number[] = new Array<number>();
       for (let i = Measure.METRIC_MIN; i <= Measure.METRIC_MAX; i++) {
         ret.push(i);
@@ -58,12 +58,12 @@ export class SequencerComponent implements OnInit, IObserver<number> {
     this._subdivisionCounter = 0;
 
     this.loadPatch();
+    if (this.isInSoundChain) {
+      this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
+    }
   }
 
   public savePatch(): any {
-    // if (this.isInSoundChain) {
-      this.clockManager.detach(this);
-    // }
     this.data.state = this._sequencer;
     return this.data;
   }
@@ -95,4 +95,24 @@ export class SequencerComponent implements OnInit, IObserver<number> {
   morethanMetricChange(eventArg: any): void {
     this.clockManager.restart();
   }
+
+  getInput(): AudioNode {
+    return null;
+  }
+  getOutput(): AudioNode {
+    return null;
+  }
+
+  connectSynthModule(inputModule: SynthModule) {
+    if (this.isInSoundChain) {
+      this.clockManager.attach(this);
+    }
+  }
+
+  disconnectSynthModule(): void {
+    if (this.isInSoundChain) {
+      this.clockManager.detach(this);
+    }
+  }
+
 }

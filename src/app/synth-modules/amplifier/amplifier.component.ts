@@ -91,8 +91,8 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
     return this._panNode;
   }
 
-  public connectToSynthNode(node: SynthModule) {
-    node.getOutput().connect(this.getInput());
+  public connectSynthModule(inputModule: SynthModule) {
+    inputModule.getOutput().connect(this.getInput());
   }
 
   public disconnectSynthModule() {
