@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 
 import { ISequencer } from '../../model/modules/sequencer/ISequencer';
 import { Measure } from '../../model/modules/sequencer/Measure';
@@ -18,7 +18,7 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
   templateUrl: './sequencer.component.html',
   styleUrls: ['./sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit, IObserver<number>, SynthModule {
+export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>, SynthModule {
   @Input() data: any;
   @Input() isInSoundChain: boolean;
   @Input() position: number;
@@ -59,7 +59,16 @@ export class SequencerComponent implements OnInit, IObserver<number>, SynthModul
 
     this.loadPatch();
     if (this.isInSoundChain) {
+      this.clockManager.attach(this);
+    }
+    if (this.isInSoundChain) {
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.isInSoundChain) {
+      this.clockManager.detach(this);
     }
   }
 
@@ -104,15 +113,11 @@ export class SequencerComponent implements OnInit, IObserver<number>, SynthModul
   }
 
   connectSynthModule(inputModule: SynthModule) {
-    if (this.isInSoundChain) {
-      this.clockManager.attach(this);
-    }
+    
   }
 
   disconnectSynthModule(): void {
-    if (this.isInSoundChain) {
-      this.clockManager.detach(this);
-    }
+    
   }
 
 }

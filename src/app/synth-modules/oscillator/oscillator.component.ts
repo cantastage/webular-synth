@@ -71,7 +71,9 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
       this.waveForm = this.data.state.waveForm;
     }
     */
-
+    if (this.isInSoundChain) {
+      this.midiManager.attach(this);
+    }
     // createAudioNode in audio context manager service
     if (this.isInSoundChain) {
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
@@ -80,6 +82,9 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    if (this.isInSoundChain) {
+      this.midiManager.detach(this);
+    }
   }
 
   public selectWaveform(data) {
@@ -153,16 +158,11 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
 
   public connectSynthModule(inputModule: SynthModule) {
-    if (this.isInSoundChain) {
-      this.midiManager.attach(this);
-    }
+
   }
 
   public disconnectSynthModule() {
     this.getOutput().disconnect();
-    if (this.isInSoundChain) {
-      this.midiManager.detach(this);
-    }
   }
 
   public loadPatch(): void {

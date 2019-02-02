@@ -65,13 +65,15 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
   public ngOnInit() {
     this._gainNode = this.contextManager.audioContext.createGain();
     this._panNode = this.contextManager.audioContext.createStereoPanner();
-    this.getInput().connect(this.getOutput());
+    // this.getInput().connect(this.getOutput());
     this.loadPatch();
 
 // this._testnode = this.contextManager.audioContext.createOscillator();
 // this._testnode.start();
 // this._testnode.connect(this.getInput());
 
+
+    this._panNode.connect(this.contextManager.audioContext.destination);
     if (this.isInSoundChain) {
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
     }
@@ -93,10 +95,11 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
 
   public connectSynthModule(inputModule: SynthModule) {
     inputModule.getOutput().connect(this.getInput());
+    this.getInput().connect(this.getOutput());
   }
 
   public disconnectSynthModule() {
     this.getInput().disconnect();
-    this.getOutput().disconnect();
+    // this.getOutput().disconnect();
   }
 }
