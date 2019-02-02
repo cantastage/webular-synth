@@ -56,14 +56,11 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   // la onInit leggerà tutti i valori da synthModuleData.data
   ngOnInit() {
     this.subscription = this.messageService.getMessage().subscribe(message => { this.message = message; });
-    if (this.isInSoundChain === true) {
-      this.midiManager.attach(this);
-    }
-    console.log(this.isInSoundChain);
+    // console.log(this.isInSoundChain);
     if (this.message === undefined) {
-      this.message = { message: [0, 0, 1, 0]};
+      this.message = { message: [0, 0, 1, 0] };
     }
-    this.active = this.data.state.active;
+    this.loadPatch();
     this.active_voices = [];
     this.c = this.contextManager.audioContext;
     this.g = this.c.createGain();
@@ -74,10 +71,6 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
       this.waveForm = this.data.state.waveForm;
     }
     */
-    this.waveForm = this.data.state.waveForm;
-    this.maxVelocity = this.data.state.maxVelocity;
-    this.addSemitone = this.data.state.addSemitone;
-    this.finePitch = this.data.state.finePitch;
 
     // createAudioNode in audio context manager service
     if (this.isInSoundChain) {
@@ -87,10 +80,6 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.g.disconnect();
-    if (this.isInSoundChain === true) {
-      this.midiManager.detach(this);
-    }
   }
 
   public selectWaveform(data) {
@@ -143,7 +132,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
       finePitch: this.finePitch
     };
     */
-   // console.log(this.waveForm);
+    // console.log(this.waveForm);
     // this.data.name = this.data.name;
     this.data.state.waveForm = this.waveForm;
     this.data.state.maxVelocity = this.maxVelocity;
@@ -158,13 +147,29 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   }
 
   // Interface methods
+  public getInput(): AudioNode {
+    return null;
+  }
 
-  public connectToSynthNode(node: AudioNode) {
-    node.connect(this.g);
+
+  public connectToSynthNode(node: SynthModule) {
+    if (this.isInSoundChain) {
+      this.midiManager.attach(this);
+    }
   }
 
   public disconnectSynthModule() {
-    this.g.disconnect();
+    this.getOutput().disconnect();
+    if (this.isInSoundChain) {
+      this.midiManager.detach(this);
+    }
   }
 
+  public loadPatch(): void {
+    this.active = this.data.state.active;
+    this.waveForm = this.data.state.waveForm;
+    this.maxVelocity = this.data.state.maxVelocity;
+    this.addSemitone = this.data.state.addSemitone;
+    this.finePitch = this.data.state.finePitch;
+  }
 }

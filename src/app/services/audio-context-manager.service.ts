@@ -38,7 +38,7 @@ export class AudioContextManagerService {
    * Insert a synth module in the soundchain
    * @param module module that has to be created
    */
-  public addSynthModule<T extends SynthModule>(module: T, position: number): void {
+  public addSynthModule(module: SynthModule, position: number): void {
     // this.unconnectedModules.push(module);
     /**
      * gestione 4 casi:
@@ -60,21 +60,21 @@ export class AudioContextManagerService {
         // caso inserimento in coda
         const prev = this.soundChain[(position - 1)];
         prev.disconnectSynthModule();
-        module.connectToSynthNode(prev.getOutput());
+        module.connectToSynthNode(prev);
         this.soundChain[position].getOutput().connect(this._ctx.destination);
         return;
       } else if (position === 0) {
         // caso inserimento in testa
         const next = this.soundChain[1];
-        next.connectToSynthNode(module.getOutput());
+        next.connectToSynthNode(module);
         return;
       } else {
         // inserimento in mezzo
         const prev = this.soundChain[(position - 1)];
         const next = this.soundChain[(position + 1)];
         prev.disconnectSynthModule();
-        next.connectToSynthNode(module.getOutput());
-        module.connectToSynthNode(prev.getOutput());
+        next.connectToSynthNode(module);
+        module.connectToSynthNode(prev);
       }
     }
   }
@@ -108,26 +108,26 @@ export class AudioContextManagerService {
       const prev = this.soundChain[previousIndex - 1];
       prev.disconnectSynthModule();
       const next = this.soundChain[previousIndex + 1];
-      next.connectToSynthNode(prev.getOutput());
+      next.connectToSynthNode(prev);
     }
     moveItemInArray(this.soundChain, previousIndex, currentIndex); // sposto l'elemento nella soundchain
     // ricollego l'elemento nella catena
     if (currentIndex === 0) {
       // collega in testa
       const next = this.soundChain[currentIndex + 1];
-      next.connectToSynthNode(this.soundChain[currentIndex].getOutput());
+      next.connectToSynthNode(this.soundChain[currentIndex]);
     } else if (currentIndex === (soundChainLength - 1)) {
       const prev = this.soundChain[currentIndex - 1];
       prev.disconnectSynthModule();
-      this.soundChain[currentIndex].connectToSynthNode(prev.getOutput());
+      this.soundChain[currentIndex].connectToSynthNode(prev);
       this.soundChain[currentIndex].getOutput().connect(this._ctx.destination);
     } else {
       // inserimento in mezzo
       const prev = this.soundChain[currentIndex - 1];
       const next = this.soundChain[currentIndex + 1];
       prev.disconnectSynthModule();
-      this.soundChain[currentIndex].connectToSynthNode(prev.getOutput());
-      next.connectToSynthNode(this.soundChain[currentIndex].getOutput());
+      this.soundChain[currentIndex].connectToSynthNode(prev);
+      next.connectToSynthNode(this.soundChain[currentIndex]);
     }
 
     // update dell'indice del componente
@@ -154,7 +154,7 @@ export class AudioContextManagerService {
       const prev = this.soundChain[position - 1];
       prev.disconnectSynthModule();
       const next = this.soundChain[position + 1];
-      next.connectToSynthNode(prev.getOutput());
+      next.connectToSynthNode(prev);
     }
     // cancellazione del modulo
     this.soundChain.splice(position, 1);

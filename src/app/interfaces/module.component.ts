@@ -2,19 +2,11 @@ export interface SynthModule {
     data: any;
     isInSoundChain: boolean; // TODO aggiungere get e set
     position: number;
-    // loadPatch(): void;
-    // savePatch(): any;
+    loadPatch(): void;
+    savePatch(): any;
 
-    // getInput(): AudioNode;
+    getInput(): AudioNode;
     getOutput(): AudioNode;
-    connectToSynthNode(node: AudioNode);
+    connectToSynthNode(module: SynthModule); // TODO pass synth module
     disconnectSynthModule(): void;
-    // disconnectSynthModule();
 }
-
-// proposal
-// export interface ModuleComponent<T> {
-//     data: T;
-//     loadPatch(): void;
-//     savePatch(): void;
-// }

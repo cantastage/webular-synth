@@ -11,7 +11,7 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
   @Input() data: any;
   @Input() isInSoundChain: boolean;
   @Input() position: number;
-  private _oscTest: OscillatorNode;
+  // private _oscTest: OscillatorNode;
   private _scriptNode: ScriptProcessorNode;
   public cutoff_freq: number;
   public Q: number;
@@ -24,17 +24,16 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
   }
 
   ngOnInit() {
-    this._oscTest = this.contextManager.audioContext.createOscillator();
-    this._oscTest.type = 'square';
+    // this._oscTest = this.contextManager.audioContext.createOscillator();
+    // this._oscTest.type = 'square';
 
     this._scriptNode = this.contextManager.audioContext.createScriptProcessor(1024, 1, 1);
     this._scriptNode.onaudioprocess = ($event) => {
       this.process($event);
     };
-    this.cutoff_freq = this.data.state.hlFrequency;
-    this.Q = this.data.state.hlResonance;
+    this.loadPatch();
 
-    console.log('Provided data in input: ', this.data);
+    // console.log('Provided data in input: ', this.data);
     if (this.isInSoundChain) {
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
     }
@@ -74,7 +73,7 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
       // MOOG LADDER FILTER IMPLEMENTATION DSP
       this.out = input[sample] - res * this.stage[3];
 
-      this.stage[0] =  this.out * p + this.old_smp[1] * p - k * this.stage[1];
+      this.stage[0] = this.out * p + this.old_smp[1] * p - k * this.stage[1];
       this.stage[1] = this.stage[0] * p + this.old_smp[1] * p - k * this.stage[1];
       this.stage[2] = this.stage[1] * p + this.old_smp[2] * p - k * this.stage[2];
       this.stage[3] = this.stage[2] * p + this.old_smp[3] * p - k * this.stage[3];
@@ -90,19 +89,19 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
     }
   }
 
-  play(): void {
-    this._oscTest.start();
-    this._oscTest.connect(this._scriptNode);
-  }
+  // play(): void {
+  //   this._oscTest.start();
+  //   this._oscTest.connect(this._scriptNode);
+  // }
 
-  stop(): void {
-    this._oscTest.stop();
-    this._oscTest.disconnect(this._scriptNode);
-  }
+  // stop(): void {
+  //   this._oscTest.stop();
+  //   this._oscTest.disconnect(this._scriptNode);
+  // }
 
-  deleteNode(): void {
-    this._oscTest.disconnect(this._scriptNode);
-  }
+  // deleteNode(): void {
+  //   this._oscTest.disconnect(this._scriptNode);
+  // }
 
   connectScriptNode(): void {
     this._scriptNode.connect(this.contextManager.audioContext.destination);
@@ -121,12 +120,21 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
     return this._scriptNode;
   }
 
-  public connectToSynthNode(node: AudioNode) {
-    node.connect(this._scriptNode);
+  public connectToSynthNode(node: SynthModule) {
+    node.getOutput().connect(this.getInput());
   }
 
   public disconnectSynthModule() {
-    this._scriptNode.disconnect();
+    this.getInput().disconnect();
+  }
+
+  public getInput(): AudioNode {
+    return this._scriptNode;
+  }
+
+  public loadPatch(): void {
+    this.cutoff_freq = this.data.state.hlFrequency;
+    this.Q = this.data.state.hlResonance;
   }
 
   public savePatch() {

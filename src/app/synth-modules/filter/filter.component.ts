@@ -5,6 +5,7 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
 import {
   IUIAudioParameter, UIAudioParameter, IModulableAudioParameter, ModulableAudioParameter, AudioParameterDescriptor
 } from '../AudioParameter';
+import { SynthModule } from 'src/app/interfaces/module.component';
 
 @Component({
   selector: 'app-filter',
@@ -97,11 +98,11 @@ export class FilterComponent implements OnInit, IModulableComponent {
     return this._filterNode;
   }
 
-  public connectToSynthNode(node: AudioNode) {
-    node.connect(this._filterNode);
+  public connectToSynthNode(node: SynthModule) {
+    node.getOutput().connect(this.getInput());
   }
 
   public disconnectSynthModule() {
-    this._filterNode.disconnect();
+    this.getInput().disconnect();
   }
 }

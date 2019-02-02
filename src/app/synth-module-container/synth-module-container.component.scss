@@ -6,6 +6,8 @@
   position: fixed;  //necessary to fill fullscreen
   // background-color: #363030;
   background-color: white;
+
+  overflow: scroll;
 }
 
 .list-container {

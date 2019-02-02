@@ -4,6 +4,7 @@ import {
   IUIAudioParameter, IModulableAudioParameter, ModulableAudioParameter, UIAudioParameter, AudioParameterDescriptor
 } from '../AudioParameter';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { SynthModule } from 'src/app/interfaces/module.component';
 
 @Component({
   selector: 'app-amplifier',
@@ -90,11 +91,12 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
     return this._panNode;
   }
 
-  public connectToSynthNode(node: AudioNode) {
-    node.connect(this._gainNode);
+  public connectToSynthNode(node: SynthModule) {
+    node.getOutput().connect(this.getInput());
   }
 
   public disconnectSynthModule() {
-    this._gainNode.disconnect();
+    this.getInput().disconnect();
+    this.getOutput().disconnect();
   }
 }
