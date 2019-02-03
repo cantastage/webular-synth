@@ -5,11 +5,13 @@
   height: 100%;
   position: fixed;  //necessary to fill fullscreen
   // background-color: #363030;
-  background-color: white;
+  background-color: rgb(53,58,64);
+  // background: url('src/assets/img/textures/dark-wood.png');
 
-  overflow-x: hidden;
-  overflow-y: auto;
+  // overflow-x: hidden;
+  // overflow-y: auto;
   font-family: webular;
+  overflow: hidden;
 }
 
 .list-container {
@@ -24,9 +26,7 @@
 
 .module-list {
   border-radius: 10px;
-  overflow-x: auto;
-  overflow-y: auto;
-  white-space: nowrap;
+  
   // background-color: #4a4a4c;
   background-color: rgb(215, 213, 200);
   // background-image: url('src/assets/brushed-alum-dark.png');
@@ -38,11 +38,16 @@
 
 .rack-list {
   height: 90%;
+  overflow-x: auto;
+  overflow-y: auto;
+  white-space: nowrap;
 }
 
 .new-module-list {
   // border: solid 5px red;
   height: 90%;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 

@@ -14,6 +14,11 @@
           </button>
         </li>
       </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <app-clock></app-clock>
+        </li>
+      </ul>
     <!-- </div> -->
   </nav>
 
@@ -21,9 +26,19 @@
 
   <div class="row list-container">
     <!-- TODO uncomment clock -->
-    <app-clock></app-clock>
+    <!-- <app-clock></app-clock> -->
 
-    <div class="col-12 module-list-container">
+    <div class="col-4 module-list-container">
+      <!-- List that represents new modules -->
+      <h3 class="module-list-title">NEW MODULES</h3>
+      <div cdkDropList #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules"
+        [cdkDropListConnectedTo]="[connectedList]" class="module-list new-module-list" (cdkDropListDropped)="drop($event)" id="unconnectedModules">
+        <app-synth-module-wrapper cdkDrag *ngFor="let item of unconnectedModules; let i= index" [synthModuleData]="item"
+          [index]="i" [listName]="unconnectedList.id" [isInSoundChain]="false"></app-synth-module-wrapper>
+      </div>
+    </div>
+
+    <div class="col-8 module-list-container">
       <!-- List that represents the sound chain -->
       <h3 class="module-list-title">SYNTH MODULES</h3>
       <div cdkDropList cdkDropListOrientation="horizontal" #connectedList="cdkDropList" [cdkDropListData]="soundChain"
@@ -34,16 +49,5 @@
     </div>
 
 
-    <!-- <button type="button" (click)="loadComponent()">Load Component</button> -->
-
-    <div class="col-12 module-list-container">
-      <!-- List that represents new modules -->
-      <h3 class="module-list-title">NEW MODULES</h3>
-      <div cdkDropList #unconnectedList="cdkDropList" cdkDropListOrientation="horizontal" [cdkDropListData]="unconnectedModules"
-        [cdkDropListConnectedTo]="[connectedList]" class="module-list new-module-list" (cdkDropListDropped)="drop($event)" id="unconnectedModules">
-        <app-synth-module-wrapper cdkDrag *ngFor="let item of unconnectedModules; let i= index" [synthModuleData]="item"
-          [index]="i" [listName]="unconnectedList.id" [isInSoundChain]="false"></app-synth-module-wrapper>
-      </div>
-    </div>
   </div>
 </div>
