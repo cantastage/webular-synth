@@ -7,8 +7,8 @@
 .oscBlock{
     display: block;
     position: relative;
-    width: 400px;
-    height: 280px;
+    width: 380px;
+    height: 250px;
     border: 1px solid rgb(10, 10, 10);
     border-radius: 5px;
     background-color: #8c8c8c;
@@ -38,7 +38,7 @@
   transform: translateX(-50%);
   position: absolute;
   left: 18%;
-  top: 252px;
+  top: 218px;
 }
   
 #label-coarse{
@@ -47,7 +47,7 @@
   transform: translateX(-50%);
   position: absolute;
   left: 80%;
-  top: 252px;
+  top: 218px;
 }
   
   #label-volume{
@@ -56,7 +56,7 @@
     text-align: center;
     transform: translateX(-50%);
     left: 50%;
-    top: 206px;
+    top: 180px;
     
   }
 
@@ -69,6 +69,7 @@
     height: 25px;
     text-align: center;
     color: #D5D3C9;
+    cursor: pointer
   }
 
   img{
@@ -179,9 +180,9 @@ knob.skin4 /deep/ .knob{
 }
 */
 #volumeKnob{
-  width: 80px;
-  height: 80px;
-  top: 108px;
+  width: 70px;
+  height: 70px;
+  top: 100px;
   left: 50%;
   align-content: center;
   position: absolute;
@@ -193,7 +194,7 @@ knob.skin4 /deep/ .knob{
   height: 50px;
   left: 20%;
   transform: translateX(-50%);
-  top: 182px;
+  top: 160px;
 }
 
 #fineKnob{
@@ -201,7 +202,7 @@ knob.skin4 /deep/ .knob{
   height: 50px;
   width: 50px;
   left: 80%;
-  top: 182px;
+  top: 160px;
   transform: translateX(-50%);
 }
 
@@ -220,14 +221,13 @@ knob.skin4 /deep/ .knob{
 .fine{
   position: absolute;
   transform: translateX(-50%);
-
   left: 80%;
-  top: 145px;
+  top: 130px;
 }
 
 .coarse{
   position: absolute;
   transform: translateX(-50%);
   left: 20%;
-  top: 145px;
+  top: 130px;
 }
