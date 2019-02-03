@@ -86,7 +86,7 @@ export class AudioContextManagerService {
    * @param currentIndex 
    */
   public moveSynthModuleInSoundChain(previousIndex: number, currentIndex: number) {
-    const soundChainLength = this.soundChain.length;
+    let soundChainLength = this.soundChain.length;
     /**
      * update delle connessioni
      * 3 casi:
@@ -96,56 +96,57 @@ export class AudioContextManagerService {
      *
      */
     // disconnessione del modulo dalla previous position
-    if (previousIndex === (soundChainLength - 1)) {
+    // disconnessione in testa
+    if (previousIndex === 0) {
+      this.soundChain[previousIndex].disconnectSynthModule();
+    } else if (previousIndex === (soundChainLength - 1)) {
       const prev = this.soundChain[previousIndex - 1];
       prev.disconnectSynthModule();
-      // prev.getOutput().connect(this._ctx.destination); // collego l'output dell'ultimo modulo a destination.
-      this.soundChain[previousIndex].disconnectSynthModule();
-    } else if (previousIndex === 0) {
-      this.soundChain[previousIndex].disconnectSynthModule();
     } else {
-      // caso di scollegamento in mezzo alla lista
-      this.soundChain[previousIndex].disconnectSynthModule();
       const prev = this.soundChain[previousIndex - 1];
-      prev.disconnectSynthModule();
       const next = this.soundChain[previousIndex + 1];
+      prev.disconnectSynthModule();
+      this.soundChain[previousIndex].disconnectSynthModule();
       next.connectSynthModule(prev);
     }
     moveItemInArray(this.soundChain, previousIndex, currentIndex); // sposto l'elemento nella soundchain
     // ricollego l'elemento nella catena
+    soundChainLength = this.soundChain.length;
     if (currentIndex === 0) {
-      // collega in testa
       const next = this.soundChain[currentIndex + 1];
       next.connectSynthModule(this.soundChain[currentIndex]);
     } else if (currentIndex === (soundChainLength - 1)) {
-      const prev = this.soundChain[currentIndex - 1];
-      prev.disconnectSynthModule();
+      const prev = this.soundChain[previousIndex - 1];
       this.soundChain[currentIndex].connectSynthModule(prev);
-      // this.soundChain[currentIndex].getOutput().connect(this._ctx.destination);
     } else {
-      // inserimento in mezzo
       const prev = this.soundChain[currentIndex - 1];
       const next = this.soundChain[currentIndex + 1];
       prev.disconnectSynthModule();
       this.soundChain[currentIndex].connectSynthModule(prev);
       next.connectSynthModule(this.soundChain[currentIndex]);
     }
-
     // update dell'indice del componente
     this.soundChain[currentIndex].position = currentIndex;
   }
+
+  /**
+   * Deletes a synth module.
+   * 
+   * @param position 
+   */
   public deleteSynthModule(position: number): void {
     const soundChainLength = this.soundChain.length;
     // disconnessione del modulo dalla previous position
     if (position === 0 && soundChainLength === 1) {
       // caso in cui sia l'unico elemento nella lista
       this.soundChain[position].disconnectSynthModule();
+      this.soundChain.splice(position, 1);
       return;
     }
     if (position === (soundChainLength - 1)) {
       const prev = this.soundChain[position - 1];
       prev.disconnectSynthModule();
-      prev.getOutput().connect(this._ctx.destination); // collego l'output dell'ultimo modulo a destination.
+      // prev.getOutput().connect(this._ctx.destination); // collego l'output dell'ultimo modulo a destination.
       this.soundChain[position].disconnectSynthModule();
     } else if (position === 0) {
       this.soundChain[position].disconnectSynthModule();

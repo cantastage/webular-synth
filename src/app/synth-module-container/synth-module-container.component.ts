@@ -64,18 +64,24 @@ export class SynthModuleContainerComponent implements OnInit {
         return;
       } else {
         // trasferisco da soundchain ad unconnected e distruggo il componente
+        this.contextManager.deleteSynthModule(event.previousIndex);
         transferArrayItem(event.previousContainer.data,
           event.container.data,
           event.previousIndex,
           event.currentIndex);
-        this.contextManager.deleteSynthModule(event.previousIndex);
-        event.container.data.splice(event.currentIndex, 1);
+          // TODO check if it works as expected
+          if (event.container.id === 'unconnectedModules') {
+            this.unconnectedModules.splice(event.currentIndex, 1);
+          }
+        // event.container.data.splice(event.currentIndex, 1);
       }
     }
   }
 
   // Adds a module into the array of unconnectedModules
   loadComponent(index: number): void {
+    // console.log('unconnected prior to creation: ', this.unconnectedModules);
+    this.modules = this.moduleManager.getModules(); // refresh modules
     const adItem = this.modules[index];
     this.unconnectedModules.push(adItem);
   }

@@ -103,6 +103,6 @@ export class FilterComponent implements OnInit, IModulableComponent {
   }
 
   public disconnectSynthModule() {
-    this.getInput().disconnect();
+    this.getOutput().disconnect();
   }
 }

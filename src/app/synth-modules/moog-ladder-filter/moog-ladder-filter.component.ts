@@ -125,7 +125,7 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
   }
 
   public disconnectSynthModule() {
-    this.getInput().disconnect();
+    this.getOutput().disconnect();
   }
 
   public getInput(): AudioNode {
