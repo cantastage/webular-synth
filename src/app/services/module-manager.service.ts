@@ -31,7 +31,7 @@ export class ModuleManagerService {
     return { waveForm: 'sine', maxVelocity: 100, addSemitone: 0, finePitch: 0, active: 0 };
   }
   private get mlFilterDefaultState(): any {
-    return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 1 };
+    return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 0.2 };
   }
   private get filterDefaultState(): any {
     return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 5, modulatedParameter: 'frequency' };

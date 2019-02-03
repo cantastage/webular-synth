@@ -204,3 +204,30 @@ knob.skin4 /deep/ .knob{
   top: 182px;
   transform: translateX(-50%);
 }
+
+.info{
+  border: 1px solid #555555;
+  width: 50px;
+  // margin-top: 22px;
+  box-shadow: inset 0px 0px 11px rgba(0,0,0,1);
+  background: #c3dac9;
+  text-align: center;
+  font-family: monospace;
+  border-radius: 7px;
+  color: #333333;
+}
+
+.fine{
+  position: absolute;
+  transform: translateX(-50%);
+
+  left: 80%;
+  top: 145px;
+}
+
+.coarse{
+  position: absolute;
+  transform: translateX(-50%);
+  left: 20%;
+  top: 145px;
+}
