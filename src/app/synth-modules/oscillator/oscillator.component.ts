@@ -47,9 +47,10 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     // console.log(arg);
     if (arg[1] === true) {
       console.log(arg);
-      this.noteOn(arg[2], arg[3]);
+      this.noteOn(arg[0], arg[2], arg[3]);
     } else {
-      this.noteOff(arg[2]);
+      console.log(arg);
+      this.noteOff(arg[0], arg[2]);
     }
   }
 
@@ -98,19 +99,30 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
 
 
-  public noteOn(midiNote, velocity) {
+  public noteOn(channel, midiNote, velocity) {
     this.g.gain.value = this.maxVelocity / 127;
     this.frequency = MidiContextManagerService.midiNoteToFrequency(midiNote + this.addSemitone) + this.finePitch;
     const note = new Voice(this.c, this.g, (velocity), this.waveForm, this.message.message);
-    this.active_voices[midiNote] = note;
-    // console.log(this.active_voices);
+    if (channel === 15) {
+      this.active_voices[100 + midiNote] = note;
+    } else {
+      this.active_voices[midiNote] = note;
+    }
+    console.log(this.active_voices);
     note.playNote(this.frequency);
   }
 
-  public noteOff(midiNote) {
-    this.active_voices[midiNote].stopNote();
+  public noteOff(channel, midiNote) {
+    if (channel === 15) {
+      this.active_voices[100 + midiNote].stopNote();
+      delete this.active_voices[100 + midiNote];
+    } else {
+      this.active_voices[midiNote].stopNote();
+      delete this.active_voices[midiNote];
+    }
+
+    console.log(this.active_voices);
     // console.log(this.active_voices);
-    delete this.active_voices[midiNote];
   }
 
   public onVolumeChange(value) {

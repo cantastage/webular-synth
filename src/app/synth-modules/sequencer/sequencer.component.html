@@ -1,6 +1,6 @@
 <div class="container-block">
 <div class="sequencer">
-  <div class="title">SEQ</div>
+  <div class="title">{{this.data.name.toUpperCase()}}</div>
   <div class="selector">
     <table class="table1">
       <tbody>
@@ -22,7 +22,7 @@
                 <option *ngFor="let metric of _metrics;" [ngValue]="metric">{{metric}}</option>
             </select></td>
             <!-- <td><select class="midiCh">
-              TO ADD
+              CAN BE ADDED
             </select></td> -->
         </tr>
       </tbody>
@@ -34,7 +34,7 @@
       <tr *ngFor="let diatonicNote of _sequencer.scale.diatonicNotes; let notei = index;">
         <!-- ENHARMONIC NAMES -->
         <td class="column-off">{{diatonicNote.pitchClassName}}</td>
-        <td *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;"
+        <td class="inputcell" *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;"
         [ngClass]="{'column-off': !(subdivisioni === _subdivisionCounter), 'column-on': (subdivisioni == _subdivisionCounter)}">
           <select [(ngModel)]="subdivision.octaves[notei]">
               <option *ngFor="let possibleOctave of _possibleOctaves;" [ngValue]="possibleOctave">{{possibleOctave}}</option>
