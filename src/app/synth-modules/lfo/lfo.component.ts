@@ -98,7 +98,7 @@ export class LfoComponent implements OnInit, IModulatorComponent {
   public loadPatch(): void {
     this._intensity = new UIAudioParameter<IAudioParameter<AudioParam>>(
       new AudioParameter<AudioParam>(
-        'intensity',
+        'Intensity',
         this.modulatedParameter.llDescriptor,
         this._processorAmplifier.gain
       ),
@@ -106,7 +106,7 @@ export class LfoComponent implements OnInit, IModulatorComponent {
     );
     this._rate = new UIAudioParameter<IAudioParameter<AudioParam>>(
       new AudioParameter<AudioParam>(
-        'rate',
+        'Rate',
         new AudioParameterDescriptor(0, 1, 20, 'Hz'),
         this._lfoNode.frequency
       ),

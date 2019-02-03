@@ -38,17 +38,17 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
   public loadPatch(): void {
     this._modulableParameters = [
       new ModulableAudioParameter(
-        'level',
+        'Level',
         new AudioParameterDescriptor(0, 1, 1, ''),
         this._gainNode.gain
       ),
       new ModulableAudioParameter(
-        'balance',
+        'Balance',
         new AudioParameterDescriptor(-1, 0, 1, ''),
         this._panNode.pan
       )
     ];
-    this.selectedModulableParameter = this.data.state.modulatedParameter === 'level' ?
+    this.selectedModulableParameter = this.data.state.modulatedParameter === 'Level' ?
       this.modulableParameters[0] : this.modulableParameters[1];
     this._uiModulableParameters = [
       new UIAudioParameter<IModulableAudioParameter>(

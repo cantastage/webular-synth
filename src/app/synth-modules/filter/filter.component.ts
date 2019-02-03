@@ -43,17 +43,17 @@ export class FilterComponent implements OnInit, IModulableComponent {
     this._filterNode.type = this.data.state.filterType;
     this._modulableParameters = [
       new ModulableAudioParameter(
-        'frequency',
+        'Frequency',
         new AudioParameterDescriptor(0, 5500, 22000, 'Hz'),
         this._filterNode.frequency
       ),
       new ModulableAudioParameter(
-        'resonance',
+        'Resonance',
         new AudioParameterDescriptor(0, 5, 30, ''),
         this._filterNode.Q
       )
     ];
-    this.selectedModulableParameter = this.data.state.modulatedParameter === 'frequency' ?
+    this.selectedModulableParameter = this.data.state.modulatedParameter === 'Frequency' ?
       this.modulableParameters[0] : this.modulableParameters[1];
     this._uiModulableParameters = [
       new UIAudioParameter<IModulableAudioParameter>(

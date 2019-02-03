@@ -64,19 +64,19 @@ When a subdivision is selected, each 'active note' is sent to the listeners.
 _To prevent unrealistic behaviours that would compromise the functionality of the following module (generally a poly-phonic oscillator), the duration of each note is altered.
 This choice is justified by the asynchronous nature of the 'stop note' and by the unperceptiveness of such a temporal modification._
 
-### Poly-phonic Oscillator
+### Oscillator
 
 
 
-### ADSR Envelop
+### ADSR Envelope
 
 
 
-### Custom MoogLadderFilter
+### Moog Ladder Filter
 
 
 
-### Filter
+### Biquadratic Filter
 
 The UI of the `FilterComponent` allows the state configuration:
 - Filter type selector: allows to choose among a variety of filter categories;
@@ -85,7 +85,7 @@ The UI of the `FilterComponent` allows the state configuration:
 
 ~~Both the frequency and the resonance can be modulated via `LFOComponent`.~~
 
-### Final Amplifier ~~(singleton provider)~~
+### Amplifier
 
 The UI of the `AmplifierComponent` allows the state configuration:
 - Final level knob;

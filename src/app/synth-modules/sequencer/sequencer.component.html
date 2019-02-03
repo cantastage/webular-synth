@@ -1,13 +1,13 @@
 <div class="container-block">
 <div class="sequencer">
-  <div class="title">{{this.data.name.toUpperCase()}}</div>
+  <div class="title">{{this.data.name}}</div>
   <div class="selector">
     <table class="table1">
       <tbody>
         <tr>
-          <td>key</td>
-          <td>harmonization</td>
-          <td>metric</td>
+          <td>Key</td>
+          <td>Harmonization</td>
+          <td>Metric</td>
           <!-- <td>midiCh</td> -->
         </tr>
         <tr>
@@ -43,7 +43,7 @@
       </tr>
 
       <tr>
-        <td class="column-off">duration</td>
+        <td class="column-off">Duration</td>
         <td class="column-off" *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;">
             <input type="range" class="inputcell"
             min="0" max="1" step="0.25"
