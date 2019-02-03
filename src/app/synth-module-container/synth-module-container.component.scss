@@ -47,7 +47,7 @@
   // border: solid 5px red;
   height: 90%;
   overflow-x: auto;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 
@@ -103,4 +103,28 @@
 
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// Scrollbar css
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #c4c2c2; 
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #c9a477; 
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ac8c66; 
 }
