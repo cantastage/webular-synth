@@ -3,13 +3,13 @@
     <div class="component-title">{{this.data.name}}</div>
   <div class="component-header">
       <select [(ngModel)]="_filterNode.type">
-          <option *ngFor="let filterType of filterTypes;" [ngValue]="filterType">{{filterType}}</option>
+          <option *ngFor="let filterType of filterTypes;" [ngValue]="filterType">{{filterType.toUpperCase()}}</option>
       </select>
   </div>
   <div class="component-body">
     <div class="component-body-sub" *ngFor="let mp of uiModulableParameters;">
       <div class="component-body-sub-info">
-        <div class="component-body-sub-info-name" [ngClass]="{'modulated': mp.audioParameter.isModulated ? mp.audioParameter.isModulated : false}">{{mp.audioParameter.name}}</div>
+        <div class="component-body-sub-info-name" [ngClass]="{'modulated': mp.audioParameter.isModulated ? mp.audioParameter.isModulated : false}">{{mp.audioParameter.name.toUpperCase()}}</div>
         <div class="component-body-sub-info-value" [ngClass]="{'modulated': mp.audioParameter.isModulated ? mp.audioParameter.isModulated : false}">{{mp.hlValue}}{{mp.hlDescriptor.measurementUnit}}</div>          
       </div>
       <div class="component-body-sub-selector">
@@ -22,7 +22,7 @@
   </div>
   <div class="component-footer">
     <select [(ngModel)]="selectedModulableParameter">
-      <option *ngFor="let mp of modulableParameters;" [ngValue]="mp">{{mp.name}}</option>
+      <option *ngFor="let mp of modulableParameters;" [ngValue]="mp">{{mp.name.toUpperCase()}}</option>
     </select>
   </div>
 </div>

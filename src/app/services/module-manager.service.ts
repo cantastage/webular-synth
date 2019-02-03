@@ -34,10 +34,10 @@ export class ModuleManagerService {
     return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 0.2 };
   }
   private get filterDefaultState(): any {
-    return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 5, modulatedParameter: 'Frequency' };
+    return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 5, modulatedParameter: 'FREQUENCY' };
   }
   private get amplifierDefaultState(): any {
-    return { hlLevel: 10, hlBalance: 0, modulatedParameter: 'Level' };
+    return { hlLevel: 10, hlBalance: 0, modulatedParameter: 'LEVEL' };
   }
 
   public getModules(): ModuleItem[] {
