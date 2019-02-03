@@ -30,7 +30,7 @@ export class ModuleManagerService {
     return { filterType: 'lowpass', hlFrequency: 5500, hlResonance: 5, modulatedParameter: 'frequency' };
   }
   private get mlFilterDefaultState(): any {
-    return {filterType: 'lowpass', hlFrequency: 5500, hlResonance: 1};
+    return {filterType: 'lowpass', hlFrequency: 5500, hlResonance: 0.2};
   }
   private get amplifierDefaultState(): any {
     return { hlLevel: 10, hlBalance: 0, modulatedParameter: 'level' };
