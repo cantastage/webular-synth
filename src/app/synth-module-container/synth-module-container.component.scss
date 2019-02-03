@@ -7,7 +7,8 @@
   // background-color: #363030;
   background-color: white;
 
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .list-container {
@@ -17,71 +18,93 @@
 }
 
 .full-height-col {
-  height: 90%;
+  height: 80%;
 }
 
 .rack-list {
   border: solid 20px #996633;
   height: 90%;
   border-radius: 10px;
-  overflow: hidden;
-  display: block;
+  overflow-x: auto;
+  overflow-y: auto;
+  white-space: nowrap;
 
   // -webkit-mask-box-image: url("../../assets/img/textures/purty-wood.png");
   // mask-border: url("../../assets/img/textures/purty-wood.png");
   // mask-border: url("../../assets/img/textures/purty-wood.png");
 }
 
-.module-list-title {
-  // -webkit-mask-image: none;
-  // mask-image: none;
-  border-bottom: 4px solid black;
-  // background-color: rgb(97, 97, 97);
-  background-color: black;
-  color: rgb(169,217,231); 
-  
-}
-
 .new-module-list {
   border: solid 5px red;
   height: 90%;
   border-radius: 10px;
+  overflow-x: auto;
+  overflow-y: auto;
+  white-space: nowrap;
+
 }
 
 
-.example-container {
+.module-list-title {
+  // border-bottom: 4px solid black;
+  // // background-color: rgb(97, 97, 97);
+  // background-color: black;
+  // color: rgb(169,217,231); 
+  // position: relative;
+  margin-bottom: 0%;
+
+  position: relative;
   // width: 400px;
-  // max-width: 100%;
-  margin: 0 25px 25px 0;
-  // display: inline-block;
-  vertical-align: top;
+  // height: 30px;
+  border: 1px solid rgb(10, 10, 10);
+  border-radius: 5px;
+  background-color: #4a4a4c;
+  color: #8c8c8c;
+  font-family: webular;
+  font-weight: 700;
+  text-align: center;
+  padding: 2px;
 }
 
-.example-list, .synth-module-box { // MERGE CONFLICT?!
-  // width: 400px;
-  // height: 280px;
-  border: solid 1px red;
-  min-height: 60px;
-  background: white;
-  border-radius: 4px;
-  overflow: hidden;
-  display: block;
-  align-items: center;
-}
+// .synth-module-box {
+//   display: inline-flex;
+// }
 
-.example-box {
-  padding: 20px 10px;
-  border-bottom: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
-  // display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  cursor: move;
-  background: white;
-  font-size: 14px;
-}
+
+
+// .example-container {
+//   // width: 400px;
+//   // max-width: 100%;
+//   margin: 0 25px 25px 0;
+//   // display: inline-block;
+//   vertical-align: top;
+// }
+
+// .example-list, .synth-module-box { // MERGE CONFLICT?!
+//   // width: 400px;
+//   // height: 280px;
+//   border: solid 1px red;
+//   min-height: 60px;
+//   background: white;
+//   border-radius: 4px;
+//   overflow: hidden;
+//   display: block;
+//   align-items: center;
+// }
+
+// .example-box {
+//   padding: 20px 10px;
+//   border-bottom: solid 1px #ccc;
+//   color: rgba(0, 0, 0, 0.87);
+//   // display: flex;
+//   flex-direction: row;
+//   align-items: center;
+//   justify-content: space-between;
+//   box-sizing: border-box;
+//   cursor: move;
+//   background: white;
+//   font-size: 14px;
+// }
 
 .cdk-drag {
   display: inline-block;
