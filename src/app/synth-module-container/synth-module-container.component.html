@@ -1,20 +1,20 @@
 <div class="container-fluid full-dim-container">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Modules</a>
+    <a class="navbar-brand" href="#">WEBULAR SYNTH</a>
     <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button> -->
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent"> -->
       <ul class="navbar-nav mr-auto">
         <li class="nav-item" *ngFor="let item of modules; let i = index">
-          <button type="button" class="btn btn-primary" (click)="loadComponent(i)">
+          <button type="button" class="btn module-button" (click)="loadComponent(i)">
             {{item.data.name}}
           </button>
         </li>
       </ul>
-    </div>
+    <!-- </div> -->
   </nav>
 
 
@@ -25,7 +25,7 @@
 
     <div class="col-12 module-list-container">
       <!-- List that represents the sound chain -->
-      <h3 class="module-list-title">Synth Modules</h3>
+      <h3 class="module-list-title">SYNTH MODULES</h3>
       <div cdkDropList cdkDropListOrientation="horizontal" #connectedList="cdkDropList" [cdkDropListData]="soundChain"
         [cdkDropListConnectedTo]="[unconnectedList]" class="module-list rack-list" (cdkDropListDropped)="drop($event)" id="soundChain">
         <app-synth-module-wrapper cdkDrag [synthModuleData]="item" *ngFor="let item of soundChain; let i = index"
@@ -38,7 +38,7 @@
 
     <div class="col-12 module-list-container">
       <!-- List that represents new modules -->
-      <h3 class="module-list-title">New modules</h3>
+      <h3 class="module-list-title">NEW MODULES</h3>
       <div cdkDropList #unconnectedList="cdkDropList" cdkDropListOrientation="horizontal" [cdkDropListData]="unconnectedModules"
         [cdkDropListConnectedTo]="[connectedList]" class="module-list new-module-list" (cdkDropListDropped)="drop($event)" id="unconnectedModules">
         <app-synth-module-wrapper cdkDrag *ngFor="let item of unconnectedModules; let i= index" [synthModuleData]="item"

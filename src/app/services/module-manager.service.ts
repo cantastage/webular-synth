@@ -42,11 +42,11 @@ export class ModuleManagerService {
 
   public getModules(): ModuleItem[] {
     return [
-      new ModuleItem(SequencerComponent, { name: 'Sequencer', state: this.sequencerDefaultState }),
-      new ModuleItem(OscillatorComponent, { name: 'Oscillator', state: this.oscillatorDefaultState }),
-      new ModuleItem(MoogLadderFilterComponent, { name: 'Moog Ladder Filter', state: this.mlFilterDefaultState }),
-      new ModuleItem(FilterComponent, { name: 'Biquadratic Filter', state: this.filterDefaultState }),
-      new ModuleItem(AmplifierComponent, { name: 'Amplifier', state:  this.amplifierDefaultState })
+      new ModuleItem(SequencerComponent, { name: 'SEQUENCER', state: this.sequencerDefaultState }),
+      new ModuleItem(OscillatorComponent, { name: 'OSCILLATOR', state: this.oscillatorDefaultState }),
+      new ModuleItem(MoogLadderFilterComponent, { name: 'MOOG LADDER FILTER', state: this.mlFilterDefaultState }),
+      new ModuleItem(FilterComponent, { name: 'BIQUADRATIC FILTER', state: this.filterDefaultState }),
+      new ModuleItem(AmplifierComponent, { name: 'AMPLIFIER', state:  this.amplifierDefaultState })
     ];
   }
 }
