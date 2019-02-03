@@ -48,6 +48,5 @@ export class Voice {
             this.oscillators[i].gain.gain.exponentialRampToValueAtTime(0.001, this.ac.currentTime + this.envelope[3]);
             this.oscillators[i].oscillator.stop(this.ac.currentTime + this.envelope[3] + 0.1);
         }
-
     }
 }

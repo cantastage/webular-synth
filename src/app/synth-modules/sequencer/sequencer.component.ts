@@ -93,7 +93,7 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
         currentOctave = currentSubdivision.octaves[i];
         if (currentOctave !== 0) {
           currentResultingFreq = currentReferralFreq * (2 ** (currentOctave - 4));
-          this.midiManager.sendRawNote(1, currentResultingFreq,
+          this.midiManager.sendRawNote(15, currentResultingFreq,
             60 / this.clockManager.bpm * currentSubdivision.duration * 1000,
             currentSubdivision.velocity);
         }
@@ -113,11 +113,11 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
   }
 
   connectSynthModule(inputModule: SynthModule) {
-    
+
   }
 
   disconnectSynthModule(): void {
-    
+
   }
 
 }
