@@ -10,10 +10,14 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Introduction
 
-WebularSynth borns as an Angular web-application.
+WebularSynth is a web-application built on Angular Framework.
 
-It is a modular synthesizer designed for passionate musicians, exploiting the parallelism between Angular components and real modules of a synthesizer. 
-The application needs to use webAudio and webMidi API, therefore it is built to work on Chrome.
+It is a modular synthesizer designed for passionate musicians. It uses the Angular component-based logic to map the real modules of a synthesizer into reusable and expandable UI components.  
+The application runs best on Chrome browser, because of the use of webAudio and webMIDI API.
+
+### Sound Chain management
+
+The sound chain is built upon synth modules. Adding a module to the "Synth modules" list automatically creates the needed connections in the audio context. Note that you must provide at least one source and one amplifier to output audio from your speakers. The amplifier is the only module connected to the audio context destination.
 
 ## Modules & Corresponding Components
 
@@ -160,10 +164,6 @@ It is a basic script which exploits a couple of `AudioParameterDescriptors` to c
 
 ## Connections Among Modules
 
-### Sound Chain
-
-
-
-## Conclusion
+The connection of the synth modules is managed by the "AudioContextManager" service. This service provides a shared audio context that is accessible from all the components. It also contains methods to add, reorder and delete elements from the sound chain. It automatically updates all the connections everytime the user moves a synth module in the sound chain.
 
 
