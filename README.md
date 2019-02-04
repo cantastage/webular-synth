@@ -14,7 +14,7 @@ WebularSynth borns as an Angular web-application.
 
 It is a modular synthesizer designed for passionate musicians, exploiting the parallelism between Angular components and real modules of a synthesizer.
 
-## The Modules & The Corresponding Components
+## Modules & Corresponding Components
 
 ### Clock
 
@@ -22,7 +22,7 @@ As in all the most known synthesizers, the clock module is a single instance whi
 
 In our case, the sole module which needs temporization is the harmonic/melodic sequencer.
 
-**The `ClockComponent` builds an `IClock` instance thanks to the `ClockManagerService` service and the `ClockProvider` factory.**
+The `ClockComponent` builds an `IClock` instance thanks to the `ClockManagerService` service and the `ClockProvider` factory.
 
 Further extensions, such as coexisting clocks for poly-harmonic/melodic interfering structures, are now neglected and forbidden.
 
@@ -118,11 +118,11 @@ Both the frequency and the resonance can be modulated via `LFOComponent`.
 
 The UI of the `AmplifierComponent` allows the state configuration:
 - Level knob;
-- Pan knob;
+- Balance knob;
 
 Basically the amplifier wraps a `GainNode` followed by a `StereoPannerNode` of the web audio api and allows the configuration of the parameters.
 
-Both the level and the pan can be modulated via `LFOComponent`.
+Both the level and the balance can be modulated via `LFOComponent`.
 
 ### LFO Modulator
 
@@ -136,9 +136,11 @@ Basically the lfo wraps three successive nodes of the api:
 - `ScriptProcessorNode`;
 - `GainNode`.
 
-As briefly mentioned, this component needed to cope with decimal values to handle intensity and rate, which could not be handled directly via the sole angular knob component, unfortunately).
+As briefly mentioned, this component needed to cope with decimal values to handle intensity and rate, which unfortunately could not be handled directly via the sole angular knob component).
 
-### Modulation logic
+_In order to keep a simple connection logic, the communication between modulator and modulated modules is temporarily oversimplified. Future extensions might take in account a more complex service for information exchange._
+
+#### Modulation Logic
 
 The basic explanation of the modulation is the following:
 - `OscillatorNode`: generates the basic wave selected with the wave shape selector at the given rate;
@@ -148,14 +150,16 @@ The original sinusoid is unbalanced within the range [-1,1] depending on the ini
 
 _The `LFOComponent` code is furtherly detailed and self-explanatory._
 
-### Parameters Wrapping
+#### Parameters Wrapping
 
 As previously said, some parameters needed to be decimal.
 In order to deal with this issue, the typescript `AudioParameter` module has been provided.
 
 It is a basic script which exploits a couple of `AudioParameterDescriptors` to correctly set the lower level `AudioParam` value.
 
-## Sound chain
+## Connections Among Modules
+
+### Sound Chain
 
 
 
