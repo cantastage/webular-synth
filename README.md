@@ -12,7 +12,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 WebularSynth borns as an Angular web-application.
 
-It is a modular synthesizer designed for passionate musicians, exploiting the parallelism between Angular components and real modules of a synthesizer.
+It is a modular synthesizer designed for passionate musicians, exploiting the parallelism between Angular components and real modules of a synthesizer. 
+The application needs to use webAudio and webMidi API, therefore it is built to work on Chrome.
 
 ## Modules & Corresponding Components
 
