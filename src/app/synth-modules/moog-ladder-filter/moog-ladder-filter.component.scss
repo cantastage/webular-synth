@@ -13,17 +13,11 @@
     text-align: center;
     background-color: #8c8c8c;
     background-image: url('src/assets/brushed-alum-dark.png');
-    // border: 2px solid black;
     border-radius: 5px;
     position: relative;
     padding: 2px;
-    // transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-    //box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    //            0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    //            0 1px 5px 0 rgba(0, 0, 0, 0.12);
     font-family: webular;
     font-weight: 700;
-    // float: left;
 }
   
   .example-box:active {
@@ -31,20 +25,7 @@
                 0 8px 10px 1px rgba(0, 0, 0, 0.14),
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
-/*
-#titleBox{
-  position: relative;
-  width: 400px;
-  height: 25px;
-  border: 2px solid rgb(10, 10, 10);
-  border-radius: 5px;
-  background-color: #4a4a4c;
-  color: #8c8c8c;
-  font-family: Futura;
-  font-weight: 700;
-  text-align: center;
-}
-*/
+
 .component-title {
   height: 15%;
   border-radius: 5px;
@@ -61,8 +42,7 @@
   margin-left: 0px;
 }
 .slider{
-  -webkit-appearance: none;  /* Override default CSS styles */
-  // transform: rotate(270deg);
+  -webkit-appearance: none;
   width: 80%;
   height: 10px;
   background: #c4c3c1;
@@ -71,12 +51,12 @@
 }
 
 .slider::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
+  -webkit-appearance: none;
   appearance: none;
-  width: 35px; /* Set a specific slider handle width */
-  height: 35px; /* Slider handle height */
-  background: url('src/assets/slider.png') center no-repeat; /* Green background */
-  cursor: pointer; /* Cursor on hover */
+  width: 35px;
+  height: 35px;
+  background: url('src/assets/slider.png') center no-repeat;
+  cursor: pointer;
 }
 
 .parameter{
