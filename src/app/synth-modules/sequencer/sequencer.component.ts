@@ -49,7 +49,7 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
   public get sequencer(): ISequencer {
     return this._sequencer;
   }
-  
+
   constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
     private contextManager: AudioContextManagerService) { }
 
