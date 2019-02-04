@@ -35,7 +35,7 @@
   <div>
     <div class="info coarse">{{crsKnob.meterValue}}</div>
     <knob class="skin1" #crsKnob id="coarseKnob" [min]="-12" [max]="12" [value]="0" [startDegree]="-120" [endDegree]="120"
-    (change)="coarseTuneChange(crsKnob.meterValue)" [(ngModel)]="addSemitone">
+    [(ngModel)]="addSemitone">
 
     </knob>
   </div>
@@ -43,7 +43,7 @@
 <div>
     <div class="info fine">{{fnKnob.meterValue}}</div>
     <knob class="skin1" #fnKnob id="fineKnob" [min]="-10" [max]="10" [value]="0" [startDegree]="-120" [endDegree]="120"
-    (change)="fineTuneChange(fnKnob.meterValue)" [(ngModel)]="finePitch">
+    [(ngModel)]="finePitch">
 
   </knob>
 </div>

@@ -1,8 +1,8 @@
 <div class="component-block">
   <div class="component-title">LFO</div>
   <div class="component-header">
-      <mat-button-toggle-group [(ngModel)]="_lfoNode.type">
-            <mat-button-toggle [ngClass]="{'active': waveShape === _lfoNode.type}"
+      <mat-button-toggle-group [(ngModel)]="lfoNode.type">
+            <mat-button-toggle [ngClass]="{'active': waveShape === lfoNode.type}"
             *ngFor="let waveShape of waveShapes;" [value]="waveShape">
                 <img class="wave-shape" src="./assets/{{waveShape}}.png">
             </mat-button-toggle>

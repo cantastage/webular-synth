@@ -31,7 +31,25 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
   private _subdivisionCounter: number;
 
   private _sequencer: ISequencer;
-
+  public get pitchClasses(): IPitchClass[] {
+    return this._pitchClasses;
+  }
+  public get harmonizations(): IHarmonization[] {
+    return this._harmonizations;
+  }
+  public get metrics(): number[] {
+    return this._metrics;
+  }
+  public get possibleOctaves(): number[] {
+    return this._possibleOctaves;
+  }
+  public get subdivisionCounter(): number {
+    return this._subdivisionCounter;
+  }
+  public get sequencer(): ISequencer {
+    return this._sequencer;
+  }
+  
   constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
     private contextManager: AudioContextManagerService) { }
 

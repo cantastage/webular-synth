@@ -24,6 +24,9 @@ export class LfoComponent implements OnInit, IModulatorComponent {
   private _intensity: IUIAudioParameter<IAudioParameter<AudioParam>>; // readonly
   private _rate: IUIAudioParameter<IAudioParameter<AudioParam>>; // readonly
 
+  public get lfoNode(): OscillatorNode {
+    return this._lfoNode;
+  }
   public get waveShapes(): OscillatorType[] {
     return this._waveShapes;
   }

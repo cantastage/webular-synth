@@ -2,7 +2,7 @@
 <div class="component-block">
     <div class="component-title">{{this.data.name}}</div>
   <div class="component-header">
-      <select [(ngModel)]="_filterNode.type">
+      <select [(ngModel)]="filterNode.type">
           <option *ngFor="let filterType of filterTypes;" [ngValue]="filterType">{{filterType.toUpperCase()}}</option>
       </select>
   </div>

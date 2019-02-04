@@ -11,15 +11,15 @@
           <!-- <td>midiCh</td> -->
         </tr>
         <tr>
-            <td><select class="key" [(ngModel)]="_sequencer.key">
-              <option *ngFor="let pitchClass of _pitchClasses;" [ngValue]="pitchClass">{{pitchClass.pitchClassName}}</option>
+            <td><select class="key" [(ngModel)]="sequencer.key">
+              <option *ngFor="let pitchClass of pitchClasses;" [ngValue]="pitchClass">{{pitchClass.pitchClassName}}</option>
             </select></td>
-            <td><select class="harmonization" [(ngModel)]="_sequencer.harmonization">
-                <option *ngFor="let harmonization of _harmonizations;" [ngValue]="harmonization">{{harmonization.name}}</option>
+            <td><select class="harmonization" [(ngModel)]="sequencer.harmonization">
+                <option *ngFor="let harmonization of harmonizations;" [ngValue]="harmonization">{{harmonization.name}}</option>
             </select></td>
-            <td><select class="metric" [(ngModel)]="_sequencer.metric"
+            <td><select class="metric" [(ngModel)]="sequencer.metric"
               (ngModelChange)="morethanMetricChange($event)">
-                <option *ngFor="let metric of _metrics;" [ngValue]="metric">{{metric}}</option>
+                <option *ngFor="let metric of metrics;" [ngValue]="metric">{{metric}}</option>
             </select></td>
             <!-- <td><select class="midiCh">
               CAN BE ADDED
@@ -31,20 +31,20 @@
 
   <table class="table2">
     <tbody class="measure">
-      <tr *ngFor="let diatonicNote of _sequencer.scale.diatonicNotes; let notei = index;">
+      <tr *ngFor="let diatonicNote of sequencer.scale.diatonicNotes; let notei = index;">
         <!-- ENHARMONIC NAMES -->
         <td class="column-off">{{diatonicNote.pitchClassName}}</td>
-        <td class="inputcell" *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;"
-        [ngClass]="{'column-off': !(subdivisioni === _subdivisionCounter), 'column-on': (subdivisioni == _subdivisionCounter)}">
+        <td class="inputcell" *ngFor="let subdivision of sequencer.measure.subdivisions; let subdivisioni = index;"
+        [ngClass]="{'column-off': !(subdivisioni === subdivisionCounter), 'column-on': (subdivisioni == subdivisionCounter)}">
           <select [(ngModel)]="subdivision.octaves[notei]">
-              <option *ngFor="let possibleOctave of _possibleOctaves;" [ngValue]="possibleOctave">{{possibleOctave}}</option>
+              <option *ngFor="let possibleOctave of possibleOctaves;" [ngValue]="possibleOctave">{{possibleOctave}}</option>
           </select>
         </td>
       </tr>
 
       <tr>
         <td class="column-off">DURATION</td>
-        <td class="column-off" *ngFor="let subdivision of _sequencer.measure.subdivisions; let subdivisioni = index;">
+        <td class="column-off" *ngFor="let subdivision of sequencer.measure.subdivisions; let subdivisioni = index;">
             <input type="range" class="inputcell"
             min="0" max="1" step="0.25"
             [(ngModel)]="subdivision.duration" (mousedown)="$event.stopPropagation()" />
@@ -53,7 +53,7 @@
 
       <!-- <tr>
         <td>velocity</td>
-        <td *ngFor="let subdivision of _sequencer.measure.subdivisions;">
+        <td *ngFor="let subdivision of sequencer.measure.subdivisions;">
             <input class="inputcell" [(ngModel)]="subdivision.velocity"/>
         </td>
       </tr> -->

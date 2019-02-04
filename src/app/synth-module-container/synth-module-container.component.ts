@@ -17,19 +17,28 @@ import { Pair } from '../model/pair';
  * This component contains all synth modules
  */
 export class SynthModuleContainerComponent implements OnInit {
-  private soundChain: Array<ModuleItem> = new Array<ModuleItem>(0);
-  private unconnectedModules: Array<ModuleItem> = new Array<ModuleItem>(0);
-  private modules: ModuleItem[];
+  private _soundChain: Array<ModuleItem> = new Array<ModuleItem>(0);
+  private _unconnectedModules: Array<ModuleItem> = new Array<ModuleItem>(0);
+  private _modules: ModuleItem[];
 
+  public get modules(): ModuleItem[] {
+    return this._modules;
+  }
+  public get soundChain(): Array<ModuleItem> {
+    return this._soundChain;
+  }
+  public get unconnectedModules(): Array<ModuleItem> {
+    return this._unconnectedModules;
+  }
   constructor(
     private contextManager: AudioContextManagerService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private moduleManager: ModuleManagerService) { }
 
   ngOnInit() {
-    this.modules = this.moduleManager.getModules();
-    this.soundChain = new Array();
-    this.unconnectedModules = new Array();
+    this._modules = this.moduleManager.getModules();
+    this._soundChain = new Array();
+    this._unconnectedModules = new Array();
   }
 
   /**
@@ -81,7 +90,7 @@ export class SynthModuleContainerComponent implements OnInit {
   // Adds a module into the array of unconnectedModules
   loadComponent(index: number): void {
     // console.log('unconnected prior to creation: ', this.unconnectedModules);
-    this.modules = this.moduleManager.getModules(); // refresh modules
+    this._modules = this.moduleManager.getModules(); // refresh modules
     const adItem = this.modules[index];
     this.unconnectedModules.push(adItem);
   }

@@ -25,17 +25,37 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   private active_voices: any;
   private frequency: any;
   private waveForm: any;
-  private maxVelocity: number;
-  private addSemitone: number;
-  private finePitch: number;
-  private active: number;
+  private _maxVelocity: number;
+  private _addSemitone: number;
+  private _finePitch: number;
+  private _active: number;
 
   private message: any;
   private subscription: Subscription;
 
   // private activeIndex: number;
   // private waveforms: Array<string> = ['SIN', 'SQR', 'SAW', 'TRI'];
-
+  public get active(): number {
+    return this._active;
+  }
+  public get maxVelocity(): number {
+    return this._maxVelocity;
+  }
+  public set maxVelocity(value: number) {
+    this._maxVelocity = value;
+  }
+  public get addSemitone(): number {
+    return this._addSemitone;
+  }
+  public set addSemitone(value: number) {
+    this._addSemitone = value;
+  }
+  public get finePitch(): number {
+    return this._finePitch;
+  }
+  public set finePitch(value: number) {
+    this._finePitch = value;
+  }
   constructor(
     private contextManager: AudioContextManagerService,
     private messageService: MessageService,
@@ -90,10 +110,10 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
   public selectWaveform(data) {
     switch (data) {
-      case (0): this.waveForm = 'sine'; this.active = 0; break;
-      case (1): this.waveForm = 'square'; this.active = 1; break;
-      case (2): this.waveForm = 'sawtooth'; this.active = 2; break;
-      case (3): this.waveForm = 'triangle'; this.active = 3; break;
+      case (0): this.waveForm = 'sine'; this._active = 0; break;
+      case (1): this.waveForm = 'square'; this._active = 1; break;
+      case (2): this.waveForm = 'sawtooth'; this._active = 2; break;
+      case (3): this.waveForm = 'triangle'; this._active = 3; break;
     }
   }
 
@@ -126,18 +146,9 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   }
 
   public onVolumeChange(value) {
-    this.maxVelocity = value;
+    // this._maxVelocity = value;
     this.g.gain.value = this.maxVelocity / 127;
   }
-
-  public fineTuneChange(value) {
-    this.finePitch = value;
-  }
-
-  public coarseTuneChange(value) {
-    this.addSemitone = value;
-  }
-
 
   public savePatch(): any {
     /*
@@ -178,10 +189,10 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   }
 
   public loadPatch(): void {
-    this.active = this.data.state.active;
+    this._active = this.data.state.active;
     this.waveForm = this.data.state.waveForm;
-    this.maxVelocity = this.data.state.maxVelocity;
-    this.addSemitone = this.data.state.addSemitone;
-    this.finePitch = this.data.state.finePitch;
+    this._maxVelocity = this.data.state.maxVelocity;
+    this._addSemitone = this.data.state.addSemitone;
+    this._finePitch = this.data.state.finePitch;
   }
 }

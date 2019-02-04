@@ -26,6 +26,10 @@ export class FilterComponent implements OnInit, IModulableComponent {
   private _uiModulableParameters: IUIAudioParameter<IModulableAudioParameter>[];
   selectedModulableParameter: IModulableAudioParameter;
 
+  public get filterNode(): BiquadFilterNode {
+    return this._filterNode;
+  }
+
   public get filterTypes(): string[] {
     return this._filterTypes;
   }

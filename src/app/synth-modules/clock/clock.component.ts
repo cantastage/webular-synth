@@ -10,8 +10,10 @@ import { ClockProvider } from 'src/app/model/modules/clock/ClockProvider';
 })
 export class ClockComponent implements OnInit, IObserver<number> {
   private _on: boolean;
-
-  public constructor(private clockManager: ClockManagerService) { }
+  public get on(): boolean {
+    return this._on;
+  }
+  public constructor(public clockManager: ClockManagerService) { }
 
   public ngOnInit() {
     this._on = false;
