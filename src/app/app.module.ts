@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { SynthModuleContainerComponent } from './synth-module-container/synth-module-container.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MoogLadderFilterComponent } from './synth-modules/moog-ladder-filter/moog-ladder-filter.component';
-import { AddModuleDirective } from './directives/add-module.directive';
 import { KnobComponent } from './synth-modules/sub-components/knob/knob.component';
 import { FormsModule } from '@angular/forms';
 import { SynthModuleWrapperComponent } from './synth-module-wrapper/synth-module-wrapper.component';
@@ -26,7 +25,6 @@ import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
     AppComponent,
     SynthModuleContainerComponent,
     MoogLadderFilterComponent,
-    AddModuleDirective,
     KnobComponent,
     SynthModuleWrapperComponent,
     FilterComponent,
@@ -42,7 +40,6 @@ import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    // AudioContextModule.forRoot('balanced'),
     DragDropModule,
     FormsModule,
     KnobModule,
