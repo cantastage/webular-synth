@@ -4,12 +4,7 @@
   padding: 0;
   height: 100%;
   position: fixed;  //necessary to fill fullscreen
-  // background-color: #363030;
   background-color: rgb(53,58,64);
-  // background: url('src/assets/img/textures/dark-wood.png');
-
-  // overflow-x: hidden;
-  // overflow-y: auto;
   font-family: webular;
   overflow: hidden;
 }
@@ -26,14 +21,10 @@
 
 .module-list {
   border-radius: 10px;
-  
-  // background-color: #4a4a4c;
   background-color: rgb(215, 213, 200);
-  // background-image: url('src/assets/brushed-alum-dark.png');
   background-image: url('src/assets/img/textures/dark-wood.png');
   font-family: webular;
   background-repeat: repeat;
-  // border: solid 20px #4a4a4c;
 }
 
 .rack-list {
@@ -44,7 +35,6 @@
 }
 
 .new-module-list {
-  // border: solid 5px red;
   height: 90%;
   overflow-x: auto;
   overflow-y: auto;
@@ -55,8 +45,6 @@
   margin-bottom: 0%;
 
   position: relative;
-  // width: 400px;
-  // height: 30px;
   border: 1px solid rgb(10, 10, 10);
   border-radius: 5px;
   background-color: #4a4a4c;
@@ -72,7 +60,6 @@
   margin-right: 5px;
   background-color: #c9a477;
   font-weight: bold;
-  // padding: 2px;
   color: rgb(0, 0, 0);
   font-size: 110%;
 }
@@ -105,7 +92,7 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-// Scrollbar css
+// Scrollbar style
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

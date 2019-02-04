@@ -47,11 +47,9 @@ export class SynthModuleContainerComponent implements OnInit {
    *
    */
   drop(event: CdkDragDrop<Array<ModuleItem>>): void {
-    // caso in cui mi trovo a riordinare gli elementi nello stesso container
     if (event.previousContainer === event.container) {
 
       if (event.previousIndex !== event.currentIndex) {
-        // console.log('Reordering modules');
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         // move the correspondant SynthModule in context manager service ONLY IF IN SOUND CHAIN
         if (event.container.id === 'soundChain') {
@@ -62,7 +60,6 @@ export class SynthModuleContainerComponent implements OnInit {
         return;
       }
     } else {
-      // TODO can be optimized without instantiating a new pair everytim
       // save the status only when going from unconnected to new modules, else the module will be destroyed.
       if (event.previousContainer.id === 'unconnectedModules') {
         this.contextManager.subject.next(new Pair<string, number>(event.previousContainer.id, event.previousIndex));
@@ -72,24 +69,21 @@ export class SynthModuleContainerComponent implements OnInit {
           event.currentIndex);
         return;
       } else {
-        // trasferisco da soundchain ad unconnected e distruggo il componente
+        // transfer from soundchain to unconnected, then destroy the component.
         this.contextManager.deleteSynthModule(event.previousIndex);
         transferArrayItem(event.previousContainer.data,
           event.container.data,
           event.previousIndex,
           event.currentIndex);
-          // TODO check if it works as expected
           if (event.container.id === 'unconnectedModules') {
             this.unconnectedModules.splice(event.currentIndex, 1);
           }
-        // event.container.data.splice(event.currentIndex, 1);
       }
     }
   }
 
   // Adds a module into the array of unconnectedModules
   loadComponent(index: number): void {
-    // console.log('unconnected prior to creation: ', this.unconnectedModules);
     this._modules = this.moduleManager.getModules(); // refresh modules
     const adItem = this.modules[index];
     this.unconnectedModules.push(adItem);
