@@ -130,12 +130,11 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
     return null;
   }
 
-  connectSynthModule(inputModule: SynthModule) {
-
+  connectSynthModule(inputModule: SynthModule): void {
+    return;
   }
 
   disconnectSynthModule(): void {
-
+    return;
   }
-
 }

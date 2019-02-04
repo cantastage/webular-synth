@@ -18,6 +18,7 @@ export class Subdivision {
     }
     public set octaves(octaves: number[]) {
         // check: all integer numbers in the valid range
+        // ...the UI passes only coherent values...
         this._octaves = octaves;
     }
     public get duration(): number {

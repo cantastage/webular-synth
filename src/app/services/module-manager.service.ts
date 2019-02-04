@@ -19,7 +19,7 @@ export class ModuleManagerService {
 
   constructor() { }
 
-  // a fly-weight factory could be used
+  // a fly-weight factory could be used to generate the default modules
   private get sequencerDefaultState(): any {
     return new Sequencer(
       PitchClassesProvider.retrieveInstance('C'),

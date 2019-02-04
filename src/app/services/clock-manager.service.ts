@@ -73,7 +73,7 @@ export class ClockManagerService extends Observable<number> implements IClock {
     this.stop(); this.start();
   }
 
-  // override
+  // override annotation
   public attach(observer: IObserver<number>): void {
     super.attach(observer);
     this.restart();
