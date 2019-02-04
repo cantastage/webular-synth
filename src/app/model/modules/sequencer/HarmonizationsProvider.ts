@@ -22,7 +22,7 @@ class Harmonization implements IHarmonization {
             pattern.forEach(element => {
                 if (!Number.isInteger(Number(element))) {
                     validPattern = false;
-                    return false; // DOES THIS WORK AS BREAK?!?!
+                    return false;
                 }
             });
             if (validPattern) {

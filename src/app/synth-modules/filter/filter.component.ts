@@ -17,8 +17,6 @@ export class FilterComponent implements OnInit, IModulableComponent {
   @Input() isInSoundChain: boolean;
   @Input() position: number;
 
-// private _testnode: OscillatorNode;
-
   private _filterNode: BiquadFilterNode;
   private _filterTypes: BiquadFilterType[]; // readonly
 
@@ -74,13 +72,8 @@ export class FilterComponent implements OnInit, IModulableComponent {
 
   public ngOnInit() {
     this._filterNode = this.contextManager.audioContext.createBiquadFilter();
-    // how to extract a string[] from BiquadFilterType?!?!?! O.O
     this._filterTypes = ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'];
     this.loadPatch();
-
-// this._testnode = this.contextManager.audioContext.createOscillator();
-// this._testnode.start();
-// this._testnode.connect(this.getInput());
 
     if (this.isInSoundChain) {
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
@@ -102,11 +95,11 @@ export class FilterComponent implements OnInit, IModulableComponent {
     return this._filterNode;
   }
 
-  public connectSynthModule(inputModule: SynthModule) {
+  public connectSynthModule(inputModule: SynthModule): void {
     inputModule.getOutput().connect(this.getInput());
   }
 
-  public disconnectSynthModule() {
+  public disconnectSynthModule(): void {
     this.getOutput().disconnect();
   }
 }

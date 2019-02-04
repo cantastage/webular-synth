@@ -35,7 +35,7 @@ class PitchClass implements IPitchClass {
         return this._referralFrequency;
     }
     private updateCache(): void {
-        // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // maybe no need to convert to string...
         this._enharmonicName = String(EnharmonicNames[this.pitchClassValue]) !== 'undefined' ?
             this.pitchClassValue : EnharmonicNames.nd;
         this._referralFrequency = A4 * (SD ** (this.pitchClassValue - 9));
@@ -51,7 +51,6 @@ export class PitchClassesProvider { // fly-weight pattern
     private static initialize() {
         if (!this._pitchClasses) {
             this._pitchClasses = new Array<IPitchClass>();
-            // CHECK BELOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             Object.keys(NoteNames).forEach(element => {
                 if (isNaN(parseInt(element, 10))) { // only enum string identifiers
                     this._pitchClasses.push(new PitchClass(NoteNames[element]));

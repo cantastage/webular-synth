@@ -19,7 +19,6 @@ export class LfoComponent implements OnInit, IModulatorComponent {
   private _lfoNode: OscillatorNode;
   private _lfoProcessor: ScriptProcessorNode;
   private _processorAmplifier: GainNode;
-  // how to extract a string[] from OscillatorType?!?!?! O.O
   private _waveShapes: OscillatorType[]; // readonly
   private _intensity: IUIAudioParameter<IAudioParameter<AudioParam>>; // readonly
   private _rate: IUIAudioParameter<IAudioParameter<AudioParam>>; // readonly
@@ -41,7 +40,7 @@ export class LfoComponent implements OnInit, IModulatorComponent {
     return this._modulatedParameter;
   }
   @Input()
-  // CHECK: think of all the combo modulatedParameter x mp
+  // check improvement: think of all the combo modulatedParameter x mp
   public set modulatedParameter(mp: IModulableAudioParameter) {
     if (this.modulatedParameter !== undefined && this.modulatedParameter.endModulationConfig()) {
       this._processorAmplifier.disconnect(this.modulatedParameter.audioParam);

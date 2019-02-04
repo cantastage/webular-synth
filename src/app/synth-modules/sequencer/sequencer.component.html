@@ -22,7 +22,7 @@
                 <option *ngFor="let metric of metrics;" [ngValue]="metric">{{metric}}</option>
             </select></td>
             <!-- <td><select class="midiCh">
-              CAN BE ADDED
+              ...can be added...
             </select></td> -->
         </tr>
       </tbody>
@@ -32,7 +32,7 @@
   <table class="table2">
     <tbody class="measure">
       <tr *ngFor="let diatonicNote of sequencer.scale.diatonicNotes; let notei = index;">
-        <!-- ENHARMONIC NAMES CAN BE FURTHERLY IMPROVED -->
+        <!-- enharmonic names can be furtherly improved -->
         <td class="column-off">{{sequencer.scale.useEnharmonicNames[notei] ?
           diatonicNote.enharmonicName : diatonicNote.pitchClassName}}</td>
         <td class="inputcell column-off" *ngFor="let subdivision of sequencer.measure.subdivisions; let subdivisioni = index;"

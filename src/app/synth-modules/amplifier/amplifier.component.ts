@@ -20,8 +20,6 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
   private _gainNode: GainNode;
   private _panNode: StereoPannerNode;
 
-// private _testnode: OscillatorNode;
-
   private _modulableParameters: IModulableAudioParameter[];
   private _uiModulableParameters: IUIAudioParameter<IModulableAudioParameter>[];
   selectedModulableParameter: IModulableAudioParameter;
@@ -65,12 +63,7 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
   public ngOnInit() {
     this._gainNode = this.contextManager.audioContext.createGain();
     this._panNode = this.contextManager.audioContext.createStereoPanner();
-    // this.getInput().connect(this.getOutput());
     this.loadPatch();
-
-// this._testnode = this.contextManager.audioContext.createOscillator();
-// this._testnode.start();
-// this._testnode.connect(this.getInput());
 
     if (this.isInSoundChain) {
       this._panNode.connect(this.contextManager.audioContext.destination);
@@ -92,14 +85,12 @@ export class AmplifierComponent implements OnInit, IModulableComponent {
     return this._panNode;
   }
 
-  public connectSynthModule(inputModule: SynthModule) {
+  public connectSynthModule(inputModule: SynthModule): void {
     inputModule.getOutput().connect(this.getInput());
     this.getInput().connect(this.getOutput());
-    // this._panNode.connect(this.contextManager.audioContext.destination);
   }
 
-  public disconnectSynthModule() {
-    // this.getInput().disconnect();
-    // this.getOutput().disconnect();
+  public disconnectSynthModule(): void {
+    return;
   }
 }
