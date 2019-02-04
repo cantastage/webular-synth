@@ -5,7 +5,6 @@ export class Voice {
     private osc: OscillatorNode;
     private oscillators: Array<any>;
     private waveForm: any;
-    private fineTune: any;
     private singleNote: any;
     private envelope: any;
     private noteVelocity: number;
@@ -40,7 +39,6 @@ export class Voice {
         this.oscillators.push(this.singleNote);
     }
 
-    // Optimized code because for is faster than foreach
     public stopNote() {
         for (let i = 0; i < this.oscillators.length; i++) {
             this.oscillators[i].gain.gain.cancelScheduledValues(this.ac.currentTime);

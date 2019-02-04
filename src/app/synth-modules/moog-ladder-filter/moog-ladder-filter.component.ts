@@ -11,7 +11,6 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
   @Input() data: any;
   @Input() isInSoundChain: boolean;
   @Input() position: number;
-  // private _oscTest: OscillatorNode;
   private _scriptNode: ScriptProcessorNode;
   public cutoff_freq: number;
   public Q: number;
@@ -24,16 +23,12 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
   }
 
   ngOnInit() {
-    // this._oscTest = this.contextManager.audioContext.createOscillator();
-    // this._oscTest.type = 'square';
-
     this._scriptNode = this.contextManager.audioContext.createScriptProcessor(1024, 1, 1);
     this._scriptNode.onaudioprocess = ($event) => {
       this.process($event);
     };
     this.loadPatch();
 
-    // console.log('Provided data in input: ', this.data);
     if (this.isInSoundChain) {
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
     }
@@ -42,7 +37,6 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
   ngOnChanges(changes: SimpleChanges): void {
     // Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
     // Add '${implements OnChanges}' to the class.
-    console.log('Changes: ', changes);
   }
 
   public onCutoffChange(arg: any): void {
@@ -89,20 +83,6 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
     }
   }
 
-  // play(): void {
-  //   this._oscTest.start();
-  //   this._oscTest.connect(this._scriptNode);
-  // }
-
-  // stop(): void {
-  //   this._oscTest.stop();
-  //   this._oscTest.disconnect(this._scriptNode);
-  // }
-
-  // deleteNode(): void {
-  //   this._oscTest.disconnect(this._scriptNode);
-  // }
-
   connectScriptNode(): void {
     this._scriptNode.connect(this.contextManager.audioContext.destination);
   }
@@ -112,8 +92,6 @@ export class MoogLadderFilterComponent implements OnInit, SynthModule, OnDestroy
   }
 
   ngOnDestroy(): void {
-    console.log('Ladder filter is being destroyed');
-    // throw new Error('Method not implemented.');
   }
 
   public getOutput(): AudioNode {

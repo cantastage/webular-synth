@@ -33,8 +33,6 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   private message: any;
   private subscription: Subscription;
 
-  // private activeIndex: number;
-  // private waveforms: Array<string> = ['SIN', 'SQR', 'SAW', 'TRI'];
   public get active(): number {
     return this._active;
   }
@@ -63,13 +61,9 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   }
 
   update(arg: [number, boolean, number, number]): void {
-    // throw new Error('Method not implemented.');
-    // console.log(arg);
     if (arg[1] === true) {
-      console.log(arg);
       this.noteOn(arg[0], arg[2], arg[3]);
     } else {
-      console.log(arg);
       this.noteOff(arg[0], arg[2]);
     }
   }
@@ -77,7 +71,6 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   // la onInit leggerà tutti i valori da synthModuleData.data
   ngOnInit() {
     this.subscription = this.messageService.getMessage().subscribe(message => { this.message = message; });
-    // console.log(this.isInSoundChain);
     if (this.message === undefined) {
       this.message = { message: [0, 0, 1, 0] };
     }
@@ -86,12 +79,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     this.c = this.contextManager.audioContext;
     this.g = this.c.createGain();
     this.g.gain.setValueAtTime(1, this.c.currentTime);
-    // this.g.connect(this.c.destination);
-    /*
-    if (this.data.waveForm !== undefined) {
-      this.waveForm = this.data.state.waveForm;
-    }
-    */
+
     if (this.isInSoundChain) {
       this.midiManager.attach(this);
     }
@@ -128,7 +116,6 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     } else {
       this.active_voices[midiNote] = note;
     }
-    console.log(this.active_voices);
     note.playNote(this.frequency);
   }
 
@@ -140,28 +127,13 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
       this.active_voices[midiNote].stopNote();
       delete this.active_voices[midiNote];
     }
-
-    console.log(this.active_voices);
-    // console.log(this.active_voices);
   }
 
   public onVolumeChange(value) {
-    // this._maxVelocity = value;
     this.g.gain.value = this.maxVelocity / 127;
   }
 
   public savePatch(): any {
-    /*
-    const patch = {
-      name: this.data.name,
-      waveForm: this.waveForm,
-      maxVelocity: this.maxVelocity,
-      addSemitone: this.addSemitone,
-      finePitch: this.finePitch
-    };
-    */
-    // console.log(this.waveForm);
-    // this.data.name = this.data.name;
     this.data.state.waveForm = this.waveForm;
     this.data.state.maxVelocity = this.maxVelocity;
     this.data.state.addSemitone = this.addSemitone;
