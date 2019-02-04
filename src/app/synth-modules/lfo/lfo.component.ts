@@ -63,8 +63,8 @@ export class LfoComponent implements OnInit, IModulatorComponent {
 
       const posAmp: number = (max - current) / max;
       const negAmp: number = (current - min) / max;
-      const shift = this.modulatedParameter.name === 'level' ? 0 : // modulation by sum :'(
-        current / (max * I); // modulation by product
+      const shift = this.modulatedParameter.name === 'level' ? 0 :
+        current / (max * I);
       
       let tmpI: number, tmpO: number;
       for (let chi = 0; chi < ape.inputBuffer.numberOfChannels; chi++) {

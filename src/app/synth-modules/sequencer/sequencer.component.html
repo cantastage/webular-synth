@@ -32,10 +32,11 @@
   <table class="table2">
     <tbody class="measure">
       <tr *ngFor="let diatonicNote of sequencer.scale.diatonicNotes; let notei = index;">
-        <!-- ENHARMONIC NAMES -->
-        <td class="column-off">{{diatonicNote.pitchClassName}}</td>
-        <td class="inputcell" *ngFor="let subdivision of sequencer.measure.subdivisions; let subdivisioni = index;"
-        [ngClass]="{'column-off': !(subdivisioni === subdivisionCounter), 'column-on': (subdivisioni == subdivisionCounter)}">
+        <!-- ENHARMONIC NAMES CAN BE FURTHERLY IMPROVED -->
+        <td class="column-off">{{sequencer.scale.useEnharmonicNames[notei] ?
+          diatonicNote.enharmonicName : diatonicNote.pitchClassName}}</td>
+        <td class="inputcell column-off" *ngFor="let subdivision of sequencer.measure.subdivisions; let subdivisioni = index;"
+        [ngClass]="{'column-on': (subdivisioni == subdivisionCounter)}">
           <select [(ngModel)]="subdivision.octaves[notei]">
               <option *ngFor="let possibleOctave of possibleOctaves;" [ngValue]="possibleOctave">{{possibleOctave}}</option>
           </select>

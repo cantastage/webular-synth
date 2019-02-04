@@ -108,32 +108,54 @@ The UI of the `FilterComponent` allows the state configuration:
 - Characterizing frequency knob;
 - Resonance/quality factor knob.
 
-~~Both the frequency and the resonance can be modulated via `LFOComponent`.~~
+Basically this filter wraps a `BiquadFilterNode` of the web audio api and allows the configuration of the parameters.
+
+The configuration is done through `AudioParam` wrappers which handle an optional linear transformation between UI value and low level value (see `LFOComponent` for further details).
+
+Both the frequency and the resonance can be modulated via `LFOComponent`.
 
 ### Amplifier
 
 The UI of the `AmplifierComponent` allows the state configuration:
-- Final level knob;
+- Level knob;
 - Pan knob;
 
-~~Both the level and the pan can be modulated via `LFOComponent`.~~
+Basically the amplifier wraps a `GainNode` followed by a `StereoPannerNode` of the web audio api and allows the configuration of the parameters.
+
+Both the level and the pan can be modulated via `LFOComponent`.
 
 ### LFO Modulator
 
-~~The UI of the `LFOComponent` allows the state configuration:
-- FM wave shape selector: allows to choose among a variety of wave shapes;
-- FM intensity knob: variation around the modulated parameter value;
-- FM rate knob: sets the velocity of the variation above.~~
+The UI of the `LFOComponent` allows the state configuration:
+- Modulation wave shape selector: allows to choose among a variety of wave shapes;
+- Modulation intensity knob: variation around the modulated parameter value (expressed in percentage);
+- Modulation rate knob: sets the velocity of the variation above.
 
-### ~~Modulation logic~~
+Basically the lfo wraps three successive nodes of the api:
+- `OscillatorNode`;
+- `ScriptProcessorNode`;
+- `GainNode`.
 
+As briefly mentioned, this component needed to cope with decimal values to handle intensity and rate, which could not be handled directly via the sole angular knob component, unfortunately).
 
+### Modulation logic
+
+The basic explanation of the modulation is the following:
+- `OscillatorNode`: generates the basic wave selected with the wave shape selector at the given rate;
+- `ScriptProcessorNode`: exploits the audio parameter value and variation range in order to alter the basic incoming wave.
+The original sinusoid is unbalanced within the range [-1,1] depending on the initial value of the modulated parameter and on the intensity percentage;
+- `GainNode`: finally amplifies the unbalanced wave, leading it back to the default parameter variation range.
+
+_The `LFOComponent` code is furtherly detailed and self-explanatory._
+
+### Parameters Wrapping
+
+As previously said, some parameters needed to be decimal.
+In order to deal with this issue, the typescript `AudioParameter` module has been provided.
+
+It is a basic script which exploits a couple of `AudioParameterDescriptors` to correctly set the lower level `AudioParam` value.
 
 ## Sound chain
-
-
-
-### ~~Parameters Wrapping?~~
 
 
 
