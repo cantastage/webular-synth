@@ -62,7 +62,7 @@ export class LfoComponent implements OnInit, IModulatorComponent {
 
       const posAmp: number = (max - current) / max;
       const negAmp: number = (current - min) / max;
-      const shift = this.modulatedParameter.name === 'level' ? 0 :
+      const shift = this.modulatedParameter.name === 'LEVEL' ? 0 :
         current / (max * I);
       
       let tmpI: number, tmpO: number;
