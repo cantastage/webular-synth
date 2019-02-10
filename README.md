@@ -17,7 +17,7 @@ The application runs best on Chrome browser, because of the use of webAudio and 
 
 ### Demo
 
-The brief demonstrative video is available @ [this link] (https://www.dropbox.com/s/5f6joppful1dlr9/Webular%20Synthesizer.mp4?dl=0).
+The brief demonstrative video is available @ [this link](https://www.dropbox.com/s/5f6joppful1dlr9/Webular%20Synthesizer.mp4?dl=0).
 
 ### Sound Chain management
 
