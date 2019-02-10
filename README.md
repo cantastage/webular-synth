@@ -15,6 +15,10 @@ WebularSynth is a web-application built on Angular Framework.
 It is a modular synthesizer designed for passionate musicians. It uses the Angular component-based logic to map the real modules of a synthesizer into reusable and expandable UI components.  
 The application runs best on Chrome browser, because of the use of webAudio and webMIDI API.
 
+### Demo
+
+The brief demonstrative video is available @ https://www.dropbox.com/s/5f6joppful1dlr9/Webular%20Synthesizer.mp4?dl=0
+
 ### Sound Chain management
 
 The sound chain is built upon synth modules. Adding a module to the "Synth modules" list automatically creates the needed connections in the audio context. Note that you must provide at least one source and one amplifier to output audio from your speakers. The amplifier is the only module connected to the audio context destination.
