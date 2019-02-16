@@ -1,43 +1,50 @@
-import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
-import { } from 'src/app/synth-modules/oscillator/oscillator.component'
-
 export class Voice {
-    //build audio context
-    public gain: GainNode;
+    // build audio context
+    private voiceGain: GainNode;
     public ac: AudioContext;
-    public osc: OscillatorNode;
-    public oscillators: any;
+    private osc: OscillatorNode;
+    private oscillators: Array<any>;
     private waveForm: any;
-    private fineTune: any;
+    private singleNote: any;
+    private envelope: any;
+    private noteVelocity: number;
 
-    constructor(c, g, waveform, finePitch){
+    constructor(c: AudioContext, g: GainNode, velocity: number, waveform: string, envelopeValues: any) {
         const osc = c.createOscillator();
+        const voiceGain = c.createGain();
         this.waveForm = waveform;
-        this.fineTune = finePitch;
-        this.gain = g;
-        this.oscillators = [];
+        this.envelope = envelopeValues;
+        this.oscillators = new Array<any>(0);
         this.ac = c;
         this.osc = osc;
-        osc.detune.setValueAtTime(this.fineTune, c.currentTime);
-        osc.connect(g);
-        g.connect(c.destination);
-     }
-    
+        this.voiceGain = voiceGain;
+        this.noteVelocity = Math.round((velocity / 127) * 100) / 100;
+        osc.connect(this.voiceGain);
+        voiceGain.connect(g);
+    }
 
-
-    public playNote(note: number){
+    public playNote(note: number) {
+        this.singleNote = {
+            oscillator: this.osc,
+            gain: this.voiceGain
+        };
         this.osc.frequency.value = note;
         this.osc.type = this.waveForm;
         this.osc.start();
-        //this.g.gain.value = 0.5;
-        this.oscillators.push(this.osc);
+        this.singleNote.gain.gain.setValueAtTime(0, this.ac.currentTime);
+        this.singleNote.gain.gain.linearRampToValueAtTime(this.noteVelocity, this.ac.currentTime + this.envelope[0]);
+        this.singleNote.gain.gain.exponentialRampToValueAtTime(
+            this.envelope[2] * this.noteVelocity,
+            this.ac.currentTime + this.envelope[0] + this.envelope[1]);
+        this.oscillators.push(this.singleNote);
     }
 
-    public stopNote(){
-        this.oscillators.forEach(function(oscillator, _){
-            oscillator.stop();
-        });
+    public stopNote() {
+        for (let i = 0; i < this.oscillators.length; i++) {
+            this.oscillators[i].gain.gain.cancelScheduledValues(this.ac.currentTime);
+            this.oscillators[i].gain.gain.setValueAtTime(this.oscillators[i].gain.gain.value, this.ac.currentTime);
+            this.oscillators[i].gain.gain.exponentialRampToValueAtTime(0.001, this.ac.currentTime + this.envelope[3]);
+            this.oscillators[i].oscillator.stop(this.ac.currentTime + this.envelope[3] + 0.1);
+        }
     }
-    
-
 }

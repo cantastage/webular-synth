@@ -1,26 +1,42 @@
-.container{
-    position: absolute;
-    width: 400px;
-    height: 280px;
+.adsrBlock{
+    display: block;
+    position: relative;
+    width: 380;
+    height: 250px;
     border: 1px solid black;
     border-radius: 5px;
-    background: #f2ede0;
+    background-color: #8c8c8c;
+    background-image: url('src/assets/brushed-alum-dark.png');
+    padding: 2px;
+  }
+
+  #component-name{
+    position: relative;
+    height: 30px;
+    border: 1px solid rgb(10, 10, 10);
+    border-radius: 5px;
+    background-color: #4a4a4c;
+    color: #8c8c8c;
+    font-family: webular;
+    font-weight: 700;
+    text-align: center;
+    padding: 2px;
+  }
+
+  #textElement{
+    position: relative;
+    text-align: center;
+    font-family: webular;
+    font-weight: 700;
+    margin-top: 10px;
   }
 
   #envelope {
-    position: absolute;
+    position: relative;
     display: block;
-    margin-left: 10%;
-    top: 30%;
+    margin-left: 27px;
+    top: 10px;
     border: 1px solid black;
     background: #282828;
 
-  }
-  button{
-      position: absolute;
-      display: inline-block;
-      transform: translateX(-100%);
-      transform: translateY(-100%);
-      left: 90%;
-      top:100%;
   }

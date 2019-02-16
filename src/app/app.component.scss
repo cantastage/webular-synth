@@ -1,0 +1,83 @@
+.fill {
+    min-height: 100%;
+}
+
+knob {
+    display: block;
+    background-size:contain;
+    height: 50px;
+    width: 50px;
+    margin: auto;
+}
+
+knob.skin1 {
+    background-size: contain;    
+}
+knob.skin1 /deep/ .knob {
+    background: url('src/assets/knob.png');
+    background-size: contain;    
+}
+
+//
+.component-block {
+    width: 250px;
+    height: 200px;
+    display: block;
+    border: 1px solid rgb(10, 10, 10);
+    border-radius: 5px;
+    background-color: #8c8c8c;
+    background-image: url('src/assets/brushed-alum-dark.png');
+    font-family: webular;
+    font-weight: 700;
+    text-align: center;
+    padding: 2px;
+}
+
+.alignment-container{
+    display: inline-flex;
+    flex-direction: column;
+    // float: left;
+}
+.component-block .component-title {
+    height: 15%;
+    background-color: #4a4a4c;
+    color: #8c8c8c;
+    border: 1px solid rgb(10, 10, 10);
+    border-radius: 5px;
+    padding: 2px;
+}
+.component-block .component-header,
+.component-block .component-footer {
+    height: 15%;
+    padding: 2px;
+}
+
+.component-block .component-body {
+    height: 55%;
+    padding: 2px;
+    font-size: 88%;
+}
+
+.component-block .component-body .component-body-sub {
+    display: inline-flex;
+    flex-direction: column;
+    width: 40%;
+    height: 100%;
+    padding: 2px;
+}
+
+.component-block .component-body .component-body-sub .component-body-sub-info {
+    width: 100%;
+    height: 50%;
+}
+.component-block .component-body .component-body-sub .component-body-sub-info .component-body-sub-info-name {
+    height: 50%;
+}
+.component-block .component-body .component-body-sub .component-body-sub-info .component-body-sub-info-value {
+    height: 50%;
+}
+
+.component-block .component-body .component-body-sub .component-body-sub-selector {
+    width: 100%;
+    height: 50%;
+}

@@ -1,16 +1,24 @@
-<!--<app-synth-module-container>-->
-<input type="range" id="cutoff" (mousedown)="$event.stopPropagation()" (input)="onCutoffChange($event)" min="1000" max="22050" step="1" />
-<div>
-  CUTOFF FREQUENCY
+<div class="container-block">
+<div class="container example-box">
+  <div class="component-title">
+    MOOG LADDER FILTER
+  </div>
+  <div class="slider_container">
+    <input type="range" class="slider" id="cutoff" (mousedown)="$event.stopPropagation()" (input)="onCutoffChange($event)" min="1000"
+    max="22050" step="1" [(ngModel)]="cutoff_freq"/>
+    <div class="parameter">
+      CUTOFF
+    </div>
+  </div>
+  
+  <div class="slider_container">
+  <input type="range" class="slider" id="resonance" (mousedown)="$event.stopPropagation()" (input)="onResonanceChange($event)" min="0.2"
+    max="1" step="0.01" [(ngModel)]="Q"/>
+  <div class="parameter">
+    RESONANCE
+  </div>
 </div>
 
-<input type="range" id="resonance" (mousedown)="$event.stopPropagation()" (input)="onResonanceChange($event)" min="0.1" max="10" step="0.1" />
-<div>
-  RESONANCE
 </div>
 
-<button type="button" (click)="play()">Play</button>
-<button type="button" (click)="stop()">Stop</button>
-
-<!--
-</app-synth-module-container>-->
+</div>

@@ -1,28 +1,54 @@
-.container{
+.container-block{
+  // float: left;
+  display: inline-flex;
+  flex-direction: column;
+  // zoom: 0.5;
+}
+.oscBlock{
+    display: block;
     position: relative;
-    width: 400px;
-    height: 280px;
-    border: 1px solid black;
+    width: 380px;
+    height: 250px;
+    border: 1px solid rgb(10, 10, 10);
     border-radius: 5px;
-  }
+    background-color: #8c8c8c;
+    background-image: url('src/assets/brushed-alum-dark.png');
+    font-family: webular;
+    font-weight: 700;
+    padding: 2px;
+    // float: left;
+}
+.component-name{
+  position: relative;
+  // width: 400px;
+  height: 30px;
+  border: 1px solid rgb(10, 10, 10);
+  border-radius: 5px;
+  background-color: #4a4a4c;
+  color: #8c8c8c;
+  font-family: webular;
+  font-weight: 700;
+  text-align: center;
+  padding: 2px;
+}
+
+#label-fine{
+  width: 50px;
+  text-align: center;
+  transform: translateX(-50%);
+  position: absolute;
+  left: 18%;
+  top: 218px;
+}
   
-  #label-fine{
-    width: 50px;
-    text-align: center;
-    transform: translateX(-50%);
-    position: absolute;
-    left: 80%;
-    top: 90%;
-  }
-  
-  #label-coarse{
-    width: 50px;
-    text-align: center;
-    transform: translateX(-50%);
-    position: absolute;
-    left: 18%;
-    top: 90%;
-  }
+#label-coarse{
+  width: 50px;
+  text-align: center;
+  transform: translateX(-50%);
+  position: absolute;
+  left: 80%;
+  top: 218px;
+}
   
   #label-volume{
     width: 80px;
@@ -30,27 +56,37 @@
     text-align: center;
     transform: translateX(-50%);
     left: 50%;
-    top: 68%;
+    top: 180px;
     
   }
 
   .button{
-    border: 1px solid black;
+    // border: 1px solid black;
     border-radius: 5px;
+    box-shadow: inset 0 -2px 2px rgba(0, 0, 0, 0.06), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+    background: #282828;
     width: 35px;
+    height: 25px;
     text-align: center;
+    color: #D5D3C9;
+    cursor: pointer
+  }
+
+  img{
+    margin-top: -10%;
+    height: 70%;
   }
   
   #sin{
     position: absolute;
-    top: 5%;
+    top: 44px;
     left: 25%;
     
   }
   
   #sqr{
     position: absolute;
-    top: 15%;
+    top: 72px;
     left: 25%;
     
   }
@@ -58,7 +94,7 @@
   #saw{
     width: 35px;
     position: absolute;
-    top: 5%;
+    top: 44px;
     left: 65%;
     
     
@@ -67,7 +103,7 @@
   #tri{
     width: 35px;
     position: absolute;
-    top: 15%;
+    top: 72px;
     left: 65%;
    
   }
@@ -78,32 +114,33 @@
     width: 15px;
     border-radius: 50%;
     background-color: #7c3030;
-    border: 1px solid black;
+    border: 2px rgba(0, 0, 0, 0.15) solid;
   }
   
   #sin-dot{
     left: 65px;
-    top: 5%;
+    top: 53px;
   }
   
   #sqr-dot{
     left: 65px;
-    top: 15%;
+    top: 77.6px;
   }
   
   #saw-dot{
     right: 65px;
-    top: 5%;
+    top: 53px;
     
   }
   
   #tri-dot{
     right: 65px;
-    top: 15%;
+    top: 77.6px;
   }
   
   .active{
-    background-color: red;
+    background-color: #fe5532;
+    box-shadow: 0 0 10px rgba(255, 48, 68, 0.5);
   }
   
   #but{
@@ -116,19 +153,19 @@
 
     position: absolute;
     transform: translateX(-50%);
-    display: inline-block;
+    display: block;
     background-size:contain;
 }
 
 knob.skin1{
-    background: url('ng2-knob/skins/skin1_back.svg');
+    // background: url('ng2-knob/skins/skin1_back.svg');
     background-size: contain;    
 }
 knob.skin1 /deep/ .knob{
-    background: url('ng2-knob/skins/skin1_front.svg');
+    background: url('src/assets/knob.png');
     background-size: contain;    
 }
-
+/*
 knob.skin4{
   background:url('ng2-knob/skins/skin4_back.svg');
   background-size: contain;    
@@ -141,29 +178,56 @@ knob.skin4 /deep/ .knob{
   width:200px;
   height:200px;
 }
-
+*/
 #volumeKnob{
-  width: 80px;
-  height: 80px;
-  top: 35%;
+  width: 70px;
+  height: 70px;
+  top: 100px;
   left: 50%;
-
+  align-content: center;
+  position: absolute;
 }
 
 #coarseKnob{
   position: absolute;
   width: 50px;
   height: 50px;
-  left: 80%;
+  left: 20%;
   transform: translateX(-50%);
-  top: 65%;
+  top: 160px;
 }
 
 #fineKnob{
   position: absolute;
   height: 50px;
   width: 50px;
-  left: 20%;
-  top: 65%;
+  left: 80%;
+  top: 160px;
   transform: translateX(-50%);
+}
+
+.info{
+  border: 1px solid #555555;
+  width: 50px;
+  // margin-top: 22px;
+  box-shadow: inset 0px 0px 11px rgba(0,0,0,1);
+  background: #c3dac9;
+  text-align: center;
+  font-family: monospace;
+  border-radius: 7px;
+  color: #333333;
+}
+
+.fine{
+  position: absolute;
+  transform: translateX(-50%);
+  left: 80%;
+  top: 130px;
+}
+
+.coarse{
+  position: absolute;
+  transform: translateX(-50%);
+  left: 20%;
+  top: 130px;
 }

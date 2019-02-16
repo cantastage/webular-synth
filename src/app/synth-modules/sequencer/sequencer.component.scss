@@ -1,0 +1,48 @@
+.sequencer {
+    display: block;
+    border: 1px solid rgb(10, 10, 10);
+    border-radius: 5px;
+    background-color: #8c8c8c;
+    background-image: url('src/assets/brushed-alum-dark.png');
+    font-family: webular;
+    font-weight: 700;
+    text-align: center;
+    padding: 2px;
+}
+
+.container-block{
+    display: inline-flex;
+}
+.sequencer .title {
+    background-color: #4a4a4c;
+    color: #8c8c8c;
+    border: 1px solid rgb(10, 10, 10);
+    border-radius: 5px;
+    padding: 2px;
+}
+.sequencer .table1 {
+	width: 100%;
+    padding: 2px;
+}
+.sequencer .table2 {
+    padding: 2px;
+}
+
+.sequencer .table2 tr {
+	height: 40px;
+}
+.sequencer .table2 tr td {
+    border: 1px solid rgb(10, 10, 10);
+	vertical-align: middle;
+}
+.sequencer .table2 tr td .inputcell {
+	width: 40px;
+	vertical-align: middle;
+}
+
+.column-off {
+	background-color: transparent;
+}
+.column-on {
+	background-color: lightgreen;
+}

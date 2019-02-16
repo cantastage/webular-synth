@@ -1,0 +1,64 @@
+.container-block{
+  display: inline-flex;
+}
+.example-box {
+    display: block;
+    width: 250px;
+    height: 200px;
+    border: solid 1px black;
+    color: rgba(0, 0, 0, 0.87);
+    cursor: move;
+    justify-content: center;
+    align-items: top;
+    text-align: center;
+    background-color: #8c8c8c;
+    background-image: url('src/assets/brushed-alum-dark.png');
+    border-radius: 5px;
+    position: relative;
+    padding: 2px;
+    font-family: webular;
+    font-weight: 700;
+}
+  
+  .example-box:active {
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.component-title {
+  height: 15%;
+  border-radius: 5px;
+  background-color: #4a4a4c;
+  color: #8c8c8c;
+  border: 1px solid rgb(10, 10, 10);
+  border-radius: 5px;
+  padding: 2px;
+}
+
+.slider_container{
+  display: block;
+  margin-top: 20px;
+  margin-left: 0px;
+}
+.slider{
+  -webkit-appearance: none;
+  width: 80%;
+  height: 10px;
+  background: #c4c3c1;
+  outline: none;
+  border-radius: 5px;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 35px;
+  height: 35px;
+  background: url('src/assets/slider.png') center no-repeat;
+  cursor: pointer;
+}
+
+.parameter{
+  margin-top: 10px;
+}

@@ -1,25 +1,117 @@
-.synth-module-box {
-  width: 400px;
-  height: 280px;
-  border: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
-  cursor: move;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background: #fff;
-  border-radius: 4px;
-  position: relative;
-  z-index: 1;
-  transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-              0 2px 2px 0 rgba(0, 0, 0, 0.14),
-              0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+.full-dim-container {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  position: fixed;  //necessary to fill fullscreen
+  background-color: rgb(53,58,64);
+  font-family: webular;
+  overflow: hidden;
 }
 
-.synth-module-box:active {
+.list-container {
+  padding: 5px;
+  position: relative;
+  height: 100%;
+}
+
+.module-list-container {
+  height: 80%;
+}
+
+.module-list {
+  border-radius: 10px;
+  background-color: rgb(215, 213, 200);
+  background-image: url('src/assets/img/textures/dark-wood.png');
+  font-family: webular;
+  background-repeat: repeat;
+}
+
+.rack-list {
+  height: 90%;
+  overflow-x: auto;
+  overflow-y: auto;
+  white-space: nowrap;
+}
+
+.new-module-list {
+  height: 90%;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+
+.module-list-title {
+  margin-bottom: 0%;
+
+  position: relative;
+  border: 1px solid rgb(10, 10, 10);
+  border-radius: 5px;
+  background-color: #4a4a4c;
+  color: #8c8c8c;
+  font-family: webular;
+  font-weight: 700;
+  text-align: center;
+  padding: 2px;
+}
+
+.module-button {
+  margin-left: 5px;
+  margin-right: 5px;
+  background-color: #c9a477;
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+  font-size: 110%;
+}
+
+.cdk-drag {
+  display: inline-block;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
               0 8px 10px 1px rgba(0, 0, 0, 0.14),
               0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// Scrollbar style
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #c4c2c2; 
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #c9a477; 
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ac8c66; 
 }

@@ -1,0 +1,26 @@
+mat-button-toggle-group {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}
+
+mat-button-toggle {
+    background-color: black;
+    width: 15%;
+    height: 100%;
+    margin: auto;
+
+    border-radius: 5px;
+    border: 2px solid black;
+}
+
+mat-button-toggle.active {
+    border: 2px solid rgb(175, 0, 0);
+}
+
+img.wave-shape {
+    margin-top: -28px;
+    margin-left: -6px;
+    width: 20px;
+    height: 20px;
+}
