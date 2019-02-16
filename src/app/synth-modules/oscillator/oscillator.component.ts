@@ -61,6 +61,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   }
 
   update(arg: [number, boolean, number, number]): void {
+    console.log('called');
     if (arg[1] === true) {
       this.noteOn(arg[0], arg[2], arg[3]);
     } else {

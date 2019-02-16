@@ -9,6 +9,7 @@ import { PitchClassesProvider } from '../model/modules/sequencer/PitchClassesPro
 import { HarmonizationsProvider } from '../model/modules/sequencer/HarmonizationsProvider';
 import { Measure } from '../model/modules/sequencer/Measure';
 import { AmplifierComponent } from '../synth-modules/amplifier/amplifier.component';
+import { ChordSubstitutionComponent } from '../synth-modules/chord-substitution/chord-substitution.component';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +47,8 @@ export class ModuleManagerService {
       new ModuleItem(OscillatorComponent, { name: 'OSCILLATOR', state: this.oscillatorDefaultState }),
       new ModuleItem(MoogLadderFilterComponent, { name: 'MOOG LADDER FILTER', state: this.mlFilterDefaultState }),
       new ModuleItem(FilterComponent, { name: 'BIQUADRATIC FILTER', state: this.filterDefaultState }),
-      new ModuleItem(AmplifierComponent, { name: 'AMPLIFIER', state:  this.amplifierDefaultState })
+      new ModuleItem(AmplifierComponent, { name: 'AMPLIFIER', state:  this.amplifierDefaultState }),
+      new ModuleItem(ChordSubstitutionComponent, { name: 'SUBSTITUTION'})
     ];
   }
 }
