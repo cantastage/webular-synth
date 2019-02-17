@@ -2,8 +2,8 @@ import { PitchClassesProvider } from 'src/app/model/modules/sequencer/PitchClass
 import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
 
 export class Chord {
-    private root: any;
-    private quality: any;
+    public root: any;
+    public quality: any;
 
     constructor(root: string, quality: string) {
         this.root = root;

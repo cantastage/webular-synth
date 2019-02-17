@@ -12,7 +12,7 @@ class PitchClass implements IPitchClass {
     private get pitchClassKey(): string {
         return NoteNames[this._pitchClass];
     }
-    private get pitchClassValue(): number {
+    public get pitchClassValue(): number {
         return this._pitchClass;
     }
     public get pitchClassName(): string {

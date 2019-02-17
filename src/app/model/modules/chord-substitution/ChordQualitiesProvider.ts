@@ -36,6 +36,10 @@ export class ChordQualitiesProvider {
             });
         }
     }
+    public static retrieveInstances(): IChordQualities[] {
+        this.initialize();
+        return this._chordQualities;
+    }
     public static retrieveInstance(id: string) {
         this.initialize();
         let ret: IChordQualities;
