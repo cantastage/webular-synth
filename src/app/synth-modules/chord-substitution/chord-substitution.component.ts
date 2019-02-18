@@ -23,12 +23,13 @@ export class ChordSubstitutionComponent implements OnInit, IObserver<Chord> {
     ) { }
 
   update(arg: Chord): void {
-    console.log(arg);
+    console.log('received', arg);
+
   }
 
   ngOnInit() {
     this.prova = 1;
-    this.chord1 = new Chord('F', 'maj7');
+    this.chord1 = new Chord('F#', 'maj7');
     this.chord2 = new Chord('C', 'maj7');
     this.substitutionManager.attach(this);
     // console.log(this.chord.findPitchClass());

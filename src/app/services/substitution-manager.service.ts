@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable} from '../system2/patterns/observer/Observable.js';
 import { MessageService} from 'src/app/services/message.service';
-import { IPitchClass, NoteNames } from 'src/app/model/modules/sequencer/IPitchClass';
+import { IPitchClass, NoteNames, EnharmonicNames } from 'src/app/model/modules/sequencer/IPitchClass';
 import { PitchClassesProvider } from 'src/app/model/modules/sequencer/PitchClassesProvider';
 import { IChordQualities } from 'src/app/model/modules/chord-substitution/IChordQualities';
 import { Chord } from '../synth-modules/chord-substitution/Chord.js';
@@ -35,12 +35,14 @@ export class SubstitutionManagerService extends Observable<Chord> {
     // Message comes in an array of 4 chords and 1 number indicating difficulty, elaborate actions for every chord
     this.difficultyLevel = message[message.length - 1];
     for (let i = 0; i < message.length - 1; i++) {
-      this.substitutedProgression[i] = this.findSubstitutionRules(message[i]);
+      // const a = this.convertEnharmonic(message[i]);
+      this.substitutedProgression[i] = this.findSubstitutionRules(this.convertEnharmonic(message[i])); // (message[i]);
     }
+    // console.log('starting Chords', message);
+    // console.log('substitutions', this.substitutedProgression);
     this.notify(this.substitutedProgression);
   }
   private findSubstitutionRules(chord: Chord): Array<Chord> {
-    // this.notify(new Chord('C', 'maj'));
     const substitution_rules = Array<any>();
     const possible_substitutions = Array<any>();
     const qualities = ChordQualitiesProvider.retrieveInstances();
@@ -65,32 +67,49 @@ export class SubstitutionManagerService extends Observable<Chord> {
         tableConstraint.push(this.substitutionTable[i]);
       }
     }
-    const choice = Math.floor((Math.random() * tableConstraint.length) + 1);
+    const choice = Math.floor(Math.random() * tableConstraint.length);
     return [tableConstraint[choice].chord1, tableConstraint[choice].chord2];
   }
 
 
   private transposeChord (arg: Array<Chord>, value: number): Array<Chord> {
-    // console.log('transp value: ', value);
-    // console.log('chords: ', arg);
     const pitchValue = [];
     const transposedPitch = [];
     const transposedChords = [];
     for (let i = 0; i < arg.length; i++) {
-      pitchValue[i] = NoteNames[arg[i].root];
-      if (pitchValue[i] + value >= 12) {
-        transposedPitch[i] = NoteNames[pitchValue[i] + value - 12];
+      if (NoteNames[arg[i].root] === undefined) {
+        pitchValue[i] = EnharmonicNames[arg[i].root];
+        if (pitchValue[i] + value >= 12) {
+          transposedPitch[i] = EnharmonicNames[pitchValue[i] + value - 12];
         } else {
-          transposedPitch[i] = NoteNames[pitchValue[i] + value];
+          transposedPitch[i] = EnharmonicNames[pitchValue[i] + value];
+        }
+      } else {
+        pitchValue[i] = NoteNames[arg[i].root];
+        if (pitchValue[i] + value >= 12) {
+          transposedPitch[i] = NoteNames[pitchValue[i] + value - 12];
+          } else {
+            transposedPitch[i] = NoteNames[pitchValue[i] + value];
+        }
       }
+
       // console.log('trans pitch', transposedPitch[i]);
-      // transposedChords[i] = NoteNames[transposedPitch[i]];
       transposedChords[i] = new Chord(transposedPitch[i], arg[i].quality);
     }
     // console.log('transp chords: ', transposedChords);
-
-    // Transpose root note of chords before giving the output
     return transposedChords;
+  }
+
+  private convertEnharmonic(chord: Chord): Chord {
+    if (NoteNames[chord.root] === undefined) {
+      const convertedChord = chord;
+      convertedChord.root = NoteNames[EnharmonicNames[chord.root]];
+      // console.log('converted', convertedChord);
+      return convertedChord;
+    } else {
+      // console.log('not converted', chord);
+      return chord;
+    }
   }
 
 }
