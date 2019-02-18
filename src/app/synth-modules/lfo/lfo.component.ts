@@ -1,76 +1,121 @@
-import { Component, OnInit } from '@angular/core';
-import { ModulatorComponent } from '../IModulator';
+import { Component, OnInit, Input } from '@angular/core';
+import { IModulatorComponent } from '../IModulatorComponent';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
-import { AudioParamWrapper, AudioParamDescriptor } from '../AudioParamWrapper';
+
+import {
+  IUIAudioParameter, IAudioParameter,
+  AudioParameterDescriptor, UIAudioParameter, IModulableAudioParameter, AudioParameter
+} from '../AudioParameter';
 
 @Component({
   selector: 'app-lfo',
   templateUrl: './lfo.component.html',
-  styleUrls: ['./lfo.component.scss']
+  styleUrls: ['./lfo.component.scss', '../../app.component.scss']
 })
-export class LfoComponent extends ModulatorComponent implements OnInit {
-  private _testGeneratorNode: OscillatorNode;
-  private _lfoNode: OscillatorNode;
-  // how to extract a string[] from OscillatorType?!?!?! O.O
-  private _waveShapes: OscillatorType[]; // readonly
-  private _rate: AudioParamWrapper; // readonly
+// ASSUMPTION: I'M ALWAYS ATTACHED TO SOME OTHER MODULABLE COMPONENT
+export class LfoComponent implements OnInit, IModulatorComponent {
+  private _modulatedParameter: IModulableAudioParameter;
 
+  private _lfoNode: OscillatorNode;
+  private _lfoProcessor: ScriptProcessorNode;
+  private _processorAmplifier: GainNode;
+  private _waveShapes: OscillatorType[]; // readonly
+  private _intensity: IUIAudioParameter<IAudioParameter<AudioParam>>; // readonly
+  private _rate: IUIAudioParameter<IAudioParameter<AudioParam>>; // readonly
+
+  public get lfoNode(): OscillatorNode {
+    return this._lfoNode;
+  }
   public get waveShapes(): OscillatorType[] {
     return this._waveShapes;
   }
-  public get rate(): AudioParamWrapper {
+  public get intensity(): IUIAudioParameter<IAudioParameter<AudioParam>> {
+    return this._intensity;
+  }
+  public get rate(): IUIAudioParameter<IAudioParameter<AudioParam>> {
     return this._rate;
   }
 
-  protected onModulatedComponentAttach(): void {
-    // nothing todo
-    return;
+  public get modulatedParameter(): IModulableAudioParameter {
+    return this._modulatedParameter;
   }
-  protected onModulatedComponentDetach(): void {
-    // nothing todo
-    return;
+  @Input()
+  // check improvement: think of all the combo modulatedParameter x mp
+  public set modulatedParameter(mp: IModulableAudioParameter) {
+    if (this.modulatedParameter !== undefined && this.modulatedParameter.endModulationConfig()) {
+      this._processorAmplifier.disconnect(this.modulatedParameter.audioParam);
+    }
+    if(mp !== undefined) {
+      this._modulatedParameter = mp;
+      this.loadPatch();
+      if (this.modulatedParameter.beginModulationConfig()) {
+        this._processorAmplifier.connect(this.modulatedParameter.audioParam);
+      }
+    }
   }
-  protected onModulatedParameterAttach(): void {
-    // this.modulatedParameter is defined: create connections
-    this._testGeneratorNode.connect(this.modulatedComponent.innerNode);
+  private modulatingWaveShapeConfig(ape: AudioProcessingEvent): void {
+    const I: number = this.intensity.audioParameter.llValue;
+    if (I !== 0) {
+      const max: number = this.modulatedParameter.llDescriptor.maxValue;
+      const min: number = this.modulatedParameter.llDescriptor.minValue;
+      const current: number = this.modulatedParameter.llValue;
 
-    // shouldn't exist:
-    this.modulatedComponent.innerNode.connect(this.contextManager.audioContext.destination);
-  }
-  protected onModulatedParameterDetach(): void {
-    // symmetric disconnections: this.modulatedParameter is going to be set to null
-    // shouldn't exist:
-    this.modulatedComponent.innerNode.disconnect(this.contextManager.audioContext.destination);
-
-    this._testGeneratorNode.disconnect(this.modulatedComponent.innerNode);
+      const posAmp: number = (max - current) / max;
+      const negAmp: number = (current - min) / max;
+      const shift = this.modulatedParameter.name === 'LEVEL' ? 0 :
+        current / (max * I);
+      
+      let tmpI: number, tmpO: number;
+      for (let chi = 0; chi < ape.inputBuffer.numberOfChannels; chi++) {
+        const inputSamples = ape.inputBuffer.getChannelData(chi);
+        const outputSamples = ape.outputBuffer.getChannelData(chi);
+        for (let sampi = 0; sampi < inputSamples.length; sampi++) {
+          tmpI = inputSamples[sampi] * 1.177; // input wave in [-1,1], necessary because of the square wave range
+          if (Math.abs(tmpI) > 1) tmpI = Math.sign(tmpI); // acceptable clipping
+          tmpO = tmpI * (tmpI > 0 ? posAmp : negAmp);
+          tmpO = tmpO + shift;
+          if (Math.abs(tmpO) > 1) tmpO = Math.sign(tmpO);
+          outputSamples[sampi] = tmpO;
+        }
+      }
+    }
   }
 
   public constructor(private contextManager: AudioContextManagerService) {
-    super(contextManager); // creates the intensityNode
-
     this._waveShapes = ['sine', 'square', 'sawtooth', 'triangle'];
 
     this._lfoNode = this.contextManager.audioContext.createOscillator();
-    this._rate = new AudioParamWrapper(new AudioParamDescriptor('rate', 0.1, 1, 20, 'Hz'), this._lfoNode.frequency);
-    this._lfoNode.start();
-    this._lfoNode.connect(this._intensityNode);
+    this._lfoNode.type = 'sine';
+    this._lfoProcessor = this.contextManager.audioContext.createScriptProcessor(2 ** 11);
+    this._lfoProcessor.onaudioprocess = (arg: AudioProcessingEvent) => {
+      this.modulatingWaveShapeConfig(arg);
+    }
+    this._processorAmplifier = this.contextManager.audioContext.createGain();
 
-    // remove below after tests...
-    this._testGeneratorNode = this.contextManager.audioContext.createOscillator();
-    this._testGeneratorNode.type = 'square';
-    this._testGeneratorNode.frequency.value = 1000;
-    this._testGeneratorNode.start();
+    this._lfoNode.connect(this._lfoProcessor);
+    this._lfoProcessor.connect(this._processorAmplifier);
+    this._lfoNode.start();
+  }
+
+  public loadPatch(): void {
+    this._intensity = new UIAudioParameter<IAudioParameter<AudioParam>>(
+      new AudioParameter<AudioParam>(
+        'INTENSITY',
+        this.modulatedParameter.llDescriptor,
+        this._processorAmplifier.gain
+      ),
+      new AudioParameterDescriptor(0, 0, 100, '%')
+    );
+    this._rate = new UIAudioParameter<IAudioParameter<AudioParam>>(
+      new AudioParameter<AudioParam>(
+        'RATE',
+        new AudioParameterDescriptor(0, 1, 20, 'Hz'),
+        this._lfoNode.frequency
+      ),
+      new AudioParameterDescriptor(0, 10, 200, 'dHz')
+    );
   }
 
   public ngOnInit() {
-  }
-
-  public waveShapeChange(eventArg: any) {
-    this._lfoNode.type = eventArg.target.value;
-  }
-
-  public rateChange(ctx: LfoComponent, newValue: number): void {
-    // eventual checks
-    ctx.rate.audioParameter.value = Number(newValue);
   }
 }

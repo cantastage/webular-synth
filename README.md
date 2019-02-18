@@ -1,27 +1,173 @@
 # WebularSynth
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.6.
-
-## Development server
+### Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.6.
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## Introduction
+
+WebularSynth is a web-application built on Angular Framework.
+
+It is a modular synthesizer designed for passionate musicians. It uses the Angular component-based logic to map the real modules of a synthesizer into reusable and expandable UI components.  
+The application runs best on Chrome browser, because of the use of webAudio and webMIDI API.
+
+### Demo
+
+The brief demonstrative video is available @ [this link](https://www.dropbox.com/s/5f6joppful1dlr9/Webular%20Synthesizer.mp4?dl=0).
+
+### Sound Chain management
+
+The sound chain is built upon synth modules. Adding a module to the "Synth modules" list automatically creates the needed connections in the audio context. Note that you must provide at least one source and one amplifier to output audio from your speakers. The amplifier is the only module connected to the audio context destination.
+
+## Modules & Corresponding Components
+
+### Clock
+
+As in all the most known synthesizers, the clock module is a single instance which can be observed by objects who might desire a synchronization.
+
+In our case, the sole module which needs temporization is the harmonic/melodic sequencer.
+
+The `ClockComponent` builds an `IClock` instance thanks to the `ClockManagerService` service and the `ClockProvider` factory.
+
+Further extensions, such as coexisting clocks for poly-harmonic/melodic interfering structures, are now neglected and forbidden.
+
+On the other hand, they could be implemented in future (considering a structural modification).
+
+### MIDI-IN Interface
+
+The MIDI-IN interface is neither properly a module nor a component: it is a background service, instead.
+
+The `MidiContextManagerService` exposes methods for a correct communication with MIDI-IN devices, beyond the most useful and common functions for MIDI messages conversions.
+
+Even in this case, the service sends messages to optional interested listeners containing the most relevant MIDI information.
+
+### Sequencer
+
+The sequencer is both synchronized with the click and, like the MIDI-IN interface, capable of sending messages to listeners.
+
+This last action is achieved via the `MidiContextManagerService` itself, following a sort of bus logic, which in future could be extended with MIDI channels discrimination.
+
+This option has been chosen to have a single source of messages of the same type.
+
+The UI of the `SequencerComponent` allows the state configuration:
+- Key selector: allows the choice of an item `IPitchClass` provided by the fly-weight factory `PitchClassesProvider`;
+- Harmonization selector: allows the choice of an item `IHarmonization` provided by the factory `HarmonizationsProvider` which can be easily extended with new harmonizations via scale pattern;
+- Metric selector: allows to add more and more 4^th subdivisions to the measure.
+
+Depending on Key and Harmonization, a `Scale` object is built.
+
+Each `Subdivision` of the `Measure` is characterized by a set of 'octave' values (vertical cells) and the duration. The velocity could be added.
+
+(both duration and velocity could be set, with different granularity, on cells or subdivisions)
+
+Eventually, the `Sequencer` joins the `Scale` and `Measure` concepts, giving an overall musical acceptation.
+
+We recall the sequencer to follow the click, each beat leads to the 'selection' of a different subdivision.
+
+When a subdivision is selected, each 'active note' is sent to the listeners.
+
+_To prevent unrealistic behaviours that would compromise the functionality of the following module (generally a poly-phonic oscillator), the duration of each note is altered.
+This choice is justified by the asynchronous nature of the 'stop note' and by the unperceptiveness of such a temporal modification._
+
+### Oscillator
+
+The Oscillator is the main sound generator of the synthesizer sound chain. Its aim is to take any midi signal, generated by a MIDI input keyboard or by the sequencer component, using the functions provided by the `MidiContextManagerService`, and to generate a corresponding audio signal: it is therefore also connected to the `AudioContextManagerService` providing the webAudio API functions to create oscillator and gain Nodes. 
+
+Its UI is made of:
+- 4 button switches to select the waveform (sine, square, triangular or sawtooth);
+- a Volume Knob to control the volume of the output of the component
+- a Coarse Tune knob, which allows to transpose the played note in an interval of [-12, +12] semitones;
+- a Fine Tune knob, which allows fine tuning in an interval of [-10, +10] cents.
+
+It implements polyphony using the class `Voice`, which keeps track of every input note generated by a midi controller or by the sequencer and their individual velocity. To avoid any interference between the inputs the sequencer communicates with the oscillator on the MidiChannel n.16, while the other midi controllers should use channels 1-15.
+Every voice generated contains an oscillatorNode and a gainNode which charaterize a single note.
+The oscillator has a single gainNode as output, to which all the internal voice gainNodes are connected.
+
+~~ The note envelope is generated via `ADSRComponent`
+
+### ADSR Envelope
+
+The ADSR generates the gain envelope which charaterizes every note generated by the oscillator component. The note envelope is applied inside the `Voice` class for every note using webAudio API functions, and is made of 4 parameters: attack time, decay time, sustain value, release time. 
+The UI provides 2 circles which the user can move in a canvas, whose x axis indicates time and y axis indicate level:
+- the first circle represents the attack time (x axis) and fixed attack level(y axis)
+- the second circle represents the sustain value (y axis) and both release time (x axis, distance from canvas right margin) and decay time(x axis, distance from first point).
+
+It uses `MessageService` to communicate its parameters to the oscillator component.
+
+### Moog Ladder Filter
+
+The component is an emulation of the traditional analog Moog Ladder Filter invented by Robert Moog and used in classic Moog Synthesizers. The filter is a 4 pole lowpass filter and its implementation is based on a custom DSP algorithm which emulates the stages of filtering and the feedback system.
+It takes as input the gainNode provided by the output of the preceding component, and makes use of an audio buffer of 1024 samples to filter the sound stream.
+The samples present in the audiobuffer are then processed inside the scriptProcessorNode, a webAudio API node made for custom audio processing.
+
+The UI provides the user with 2 sliders to control:
+- Cutoff frequency
+- Resonance of the filter
+
+The output of the component is still a gainNode.
+
+### Biquadratic Filter
+
+The UI of the `FilterComponent` allows the state configuration:
+- Filter type selector: allows to choose among a variety of filter categories;
+- Characterizing frequency knob;
+- Resonance/quality factor knob.
+
+Basically this filter wraps a `BiquadFilterNode` of the web audio api and allows the configuration of the parameters.
+
+The configuration is done through `AudioParam` wrappers which handle an optional linear transformation between UI value and low level value (see `LFOComponent` for further details).
+
+Both the frequency and the resonance can be modulated via `LFOComponent`.
+
+### Amplifier
+
+The UI of the `AmplifierComponent` allows the state configuration:
+- Level knob;
+- Balance knob;
+
+Basically the amplifier wraps a `GainNode` followed by a `StereoPannerNode` of the web audio api and allows the configuration of the parameters.
+
+Both the level and the balance can be modulated via `LFOComponent`.
+
+### LFO Modulator
+
+The UI of the `LFOComponent` allows the state configuration:
+- Modulation wave shape selector: allows to choose among a variety of wave shapes;
+- Modulation intensity knob: variation around the modulated parameter value (expressed in percentage);
+- Modulation rate knob: sets the velocity of the variation above.
+
+Basically the lfo wraps three successive nodes of the api:
+- `OscillatorNode`;
+- `ScriptProcessorNode`;
+- `GainNode`.
+
+As briefly mentioned, this component needed to cope with decimal values to handle intensity and rate, which unfortunately could not be handled directly via the sole angular knob component).
+
+_In order to keep a simple connection logic, the communication between modulator and modulated modules is temporarily oversimplified. Future extensions might take in account a more complex service for information exchange._
+
+#### Modulation Logic
+
+The basic explanation of the modulation is the following:
+- `OscillatorNode`: generates the basic wave selected with the wave shape selector at the given rate;
+- `ScriptProcessorNode`: exploits the audio parameter value and variation range in order to alter the basic incoming wave.
+The original sinusoid is unbalanced within the range [-1,1] depending on the initial value of the modulated parameter and on the intensity percentage;
+- `GainNode`: finally amplifies the unbalanced wave, leading it back to the default parameter variation range.
+
+_The `LFOComponent` code is furtherly detailed and self-explanatory._
+
+#### Parameters Wrapping
+
+As previously said, some parameters needed to be decimal.
+In order to deal with this issue, the typescript `AudioParameter` module has been provided.
+
+It is a basic script which exploits a couple of `AudioParameterDescriptors` to correctly set the lower level `AudioParam` value.
+
+## Connections Among Modules
+
+The connection of the synth modules is managed by the "AudioContextManager" service. This service provides a shared audio context that is accessible from all the components. It also contains methods to add, reorder and delete elements from the sound chain. It automatically updates all the connections everytime the user moves a synth module in the sound chain.
+
+

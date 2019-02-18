@@ -1,10 +1,13 @@
 import { Scale } from './Scale';
 import { Measure } from './Measure';
+import { IPitchClass } from './IPitchClass';
+import { IHarmonization } from './IHarmonization';
 
-// import { IModule } from '../../../services/IModule';
-
-export interface ISequencer /*extends IModule*/ {
-    scale: Scale;
-    measure: Measure;
-    // should add midiChannel: number;
+export interface ISequencer {
+    readonly scale: Scale;
+    readonly measure: Measure;
+    // midiChannel: number;
+    key: IPitchClass;
+    harmonization: IHarmonization;
+    metric: number;
 }

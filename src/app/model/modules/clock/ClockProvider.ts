@@ -9,17 +9,17 @@ class Clock implements IClock {
 
   private _bpm: number;
 
-  public BEATS_MIN() {
+  public get minValue(): number {
     return Clock.BEATS_MIN;
   }
-  public BEATS_DEFAULT(): number {
+  public get defaultValue(): number {
     return Clock.BEATS_DEFAULT;
   }
-  public BEATS_MAX() {
+  public get maxValue(): number {
     return Clock.BEATS_MAX;
   }
 
-  public get bpm() {
+  public get bpm(): number {
     return this._bpm;
   }
   public set bpm(bpm: number) {
@@ -35,9 +35,13 @@ class Clock implements IClock {
 }
 
 export class ClockProvider { // singleton pattern
+  public static readonly BEATS_MIN: number = Clock.BEATS_MIN;
+  public static readonly BEATS_DEFAULT: number = Clock.BEATS_DEFAULT;
+  public static readonly BEATS_MAX: number = Clock.BEATS_MAX;
+
   private static _hiddenClock: IClock;
   private static initialize(): void {
-    if (!this._hiddenClock) {
+    if (this._hiddenClock === undefined) {
       this._hiddenClock = new Clock(Clock.BEATS_DEFAULT);
     }
   }

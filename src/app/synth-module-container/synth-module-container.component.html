@@ -1,13 +1,43 @@
-<!-- <div class="synth-module-box" cdkDrag>
-  <app-moog-ladder-filter></app-moog-ladder-filter>
-</div> -->
-<!-- <app-clock></app-clock>
-<app-sequencer></app-sequencer> -->
+<div class="container-fluid full-dim-container">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">WEBULAR SYNTH</a>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" *ngFor="let item of modules; let i = index">
+        <button type="button" class="btn module-button" (click)="loadComponent(i)">
+          {{item.data.name}}
+        </button>
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <app-clock></app-clock>
+      </li>
+    </ul>
+  </nav>
 
-<app-filter></app-filter>
-<!-- <app-lfo></app-lfo> -->
-
-<!-- <div class="synth-module-box" cdkDrag>
-</div> -->
 
 
+  <div class="row list-container">
+
+    <div class="col-4 module-list-container">
+      <!-- List that represents new modules -->
+      <h3 class="module-list-title">NEW MODULES</h3>
+      <div cdkDropList #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules" [cdkDropListConnectedTo]="[connectedList]"
+        class="module-list new-module-list" (cdkDropListDropped)="drop($event)" id="unconnectedModules">
+        <app-synth-module-wrapper cdkDrag *ngFor="let item of unconnectedModules; let i= index" [synthModuleData]="item"
+          [index]="i" [listName]="unconnectedList.id" [isInSoundChain]="false"></app-synth-module-wrapper>
+      </div>
+    </div>
+
+    <div class="col-8 module-list-container">
+      <!-- List that represents the sound chain -->
+      <h3 class="module-list-title">SYNTH MODULES</h3>
+      <div cdkDropList cdkDropListOrientation="horizontal" #connectedList="cdkDropList" [cdkDropListData]="soundChain"
+        [cdkDropListConnectedTo]="[unconnectedList]" class="module-list rack-list" (cdkDropListDropped)="drop($event)"
+        id="soundChain">
+        <app-synth-module-wrapper cdkDrag [synthModuleData]="item" *ngFor="let item of soundChain; let i = index"
+          [index]="i" [listName]="connectedList.id" [isInSoundChain]="true"></app-synth-module-wrapper>
+      </div>
+    </div>
+  </div>
+</div>

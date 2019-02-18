@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import * as NavigatorBridge from '../audio-processors/navigator-bridge.js';
-import { A4, SD } from '../model/modules/sequencer/IReferralNote.js';
+import { A4, SD } from '../model/modules/sequencer/IPitchClass.js';
 import { Observable } from '../system2/patterns/observer/Observable.js';
 
 @Injectable({
   providedIn: 'root'
 })
-// Observable<any>?
+// Observable<[ch, isON, midiNote, velocity]>
 export class MidiContextManagerService extends Observable<[number, boolean, number, number]> {
   private static readonly MIDI_MSG_TYPE_MASK = 0xF0;
   private static readonly MIDI_MSG_TYPE_ON = 0x90;
@@ -17,7 +16,6 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
 
   private static readonly MIDI_A4 = 69;
 
-  private _navigatorExt: any;
   private _midiAccess: any;
   private _midiInputDevices: any;
 
@@ -25,11 +23,10 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
     return this._midiAccess;
   }
 
-  constructor() {
+  public constructor() {
     super();
-    this._navigatorExt = new NavigatorBridge();
-    if (this._navigatorExt.requestMIDIAccess) {
-      this._navigatorExt.requestMIDIAccess({
+    if (navigator['requestMIDIAccess']) {
+      navigator['requestMIDIAccess']({
         sysex: false
       }).then((midiAccess: any): void => {
         this._midiAccess = midiAccess;
@@ -37,13 +34,16 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
         for (let input = this._midiInputDevices.next();
           input && !input.done;
           input = this._midiInputDevices.next()) {
-            input.value.onmidimessage = this.onMIDIMessage.bind(null, this);
+          input.value.onmidimessage = this.onMIDIMessage.bind(null, this);
         }
       }, (message: any): void => {
-        throw new Error('unable to acquire MIDI resource: ' + message);
+        // throw new Error('unable to acquire MIDI resource: ' + message);
+        // we don't throw the exception because we need the service up and running
+        console.log('unable to acquire MIDI resource: ' + message);
       });
     } else {
-      throw new Error('MIDI is not supported');
+      // throw new Error('MIDI is not supported');
+      console.log('MIDI is not supported');
     }
   }
 
@@ -51,44 +51,44 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
     return A4 * (SD ** (midiNote - MidiContextManagerService.MIDI_A4));
   }
   public static frequencyToMIDINote(frequency: number): number {
-    return Math.floor( Math.log10(frequency / A4) / Math.log10(SD) ) + MidiContextManagerService.MIDI_A4;
+    return Math.round(Math.log10(frequency / A4) / Math.log10(SD)) + MidiContextManagerService.MIDI_A4;
   }
 
-  private static convertFromMIDI(midiMessage: any): [number, boolean, number, number] {
+  private static extractMIDIFields(midiMessage: any): [number, boolean, number, number] {
     // tslint:disable-next-line:no-bitwise
     const ch = Number(midiMessage.data[0]) &
-    // tslint:disable-next-line:no-bitwise
       Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK);
     // tslint:disable-next-line:no-bitwise
     const type = Number(midiMessage.data[0]) &
-    // tslint:disable-next-line:no-bitwise
       Number(MidiContextManagerService.MIDI_MSG_TYPE_MASK);
     // tslint:disable-next-line:no-bitwise
-    const isON = ((type & MidiContextManagerService.MIDI_MSG_TYPE_ON) === MidiContextManagerService.MIDI_MSG_TYPE_ON) &&
-    // tslint:disable-next-line:no-bitwise
-      !((type & MidiContextManagerService.MIDI_MSG_TYPE_OFF) === MidiContextManagerService.MIDI_MSG_TYPE_OFF);
-    // tslint:disable-next-line:no-bitwise
-    const f = MidiContextManagerService.frequencyToMIDINote(Number(midiMessage.data[0]) &
-      Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK));
-    // tslint:disable-next-line:no-bitwise
-    const v = Number(midiMessage.data[0]) & Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK);
+    const isON = ((type & MidiContextManagerService.MIDI_MSG_TYPE_ON) === MidiContextManagerService.MIDI_MSG_TYPE_ON);
 
-    return [ch, isON, f, v];
+    const note = Number(midiMessage.data[1]);
+
+    const v = Number(midiMessage.data[2]);
+
+    return [ch, isON, note, v];
   }
   // RX
   private onMIDIMessage(ctx: MidiContextManagerService, midiMessageEventArg: any): void {
-    ctx.notify(MidiContextManagerService.convertFromMIDI(midiMessageEventArg));
+    const midiArgs = MidiContextManagerService.extractMIDIFields(midiMessageEventArg);
+    if (!isNaN(midiArgs[2]) && !isNaN(midiArgs[3])) {
+      ctx.notify(midiArgs);
+    }
   }
   // TX
-  private sendRawNoteON(channel: number, frequency: number, velocity: number) {
-    this.notify([channel, true, frequency, velocity]);
+  private sendRawNoteON(channel: number, midiNote: number, velocity: number): void {
+    this.notify([channel, true, midiNote, velocity]);
   }
-  private sendRawNoteOFF(ctx: MidiContextManagerService, channel: number, frequency: number, velocity: number) {
-    ctx.notify([channel, false, frequency, velocity]);
+  private sendRawNoteOFF(ctx: MidiContextManagerService, channel: number, midiNote: number, velocity: number): void {
+    ctx.notify([channel, false, midiNote, velocity]);
   }
-  public sendRawNote(channel: number, frequency: number, duration: number, velocity: number) {
-    // CHECK ON PARAMETERS
-    this.sendRawNoteON(channel, frequency, velocity);
-    setTimeout(this.sendRawNoteOFF.bind(null, this, channel, frequency, velocity), duration);
+  // responsabilities not properly divided, nevermind...
+  public sendRawNote(channel: number, frequency: number, duration: number, velocity: number): void {
+    // we could check the parameters...
+    const midiNote = MidiContextManagerService.frequencyToMIDINote(frequency);
+    this.sendRawNoteON(channel, midiNote, velocity);
+    setTimeout(this.sendRawNoteOFF, duration - 20, this, channel, midiNote, velocity);
   }
 }

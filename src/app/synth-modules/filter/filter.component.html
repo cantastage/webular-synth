@@ -1,21 +1,31 @@
-<div>
-  <select (change)="typeChange($event)">
-      <option *ngFor="let filterType of this.filterTypes;">{{filterType}}</option>
-  </select>
+<div class="alignment-container">
+<div class="component-block">
+    <div class="component-title">{{this.data.name}}</div>
+  <div class="component-header">
+      <select [(ngModel)]="filterNode.type">
+          <option *ngFor="let filterType of filterTypes;" [ngValue]="filterType">{{filterType.toUpperCase()}}</option>
+      </select>
+  </div>
+  <div class="component-body">
+    <div class="component-body-sub" *ngFor="let mp of uiModulableParameters;">
+      <div class="component-body-sub-info">
+        <div class="component-body-sub-info-name" [ngClass]="{'modulated': mp.audioParameter.isModulated ? mp.audioParameter.isModulated : false}">{{mp.audioParameter.name.toUpperCase()}}</div>
+        <div class="component-body-sub-info-value" [ngClass]="{'modulated': mp.audioParameter.isModulated ? mp.audioParameter.isModulated : false}">{{mp.hlValue}}{{mp.hlDescriptor.measurementUnit}}</div>          
+      </div>
+      <div class="component-body-sub-selector">
+          <knob class="skin1" [min]="mp.hlDescriptor.minValue" [max]="mp.hlDescriptor.maxValue"
+          [(ngModel)]="mp.hlValue"
+          [startDegree]="-120" [endDegree]="120"
+          [intensive]="true"></knob>
+      </div>
+    </div>
+  </div>
+  <div class="component-footer">
+    <select [(ngModel)]="selectedModulableParameter">
+      <option *ngFor="let mp of modulableParameters;" [ngValue]="mp">{{mp.name.toUpperCase()}}</option>
+    </select>
+  </div>
 </div>
 
-<div>
-    <!-- <app-knob-lil-ext *ngFor="let mp of this.modulableParameters;"
-      [_min]="mp.parameterDescriptor.minUIValue" [_max]="mp.parameterDescriptor.maxUIValue"
-      [_value]="mp.uiValue" [_measurementUnit]="mp.parameterDescriptor.measurementUnit"
-      [_change]="this.mpChange.bind(null, mp)"></app-knob-lil-ext> -->
-
-      <!-- <jqxKnob [width]="50" [height]="50" [value]="60" [min]="0.1" [max]="10" [startAngle]="120"
-      [endAngle]="420" [snapToStep]="true" [rotation]="'clockwise'" [style]="style"
-      [marks]="marks" [labels]="labels" [progressBar]="progressBar" [pointer]="pointer"></jqxKnob> -->
+<app-lfo [modulatedParameter]="selectedModulableParameter"></app-lfo>
 </div>
-
-<!-- this is FilterComponent implementing IModulableComponent,
-  this.modulableParameters[0] is ModulableParameter wrapping frequency as AudioParam -->
-<!-- <app-lfo [modulatedComponent]="this" [modulatedParameter]="this.modulableParameters[0]"></app-lfo> -->
-

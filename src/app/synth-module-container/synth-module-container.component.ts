@@ -1,63 +1,92 @@
-import { Component, OnInit, Input, ViewChild, ComponentFactoryResolver } from '@angular/core';
+import {
+  Component, OnInit, ComponentFactoryResolver
+} from '@angular/core';
 import { AudioContextManagerService } from '../services/audio-context-manager.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ModuleItem } from '../model/module-item';
-import { AddModuleDirective } from '../directives/add-module.directive';
-import { ModuleComponent } from '../interfaces/module.component';
 import { ModuleManagerService } from '../services/module-manager.service';
+import { Pair } from '../model/pair';
+
 
 @Component({
   selector: 'app-synth-module-container',
   templateUrl: './synth-module-container.component.html',
-  styleUrls: ['./synth-module-container.component.scss']
+  styleUrls: ['./synth-module-container.component.scss'],
 })
 /**
  * This component contains all synth modules
  */
 export class SynthModuleContainerComponent implements OnInit {
-  // @Input() modules: ModuleItem[]; // synth modules injected by the contextManagerService
-  // @Input() connectedModules: Array<AudioNode>;
-  // @Input() unconnectedModules: Array<AudioNode>;
-  // private connectedModules: Array<AudioNode> = new Array<AudioNode>();
-  // private unconnectedModules: Array<AudioNode> = new Array<AudioNode>();
-  private connectedModules: Array<any> = new Array<any>(0);
-  private unconnectedModules: Array<any> = new Array<any>(0);
-  @ViewChild(AddModuleDirective) appAddModule: AddModuleDirective;
-  private modules: ModuleItem[];
-  private isNewComponentCreated: boolean;
+  private _soundChain: Array<ModuleItem> = new Array<ModuleItem>(0);
+  private _unconnectedModules: Array<ModuleItem> = new Array<ModuleItem>(0);
+  private _modules: ModuleItem[];
 
-
+  public get modules(): ModuleItem[] {
+    return this._modules;
+  }
+  public get soundChain(): Array<ModuleItem> {
+    return this._soundChain;
+  }
+  public get unconnectedModules(): Array<ModuleItem> {
+    return this._unconnectedModules;
+  }
   constructor(
     private contextManager: AudioContextManagerService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private moduleManager: ModuleManagerService) { }
 
   ngOnInit() {
-    this.isNewComponentCreated = false;
-    this.modules = this.moduleManager.getModules();
+    this._modules = this.moduleManager.getModules();
+    this._soundChain = new Array();
+    this._unconnectedModules = new Array();
   }
 
-  drop(event: CdkDragDrop<string[]>): void {
+  /**
+   * Method called when an element is dropped
+   * @param event the drop event
+   *
+   */
+  drop(event: CdkDragDrop<Array<ModuleItem>>): void {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+
+      if (event.previousIndex !== event.currentIndex) {
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        // move the correspondant SynthModule in context manager service ONLY IF IN SOUND CHAIN
+        if (event.container.id === 'soundChain') {
+          // update position, index of the synthmodule and update connections.
+          this.contextManager.moveSynthModuleInSoundChain(event.previousIndex, event.currentIndex);
+        }
+      } else {
+        return;
+      }
     } else {
-      transferArrayItem(event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex);
+      // save the status only when going from unconnected to new modules, else the module will be destroyed.
+      if (event.previousContainer.id === 'unconnectedModules') {
+        this.contextManager.subject.next(new Pair<string, number>(event.previousContainer.id, event.previousIndex));
+        transferArrayItem(event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex);
+        return;
+      } else {
+        // transfer from soundchain to unconnected, then destroy the component.
+        this.contextManager.deleteSynthModule(event.previousIndex);
+        transferArrayItem(event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex);
+          if (event.container.id === 'unconnectedModules') {
+            this.unconnectedModules.splice(event.currentIndex, 1);
+          }
+      }
     }
   }
 
-  loadComponent(): void {
-    const adItem = this.modules[0]; // chooses first element to load
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(adItem.component);
-
-    const viewContainerRef = this.appAddModule.viewContainerRef;
-    viewContainerRef.clear();  // NB uncomment to have only one component at a time
-
-    const componentRef = viewContainerRef.createComponent(componentFactory);
-    (<ModuleComponent>componentRef.instance).data = adItem.data;
-
+  // Adds a module into the array of unconnectedModules
+  loadComponent(index: number): void {
+    this._modules = this.moduleManager.getModules(); // refresh modules
+    const adItem = this.modules[index];
+    this.unconnectedModules.push(adItem);
   }
 
 }

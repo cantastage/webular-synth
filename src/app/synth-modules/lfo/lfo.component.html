@@ -1,17 +1,38 @@
-<div>
-  <select (change)="waveShapeChange($event)">
-      <option *ngFor="let waveShape of waveShapes;">{{waveShape}}</option>
-  </select>
-</div>
-
-<div>
-<!-- <app-knob-lil-ext [_min]="this.intensity.parameterDescriptor.minUIValue" [_max]="this.intensity.parameterDescriptor.maxUIValue"
-  [_value]="this.intensity.uiValue" [_measurementUnit]="this.intensity.parameterDescriptor.measurementUnit"
-  [_change]="this.intensityChange.bind(null, this)"></app-knob-lil-ext> -->
-</div>
-
-<div>
-<!-- <app-knob-lil-ext [_min]="this.rate.parameterDescriptor.minUIValue" [_max]="this.rate.parameterDescriptor.maxUIValue"
-  [_value]="this.rate.uiValue" [_measurementUnit]="this.rate.parameterDescriptor.measurementUnit"
-  [_change]="this.rateChange.bind(null, this)"></app-knob-lil-ext> -->
+<div class="component-block">
+  <div class="component-title">LFO</div>
+  <div class="component-header">
+      <mat-button-toggle-group [(ngModel)]="lfoNode.type">
+            <mat-button-toggle [ngClass]="{'active': waveShape === lfoNode.type}"
+            *ngFor="let waveShape of waveShapes;" [value]="waveShape">
+                <img class="wave-shape" src="./assets/{{waveShape}}.png">
+            </mat-button-toggle>
+      </mat-button-toggle-group>
+  </div>
+  <div class="component-body">
+    <div class="component-body-sub">
+      <div class="component-body-sub-info">
+          <div class="component-body-sub-info-name">{{intensity.audioParameter.name}}</div>
+          <div class="component-body-sub-info-value">{{intensity.hlValue}}{{intensity.hlDescriptor.measurementUnit}}</div>          
+      </div>
+      <div class="component-body-sub-selector">
+          <knob class="skin1" [min]="intensity.hlDescriptor.minValue" [max]="intensity.hlDescriptor.maxValue"
+          [(ngModel)]="intensity.hlValue"
+          [startDegree]="-120" [endDegree]="120"
+          [intensive]="true"></knob>
+      </div>
+    </div>
+    <div class="component-body-sub">
+      <div class="component-body-sub-info">
+          <div class="component-body-sub-info-name">{{rate.audioParameter.name}}</div>
+          <div class="component-body-sub-info-value">{{rate.hlValue}}{{rate.hlDescriptor.measurementUnit}}</div>          
+      </div>
+      <div class="component-body-sub-selector">
+          <knob class="skin1" [min]="rate.hlDescriptor.minValue" [max]="rate.hlDescriptor.maxValue"
+          [(ngModel)]="rate.hlValue"
+          [startDegree]="-120" [endDegree]="120"
+          [intensive]="true"></knob>
+      </div>
+    </div>
+  </div>
+  <div class="component-footer"></div>
 </div>

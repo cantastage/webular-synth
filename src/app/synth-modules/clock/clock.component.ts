@@ -1,26 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
+import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
+import { ClockProvider } from 'src/app/model/modules/clock/ClockProvider';
 
 @Component({
   selector: 'app-clock',
   templateUrl: './clock.component.html',
-  styleUrls: ['./clock.component.scss']
+  styleUrls: ['./clock.component.scss', '../../app.component.scss']
 })
-export class ClockComponent implements OnInit {
-  constructor(private clockManager: ClockManagerService) { }
+export class ClockComponent implements OnInit, IObserver<number> {
+  private _on: boolean;
+  public get on(): boolean {
+    return this._on;
+  }
+  public constructor(public clockManager: ClockManagerService) { }
 
-  ngOnInit() {
-    // this.clockManager.start();
+  public ngOnInit() {
+    this._on = false;
+    this.clockManager.bpm = ClockProvider.BEATS_DEFAULT;
+    this.clockManager.attach(this);
   }
 
-  bpmChange(ctx: ClockComponent, newValue: number): void {
-    // eventual checks
-    ctx.clockManager.bpm = Number(newValue);
-  }
-  start(): void {
-    this.clockManager.start();
-  }
-  stop(): void {
-    this.clockManager.stop();
+  public update(arg: number): void {
+    this._on = true;
+    setTimeout((ctx: ClockComponent) => { ctx._on = false; },
+      60 / this.clockManager.bpm * 0.2 * 1000, this);
   }
 }

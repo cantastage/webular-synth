@@ -2,33 +2,33 @@ import { Injectable } from '@angular/core';
 import { Observable } from '../system2/patterns/observer/Observable';
 import { IClock } from '../model/modules/clock/IClock';
 import { ClockProvider } from '../model/modules/clock/ClockProvider';
-import { IStartable } from './IStartable';
+import { IObserver } from '../system2/patterns/observer/IObserver';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClockManagerService extends Observable<number> implements IStartable, IClock {
+export class ClockManagerService extends Observable<number> implements IClock {
   private _clock: IClock;
   private _beatCount: number;
 
   private _isRunning: boolean;
   private _th: any;
 
-  public BEATS_MIN() {
-    return this._clock.BEATS_MIN();
+  public get minValue(): number {
+    return this._clock.minValue;
   }
-  public BEATS_DEFAULT(): number {
-    return this._clock.BEATS_DEFAULT();
+  public get defaultValue(): number {
+    return this._clock.defaultValue;
   }
-  public BEATS_MAX() {
-    return this._clock.BEATS_MAX();
+  public get maxValue(): number {
+    return this._clock.maxValue;
   }
 
-  public get bpm() {
+  public get bpm(): number {
     return this._clock.bpm;
   }
   public set bpm(bpm: number) {
-    if (!Number.isInteger(Number(bpm)) || bpm < this.BEATS_MIN() || bpm > this.BEATS_MAX()) {
+    if (!Number.isInteger(Number(bpm)) || bpm < ClockProvider.BEATS_MIN || bpm > ClockProvider.BEATS_MAX) {
       throw new Error('error while assigning the bpm value');
     }
     this._clock.bpm = bpm;
@@ -36,7 +36,7 @@ export class ClockManagerService extends Observable<number> implements IStartabl
       // partial stop with no isRunning modification
       clearInterval(this._th);
       // partial restart with no isRunning modification
-      this._th = setInterval(this.callback.bind(null, this), 60.0 / this.bpm * 1000);
+      this._th = setInterval(this.callback, 60.0 / this.bpm * 1000, this);
     }
   }
   public get beatCount(): number {
@@ -46,27 +46,37 @@ export class ClockManagerService extends Observable<number> implements IStartabl
   private resetBeatCount(): void {
     this._beatCount = 0;
   }
-  constructor() {
+  public constructor() {
     super();
     this._clock = ClockProvider.retrieveInstance();
     this.resetBeatCount();
     this._isRunning = false;
     this._th = null;
+    this.start();
   }
 
-  public start(): void {
+  private start(): void {
     this.resetBeatCount();
     if (!this._isRunning) {
-      this._th = setInterval(this.callback.bind(null, this), 60.0 / this.bpm * 1000);
+      this._th = setInterval(this.callback, 60.0 / this.bpm * 1000, this);
       this._isRunning = true;
     }
   }
-  public stop(): void {
+  private stop(): void {
     if (this._isRunning) {
       clearInterval(this._th);
       this._isRunning = false;
     }
     this.resetBeatCount();
+  }
+  public restart(): void {
+    this.stop(); this.start();
+  }
+
+  // override annotation
+  public attach(observer: IObserver<number>): void {
+    super.attach(observer);
+    this.restart();
   }
 
   private callback(ctx: ClockManagerService) {

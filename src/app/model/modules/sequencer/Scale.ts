@@ -1,60 +1,63 @@
-import { ICache } from '../../../system2/utilities/ICache';
-import { ReferralNotesProvider } from './ReferralNotesProvider';
-import { IReferralNote, SD } from './IReferralNote';
-import { Tonality } from './Tonality';
+import { PitchClassesProvider } from './PitchClassesProvider';
+import { IPitchClass, SD } from './IPitchClass';
+import { IHarmonization } from './IHarmonization';
 
-export class Scale implements ICache {
-    private _key: IReferralNote;
-    private _tonality: Tonality;
+export class Scale {
+    private _key: IPitchClass;
+    private _harmonization: IHarmonization;
 
     // cache field depending on private ones
-    private _diatonicNotes: IReferralNote[];
+    private _diatonicNotes: IPitchClass[];
+    private _useEnharmonicNames: boolean[];
 
-    public get key(): IReferralNote {
+    public get key(): IPitchClass {
         return this._key;
     }
-    public set key(key: IReferralNote) {
-        if (key == null) {
+    public set key(key: IPitchClass) {
+        if (key === undefined) {
             throw new Error('error while assigning the key value');
         }
         this._key = key;
-        if (this.tonality) {
-            this._updateCache();
+        if (this.harmonization) {
+            this.updateCache();
         }
     }
-    public get tonality(): Tonality {
-        return this._tonality;
+    public get harmonization(): IHarmonization {
+        return this._harmonization;
     }
-    public set tonality(tonality: Tonality) {
-        if (tonality == null) {
-            throw new Error('error while assigning the tonality value');
+    public set harmonization(harmonization: IHarmonization) {
+        if (harmonization === undefined) {
+            throw new Error('error while assigning the harmonization value');
         }
-        this._tonality = tonality;
+        this._harmonization = harmonization;
         if (this.key) {
-            this._updateCache();
+            this.updateCache();
         }
     }
-    public get diatonicNotes(): IReferralNote[] {
+    public get diatonicNotes(): IPitchClass[] {
         return this._diatonicNotes;
     }
+    public get useEnharmonicNames(): boolean[] {
+        return this._useEnharmonicNames;
+    }
 
-    public _updateCache(): void {
-        if (!this.diatonicNotes) {
-            this._diatonicNotes = new Array<IReferralNote>();
-        }
+    private updateCache(): void {
         this.diatonicNotes.splice(0, this.diatonicNotes.length); // clear all
         this.diatonicNotes.push(this.key);
-        let incrementalStep = 0;
-        this.tonality.pattern.forEach(element => {
-            incrementalStep += element;
-            const nextfreq = this.key.referralFrequency() * (SD ** incrementalStep);
+        this.useEnharmonicNames.splice(0, this.useEnharmonicNames.length);
+        this.useEnharmonicNames.push(false);
 
-            const nextnote = (): IReferralNote => {
-                let nextnotehp: IReferralNote; let nextfreqhp: number;
+        let incrementalStep = 0;
+        this.harmonization.pattern.forEach(element => {
+            incrementalStep += element;
+            const nextfreq = this.key.referralFrequency * (SD ** incrementalStep);
+
+            const nextnote = (): IPitchClass => {
+                let nextnotehp: IPitchClass; let nextfreqhp: number;
                 let found = false;
-                for (let i = 0; i < ReferralNotesProvider.retrieveInstances().length; i++) {
-                    nextnotehp = ReferralNotesProvider.retrieveInstances()[i];
-                    nextfreqhp = nextnotehp.referralFrequency();
+                for (let i = 0; i < PitchClassesProvider.retrieveInstances().length; i++) {
+                    nextnotehp = PitchClassesProvider.retrieveInstances()[i];
+                    nextfreqhp = nextnotehp.referralFrequency;
                     for (let k = 0; k < 10 && !found; k++) { // overdimensioned, maybe 2 (covering 5 octaves) is ok?
                         if (Math.floor(nextfreq) === Math.floor(nextfreqhp * (2 ** k)) ||
                             Math.floor(nextfreq) === Math.floor(nextfreqhp / (2 ** k))) {
@@ -71,10 +74,24 @@ export class Scale implements ICache {
 
             this.diatonicNotes.push(nextnote());
         });
+        let prevUsed: string = this.diatonicNotes[0].pitchClassName;
+        let delta: number;
+        for (let i = 1; i < this.diatonicNotes.length - 1; i++) {
+            delta = Math.abs(this.diatonicNotes[i].pitchClassName.charCodeAt(0) - prevUsed.charCodeAt(0));
+            if (delta !== 1 && delta !== 6) {
+                this.useEnharmonicNames.push(true);
+                prevUsed = this.diatonicNotes[i].enharmonicName;
+            } else {
+                this.useEnharmonicNames.push(false);
+                prevUsed = this.diatonicNotes[i].pitchClassName;
+            }
+        }
     }
 
-    public constructor(key: IReferralNote, tonality: Tonality) {
+    public constructor(key: IPitchClass, harmonization: IHarmonization) {
+        this._diatonicNotes = new Array<IPitchClass>();
+        this._useEnharmonicNames = new Array<boolean>();
         this.key = key;
-        this.tonality = tonality;
+        this.harmonization = harmonization;
     }
 }
