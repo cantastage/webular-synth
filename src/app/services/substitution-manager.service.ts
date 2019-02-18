@@ -39,7 +39,7 @@ export class SubstitutionManagerService extends Observable<Chord> {
     }
     this.notify(this.substitutedProgression);
   }
-  private findSubstitutionRules(chord: Chord): Chord {
+  private findSubstitutionRules(chord: Chord): Array<Chord> {
     // this.notify(new Chord('C', 'maj'));
     const substitution_rules = Array<any>();
     const possible_substitutions = Array<any>();
@@ -50,12 +50,12 @@ export class SubstitutionManagerService extends Observable<Chord> {
         sub_table: sub_tables[i]
       };
       if (chord.quality ===  substitution_rules[i].name) {
-        // const chordName = substitution_rules[i].sub_table;
         this.substitutionTable = substitutionRulesets[i];
       }
     }
     const transpositionValue = (PitchClassesProvider.retrieveInstance(chord.root).pitchClassValue);
-    return this.findChordSubstitution();
+    const intermediate = this.transposeChord(this.findChordSubstitution(), transpositionValue);
+    return intermediate;
   }
 
   private findChordSubstitution(): any {
@@ -70,8 +70,27 @@ export class SubstitutionManagerService extends Observable<Chord> {
   }
 
 
-  private transposeChord(arg: Array<Chord>, value: number) {
+  private transposeChord (arg: Array<Chord>, value: number): Array<Chord> {
+    // console.log('transp value: ', value);
+    // console.log('chords: ', arg);
+    const pitchValue = [];
+    const transposedPitch = [];
+    const transposedChords = [];
+    for (let i = 0; i < arg.length; i++) {
+      pitchValue[i] = NoteNames[arg[i].root];
+      if (pitchValue[i] + value >= 12) {
+        transposedPitch[i] = NoteNames[pitchValue[i] + value - 12];
+        } else {
+          transposedPitch[i] = NoteNames[pitchValue[i] + value];
+      }
+      // console.log('trans pitch', transposedPitch[i]);
+      // transposedChords[i] = NoteNames[transposedPitch[i]];
+      transposedChords[i] = new Chord(transposedPitch[i], arg[i].quality);
+    }
+    // console.log('transp chords: ', transposedChords);
+
     // Transpose root note of chords before giving the output
+    return transposedChords;
   }
 
 }

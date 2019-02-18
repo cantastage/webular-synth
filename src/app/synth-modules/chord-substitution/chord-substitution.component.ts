@@ -23,7 +23,7 @@ export class ChordSubstitutionComponent implements OnInit, IObserver<Chord> {
     ) { }
 
   update(arg: Chord): void {
-    // console.log(arg);
+    console.log(arg);
   }
 
   ngOnInit() {
