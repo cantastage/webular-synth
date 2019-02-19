@@ -55,7 +55,7 @@ export class SubstitutionManagerService extends Observable<Chord> {
         this.substitutionTable = substitutionRulesets[i];
       }
     }
-    const transpositionValue = (PitchClassesProvider.retrieveInstance(chord.root).pitchClassValue);
+    const transpositionValue = (chord.root).pitchClassValue;
     const intermediate = this.transposeChord(this.findChordSubstitution(), transpositionValue);
     return intermediate;
   }
@@ -77,15 +77,15 @@ export class SubstitutionManagerService extends Observable<Chord> {
     const transposedPitch = [];
     const transposedChords = [];
     for (let i = 0; i < arg.length; i++) {
-      if (NoteNames[arg[i].root] === undefined) {
-        pitchValue[i] = EnharmonicNames[arg[i].root];
+      if (NoteNames[arg[i].root.pitchClassName] === undefined) {
+        pitchValue[i] = EnharmonicNames[arg[i].root.pitchClassValue];
         if (pitchValue[i] + value >= 12) {
           transposedPitch[i] = EnharmonicNames[pitchValue[i] + value - 12];
         } else {
           transposedPitch[i] = EnharmonicNames[pitchValue[i] + value];
         }
       } else {
-        pitchValue[i] = NoteNames[arg[i].root];
+        pitchValue[i] = NoteNames[arg[i].root.pitchClassValue];
         if (pitchValue[i] + value >= 12) {
           transposedPitch[i] = NoteNames[pitchValue[i] + value - 12];
           } else {
@@ -101,9 +101,9 @@ export class SubstitutionManagerService extends Observable<Chord> {
   }
 
   private convertEnharmonic(chord: Chord): Chord {
-    if (NoteNames[chord.root] === undefined) {
+    if (NoteNames[chord.root.pitchClassName] === undefined) {
       const convertedChord = chord;
-      convertedChord.root = NoteNames[EnharmonicNames[chord.root]];
+      convertedChord.root = PitchClassesProvider.retrieveInstance(NoteNames[EnharmonicNames[chord.root.pitchClassName]]);
       // console.log('converted', convertedChord);
       return convertedChord;
     } else {

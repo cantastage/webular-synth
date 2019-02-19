@@ -1,6 +1,7 @@
 import { Chord } from 'src/app/synth-modules/chord-substitution/Chord';
 import { SubstitutionManagerService } from 'src/app/services/substitution-manager.service';
-
+import { PitchClassesProvider } from '../sequencer/PitchClassesProvider';
+import { ChordQualitiesProvider } from './ChordQualitiesProvider';
 // Substitution rules for maj7 chords:
 // - every rule contains 2 chords of half value with respect to starting chord. If chord1 = chord2, the rule is 1:1
 // - every rule is based on chord transitions: every chord is referred to C,
@@ -11,41 +12,67 @@ import { SubstitutionManagerService } from 'src/app/services/substitution-manage
 
 // X MAJ7 Chord Substitution Rules
 const sub_maj7: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 1},
-    {'chord1': new Chord('C', 'min7'), 'chord2': new Chord('C', 'min7'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'maj'), 'chord2': new Chord('C', 'maj'), 'difficulty': 1},
-    {'chord1': new Chord('A', 'min7'), 'chord2': new Chord('A', 'min7'), 'difficulty': 1},
-    {'chord1': new Chord('E', 'min7'), 'chord2': new Chord('E', 'min7'), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+    'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min7')),
+    'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj')),
+    'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('A'), ChordQualitiesProvider.retrieveInstance('min7')),
+    'chord2': new Chord(PitchClassesProvider.retrieveInstance('A'), ChordQualitiesProvider.retrieveInstance('min7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('E'), ChordQualitiesProvider.retrieveInstance('min7')),
+    'chord2': new Chord(PitchClassesProvider.retrieveInstance('E'), ChordQualitiesProvider.retrieveInstance('min7')), 'difficulty': 1},
 ];
 // X MAJ Chord Substitution Rules
 const sub_maj: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('C', 'min'), 'chord2': new Chord('C', 'min'), 'difficulty': 2},
-    {'chord1': new Chord('G', 'dom7'), 'chord2': new Chord('G', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 1},
-    {'chord1': new Chord('A', 'min'), 'chord2': new Chord('A', 'min'), 'difficulty': 1},
-    {'chord1': new Chord('E', 'min'), 'chord2': new Chord('E', 'min'), 'difficulty': 1},
-    {'chord1': new Chord('G', 'dom7'), 'chord2': new Chord('C', 'maj'), 'difficulty': 1},
-    {'chord1': new Chord('C', 'maj'), 'chord2': new Chord('C', 'maj'), 'difficulty': 1},
-    {'chord1': new Chord('D', 'min'), 'chord2': new Chord('G', 'dom7'), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('A'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('A'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('E'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('E'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('D'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
 ];
 // X MIN Chord Substitution Rules
 const sub_min: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('A#', 'maj'), 'chord2': new Chord('A#', 'maj'), 'difficulty': 3},
-    {'chord1': new Chord('F', 'dom7'), 'chord2': new Chord('F', 'dom7'), 'difficulty': 3},
-    {'chord1': new Chord('C', 'min7'), 'chord2': new Chord('C', 'min7'), 'difficulty': 1},
-    {'chord1': new Chord('A#', 'maj'), 'chord2': new Chord('C', 'min'), 'difficulty': 3},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'min'), 'difficulty': 2},
-    {'chord1': new Chord('G', 'min'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('A#'), ChordQualitiesProvider.retrieveInstance('maj')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('A#'), ChordQualitiesProvider.retrieveInstance('maj')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('A#'), ChordQualitiesProvider.retrieveInstance('maj')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
 ];
 // X MIN7 Chord Substitution Rules
 const sub_min7: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('F#', 'dom7'), 'chord2': new Chord('F#', 'dom7'), 'difficulty': 3},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'min'), 'chord2': new Chord('C', 'min'), 'difficulty': 1},
-    {'chord1': new Chord('Eb', 'maj7'), 'chord2': new Chord('Eb', 'maj7'), 'difficulty': 1},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'min7'), 'difficulty': 2},
-    {'chord1': new Chord('F', 'maj'), 'chord2': new Chord('C', 'min'), 'difficulty': 2},
-    {'chord1': new Chord('G', 'min'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F#'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F#'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('Eb'), ChordQualitiesProvider.retrieveInstance('maj7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('Eb'), ChordQualitiesProvider.retrieveInstance('maj7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('maj')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
 ];
 // X DIM Chord Substitution Rules   ---> no rules
 const sub_dim: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
@@ -57,70 +84,110 @@ const sub_aug: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
 ];
 // X HalfDIM Chord Substitution Rules
 const sub_halfDim7: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('F', 'dom7'), 'chord2': new Chord('F', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'min'), 'chord2': new Chord('C', 'min'), 'difficulty': 1},
-    {'chord1': new Chord('C', 'min7'), 'chord2': new Chord('C', 'min7'), 'difficulty': 1},
-    {'chord1': new Chord('F#', 'dom7'), 'chord2': new Chord('G#', 'maj'), 'difficulty': 3},
-    {'chord1': new Chord('C#', 'maj'), 'chord2': new Chord('C', 'min'), 'difficulty': 3},
-    {'chord1': new Chord('C#', 'maj'), 'chord2': new Chord('F', 'dom7'), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F#'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('G#'), ChordQualitiesProvider.retrieveInstance('maj')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C#'), ChordQualitiesProvider.retrieveInstance('maj')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C#'), ChordQualitiesProvider.retrieveInstance('maj')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 3},
 ];
 // X AUG7 Chord Substitution Rules
 const sub_aug7: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('F', 'dom7'), 'chord2': new Chord('F', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('G', 'min'), 'chord2': new Chord('G', 'min'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 1},
 ];
 // X MIN9 Chord Substitution Rules
 const sub_min9: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('C', 'maj9'), 'chord2': new Chord('C', 'maj9'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'min7'), 'chord2': new Chord('C', 'min7'), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj9')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj9')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('min7')), 'difficulty': 1},
 ];
 // X DIM9 Chord Substitution Rules
 const sub_dim9: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('D#', 'maj'), 'chord2': new Chord('D#', 'maj'), 'difficulty': 3},
-    {'chord1': new Chord('F', 'min'), 'chord2': new Chord('F', 'min'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('D#'), ChordQualitiesProvider.retrieveInstance('maj')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('Dà'), ChordQualitiesProvider.retrieveInstance('maj')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 1},
 ];
 // X DIM7 Chord Substitution Rules
 const sub_dim7: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('B', 'dom7'), 'chord2': new Chord('B', 'dom7'), 'difficulty': 1},
-    {'chord1': new Chord('A#', 'dim7'), 'chord2': new Chord('A#', 'dim7'), 'difficulty': 3},
-    {'chord1': new Chord('F#', 'dom7'), 'chord2': new Chord('F#', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('G#', 'dom7'), 'chord2': new Chord('C#', 'min'), 'difficulty': 3},
-    {'chord1': new Chord('E', 'dom7'), 'chord2': new Chord('E', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('B', 'min'), 'chord2': new Chord('E', 'dom7'), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('B'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('B'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('A#'), ChordQualitiesProvider.retrieveInstance('dim7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('A#'), ChordQualitiesProvider.retrieveInstance('dim7')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F#'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F#'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('G#'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C#'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('E'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('E'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('B'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('E'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 3},
 ];
 // X AUG9 Chord Substitution Rules
 const sub_aug9: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('F', 'min7'), 'chord2': new Chord('F', 'min7'), 'difficulty': 1},
-    {'chord1': new Chord('Bb', 'dom7'), 'chord2': new Chord('Bb', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('E', 'min'), 'chord2': new Chord('A', 'dom7'), 'difficulty': 3},
-    {'chord1': new Chord('C#', 'maj'), 'chord2': new Chord('C#', 'maj'), 'difficulty': 2},
-    {'chord1': new Chord('D#', 'min'), 'chord2': new Chord('G#', 'dom7'), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('min7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('min7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('Bb'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('Bb'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('E'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('A'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C#'), ChordQualitiesProvider.retrieveInstance('maj')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C#'), ChordQualitiesProvider.retrieveInstance('maj')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('D#'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('G#'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 3},
 ];
 // X MAJ9 Chord Substitution Rules
 const sub_maj9: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('Bb', 'dom7'), 'chord2': new Chord('Bb', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('F', 'min'), 'chord2': new Chord('F', 'min'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 1},
-    {'chord1': new Chord('A#', 'dom7'), 'chord2': new Chord('D#', 'dom7'), 'difficulty': 3},
-    {'chord1': new Chord('A#', 'dom7'), 'chord2': new Chord('D#', 'maj'), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('Bb'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('Bb'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('A#'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('D#'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 3},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('A#'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('D#'), ChordQualitiesProvider.retrieveInstance('maj')), 'difficulty': 3},
 ];
 // X DOM7 Chord Substitution Rules
 const sub_dom7: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('G', 'dom7'), 'chord2': new Chord('G', 'dom7'), 'difficulty': 1},
-    {'chord1': new Chord('F', 'dom7'), 'chord2': new Chord('F', 'dom7'), 'difficulty': 2},
-    {'chord1': new Chord('G', 'min'), 'chord2': new Chord('G', 'min'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('F', 'maj'), 'difficulty': 2},
-    {'chord1': new Chord('G', 'min'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 1},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('F', 'dom7'), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('min')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('maj')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('min')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('F'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 2},
 ];
 // X DOM13 Chord Substitution Rules
 const sub_dom13: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
-    {'chord1': new Chord('G', 'min7'), 'chord2': new Chord('G', 'min7'), 'difficulty': 2},
-    {'chord1': new Chord('C', 'dom7'), 'chord2': new Chord('C', 'dom7'), 'difficulty': 1},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('min7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('min7')), 'difficulty': 2},
+    {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),
+     'chord2': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')), 'difficulty': 1},
 
 ];
 

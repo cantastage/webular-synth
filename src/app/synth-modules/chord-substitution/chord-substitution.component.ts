@@ -4,6 +4,8 @@ import { MessageService } from 'src/app/services/message.service';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { Chord } from './Chord';
 import {  } from 'src/app/model/modules/chord-substitution/SubstitutionRules';
+import { PitchClassesProvider } from 'src/app/model/modules/sequencer/PitchClassesProvider';
+import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
 
 @Component({
   selector: 'app-chord-substitution',
@@ -28,8 +30,8 @@ export class ChordSubstitutionComponent implements OnInit, IObserver<Chord> {
   }
 
   ngOnInit() {
-    this.chord1 = new Chord('F#', 'maj7');
-    this.chord2 = new Chord('C', 'maj7');
+    this.chord1 = new Chord(PitchClassesProvider.retrieveInstance('F#'), ChordQualitiesProvider.retrieveInstance('maj7'));
+    this.chord2 = new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj7'));
     this.substitutionManager.attach(this);
   }
 
