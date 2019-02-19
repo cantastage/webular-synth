@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 
-import { ISequencer } from '../../model/modules/sequencer/basic/ISequencer';
+import { IProgSequencer } from '../../model/modules/sequencer/prog/IProgSequencer';
 import { Measure } from '../../model/modules/sequencer/basic/Measure';
 import { PitchClassesProvider } from '../../model/modules/sequencer/PitchClassesProvider';
 import { IPitchClass } from '../../model/modules/sequencer/IPitchClass';
@@ -15,10 +15,10 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
 
 @Component({
   selector: 'app-sequencer',
-  templateUrl: './sequencer.component.html',
-  styleUrls: ['./sequencer.component.scss']
+  templateUrl: './prog-sequencer.component.html',
+  styleUrls: ['./prog-sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>, SynthModule {
+export class ProgSequencerComponent implements OnInit, OnDestroy, IObserver<number>, SynthModule {
   @Input() data: any;
   @Input() isInSoundChain: boolean;
   @Input() position: number;
@@ -30,7 +30,7 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
   private _possibleOctaves: number[];
   private _subdivisionCounter: number;
 
-  private _sequencer: ISequencer;
+  private _sequencer: IProgSequencer;
   public get pitchClasses(): IPitchClass[] {
     return this._pitchClasses;
   }
@@ -46,7 +46,7 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
   public get subdivisionCounter(): number {
     return this._subdivisionCounter;
   }
-  public get sequencer(): ISequencer {
+  public get sequencer(): IProgSequencer {
     return this._sequencer;
   }
 

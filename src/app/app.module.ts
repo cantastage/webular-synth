@@ -20,6 +20,7 @@ import { OscillatorComponent } from './synth-modules/oscillator/oscillator.compo
 import { AmplifierComponent } from './synth-modules/amplifier/amplifier.component';
 import { ScrollDispatchModule } from '@angular/cdk/scrolling';
 import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
+import { ProgSequencerComponent } from './synth-modules/prog-sequencer/prog-sequencer.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,9 +35,11 @@ import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
     ADSRComponent,
     OscillatorComponent,
     AmplifierComponent,
+    ProgSequencerComponent,
   ],
   entryComponents: [MoogLadderFilterComponent, FilterComponent,
-    LfoComponent, ClockComponent, SequencerComponent, ADSRComponent, OscillatorComponent, AmplifierComponent],
+    LfoComponent, ClockComponent, SequencerComponent, ADSRComponent, OscillatorComponent, AmplifierComponent,
+    ProgSequencerComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

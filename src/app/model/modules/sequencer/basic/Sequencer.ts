@@ -1,8 +1,8 @@
 import { ISequencer } from './ISequencer';
-import { Scale } from './Scale';
+import { Scale } from '../Scale';
 import { Measure } from './Measure';
-import { IHarmonization } from './IHarmonization';
-import { IPitchClass } from './IPitchClass';
+import { IHarmonization } from '../IHarmonization';
+import { IPitchClass } from '../IPitchClass';
 import { Subdivision } from './Subdivision';
 
 export class Sequencer implements ISequencer {
