@@ -28,19 +28,12 @@ export class ChordSubstitutionComponent implements OnInit, IObserver<Chord> {
   }
 
   ngOnInit() {
-    this.prova = 1;
     this.chord1 = new Chord('F#', 'maj7');
     this.chord2 = new Chord('C', 'maj7');
     this.substitutionManager.attach(this);
-    // console.log(this.chord.findPitchClass());
-    // console.log(sub_maj7[0].chord1);
   }
 
   sendMessage() {
     this.messageService.sendMessage([this.chord1, this.chord2, 1]);
-  }
-
-  testMessage() {
-    this.messageService.sendMessage(Math.random());
   }
 }

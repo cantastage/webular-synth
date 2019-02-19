@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable} from '../system2/patterns/observer/Observable.js';
 import { MessageService} from 'src/app/services/message.service';
-import { IPitchClass, NoteNames, EnharmonicNames } from 'src/app/model/modules/sequencer/IPitchClass';
+import { NoteNames, EnharmonicNames } from 'src/app/model/modules/sequencer/IPitchClass';
 import { PitchClassesProvider } from 'src/app/model/modules/sequencer/PitchClassesProvider';
 import { IChordQualities } from 'src/app/model/modules/chord-substitution/IChordQualities';
 import { Chord } from '../synth-modules/chord-substitution/Chord.js';
@@ -25,7 +25,6 @@ export class SubstitutionManagerService extends Observable<Chord> {
 
   constructor(private messageService: MessageService) {
     super();
-    this.substitutedProgression = [];
     this.messageService.getMessage().subscribe(message => { this.message = message;
     this.onMessageReceive(this.message.message);
      });
@@ -33,6 +32,7 @@ export class SubstitutionManagerService extends Observable<Chord> {
 
   private onMessageReceive(message: any) {
     // Message comes in an array of 4 chords and 1 number indicating difficulty, elaborate actions for every chord
+    this.substitutedProgression = [];
     this.difficultyLevel = message[message.length - 1];
     for (let i = 0; i < message.length - 1; i++) {
       // const a = this.convertEnharmonic(message[i]);
