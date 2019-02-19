@@ -22,8 +22,9 @@
     <div class="col-4 module-list-container">
       <!-- List that represents new modules -->
       <h3 class="module-list-title">NEW MODULES</h3>
-      <div cdkDropList #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules" [cdkDropListConnectedTo]="[connectedList]"
-        class="module-list new-module-list" (cdkDropListDropped)="drop($event)" id="unconnectedModules">
+      <div cdkDropList #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules"
+        [cdkDropListConnectedTo]="[connectedList]" class="module-list new-module-list"
+        (cdkDropListDropped)="drop($event)" id="unconnectedModules">
         <app-synth-module-wrapper cdkDrag *ngFor="let item of unconnectedModules; let i= index" [synthModuleData]="item"
           [index]="i" [listName]="unconnectedList.id" [isInSoundChain]="false"></app-synth-module-wrapper>
       </div>
@@ -40,4 +41,16 @@
       </div>
     </div>
   </div>
+
+  <!-- <button type="button" class="btn module-button" (click)="toggleImproTrainer()">
+    {{showTrainerMessage}}
+  </button>
+  <div class="row list-container">
+    <h3 class="module-list-title">IMPRO TRAINER</h3>
+    <div cdkDropList cdkDropListOrientation="horizontal" #connectedList="cdkDropList" [cdkDropListData]="trainerChain"
+      class="col-lg-12 module-list rack-list" (cdkDropListDropped)="dropImproTrainer($event)" id="trainerChain">
+      <app-synth-module-wrapper cdkDrag [synthModuleData]="item" *ngFor="let item of trainerChain; let i = index"
+        [index]="i" [listName]="connectedList.id" [isInSoundChain]="false"></app-synth-module-wrapper>
+    </div>
+  </div> -->
 </div>
