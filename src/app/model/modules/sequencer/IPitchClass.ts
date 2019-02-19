@@ -33,4 +33,5 @@ export interface IPitchClass {
     readonly pitchClassName: string;
     readonly enharmonicName: string;
     readonly referralFrequency: number;
+    readonly pitchClassValue: number;
 }

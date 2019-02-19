@@ -1,0 +1,91 @@
+.containerBlock {
+    width: 500px;
+    height: 300px;
+    border: 1px solid black;
+    border-radius: 5px;
+  }
+  
+  .menuButton {
+    width: 100px;
+    height: 20px;
+    border: 1px solid black;
+    margin: 2px;
+    margin-left: 20px;    
+  }
+  
+  .select-menu {
+    width: 100%;
+    font-size: 13px;
+  }
+  
+  #newButton {
+    text-align: center;
+    font-size: 13px;
+  }
+  
+  #loadButton {
+    margin-top: 15px;
+  }
+  
+  .optionButton {
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    text-align: center;
+    vertical-align: middle;
+    margin-top: 20px;
+    margin-left: 43px;
+  }
+  
+  #playButton {
+    margin-top: 50px;
+  }
+  
+  .upperDisplay {
+    border: 1px solid black;
+    margin-left: 150px;
+    margin-top: -55px;
+    width: 300px;
+    height: 50px;
+    text-align: center;
+  }
+  
+  .chordCell {
+    float: left;
+    border: 1px solid black;
+    width: 20%;
+    height: 80%;
+    margin-top: 4px;
+    margin-left: 5px;
+  }
+  
+  #chord1 {
+    margin-left: 17px;
+  }
+  
+  .mainDisplay {
+      position: absolute;
+    border: 1px solid black;
+    width: 300px;
+    height: 150px;
+    margin-left: 150px;
+    margin-top: 33px;
+  }
+  
+  #playing {
+    position: absolute;
+    width: 150px;
+    height:150px;
+    border: 1px solid black;
+    text-align: center;
+  }
+  
+  #next {
+      display: inline-flex;
+    //position: absolute;
+    width: 150px;
+    height:150px;
+    border: 1px solid black;
+    margin-left: 150px;
+    text-align: center;
+  }

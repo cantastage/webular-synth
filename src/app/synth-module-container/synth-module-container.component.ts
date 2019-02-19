@@ -20,6 +20,7 @@ export class SynthModuleContainerComponent implements OnInit {
   private _soundChain: Array<ModuleItem> = new Array<ModuleItem>(0);
   private _unconnectedModules: Array<ModuleItem> = new Array<ModuleItem>(0);
   private _modules: ModuleItem[];
+  private _trainerChain: ModuleItem[];
 
   public get modules(): ModuleItem[] {
     return this._modules;
