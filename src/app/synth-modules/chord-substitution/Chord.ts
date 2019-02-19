@@ -1,0 +1,22 @@
+import { PitchClassesProvider } from 'src/app/model/modules/sequencer/PitchClassesProvider';
+import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
+
+export class Chord {
+    public root: string;
+    public quality: string;
+
+    constructor(root: string, quality: string) {
+        this.root = root;
+        this.quality = quality;
+     }
+
+     public findPitchClass() {
+        return PitchClassesProvider.retrieveInstance(this.root);
+
+     }
+
+     public findChordQuality() {
+         return ChordQualitiesProvider.retrieveInstance(this.quality);
+     }
+
+}
