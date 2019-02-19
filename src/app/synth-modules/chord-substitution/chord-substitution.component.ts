@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SubstitutionManagerService } from 'src/app/services/substitution-manager.service';
 import { MessageService } from 'src/app/services/message.service';
 import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
-import { Chord } from './Chord';
+import { Chord } from '../../model/modules/sequencer/prog/Chord';
 import {  } from 'src/app/model/modules/chord-substitution/SubstitutionRules';
 import { PitchClassesProvider } from 'src/app/model/modules/sequencer/PitchClassesProvider';
 import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';

@@ -3,8 +3,8 @@ import { Observable} from '../system2/patterns/observer/Observable.js';
 import { MessageService} from 'src/app/services/message.service';
 import { NoteNames, EnharmonicNames } from 'src/app/model/modules/sequencer/IPitchClass';
 import { PitchClassesProvider } from 'src/app/model/modules/sequencer/PitchClassesProvider';
-import { IChordQualities } from 'src/app/model/modules/chord-substitution/IChordQualities';
-import { Chord } from '../synth-modules/chord-substitution/Chord.js';
+import { IChordQuality } from 'src/app/model/modules/chord-substitution/IChordQualities';
+import { Chord } from '../model/modules/sequencer/prog/Chord.js';
 import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
 import { sub_tables, substitutionRulesets } from 'src/app/model/modules/chord-substitution/SubstitutionRules';
 /*
@@ -18,7 +18,7 @@ This Service provides support for the chord substitution module
 export class SubstitutionManagerService extends Observable<Chord> {
 
   private message: any;
-  private _chordQualities: IChordQualities[];
+  private _chordQualities: IChordQuality[];
   private substitutionTable: any;
   private difficultyLevel: number;
   private substitutedProgression: any;

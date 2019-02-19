@@ -1,4 +1,4 @@
-import { Chord } from 'src/app/synth-modules/chord-substitution/Chord';
+import { Chord } from 'src/app/model/modules/sequencer/prog/Chord';
 import { SubstitutionManagerService } from 'src/app/services/substitution-manager.service';
 import { PitchClassesProvider } from '../sequencer/PitchClassesProvider';
 import { ChordQualitiesProvider } from './ChordQualitiesProvider';

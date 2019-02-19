@@ -1,5 +1,7 @@
+import { sealed } from 'src/app/system2/utilities/ClassDecorators';
 import { IHarmonization } from './IHarmonization';
 
+@sealed
 class Harmonization implements IHarmonization {
     private _name: string;
     private _pattern: number[];

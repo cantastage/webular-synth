@@ -16,6 +16,7 @@ export enum ChordQualities {
     'dom13' = 14
 }
 
-export interface IChordQualities {
+export interface IChordQuality {
     readonly chordQualityName: string;
+    readonly chordQualityValue: number;
 }

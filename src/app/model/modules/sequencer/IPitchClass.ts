@@ -31,7 +31,7 @@ export enum EnharmonicNames {
 
 export interface IPitchClass {
     readonly pitchClassName: string;
-    readonly enharmonicName: string;
-    readonly referralFrequency: number;
     readonly pitchClassValue: number;
+    readonly referralFrequency: number;
+    readonly enharmonicName: string;
 }
