@@ -56,19 +56,18 @@ export class Chord {
         this._chromaticScale = new Scale(this.root, HarmonizationsProvider.retrieveInstance('chromatic'));
 
         this.chordNotes.splice(0, this.chordNotes.length); // clear all
-        this.chordNotes.push(new Pitch(this.root, Pitch.OCTAVE_MIN));
 
         let i2 = 0, oct = Pitch.OCTAVE_MIN;
         let nip: IPitchClass;
         // tslint:disable-next-line:no-bitwise
         let flag_mask = 1 << (Chord.FLAG_COUNT - 1);
         let on = false;
-        // NEED TO CHECK THE flag_mask AND THE RANGE of i!!!
-        for (let i = 0; i < Chord.FLAG_COUNT - 1; i++) { // && flag_mask >= 1
+
+        for (let i = 0; i < Chord.FLAG_COUNT; i++) {
             // tslint:disable-next-line:no-bitwise
             on = (this.quality.chordQualityValue & flag_mask) === flag_mask;
             if (on) {
-                i2 = Math.floor(i / this._chromaticScale.diatonicNotes.length);
+                i2 = i % (this._chromaticScale.diatonicNotes.length - 1);
                 nip = this._chromaticScale.diatonicNotes[i2];
                 if (i > 0 && nip.pitchClassName === 'C') { oct++; }
                 this.chordNotes.push(new Pitch(nip, oct));
@@ -77,6 +76,5 @@ export class Chord {
             // tslint:disable-next-line:no-bitwise
             flag_mask = flag_mask >> 1;
         }
-        // FULFILL OF BREAKPOINTS
     }
 }
