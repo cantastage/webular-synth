@@ -1,5 +1,5 @@
 import { sealed } from '../../../system2/utilities/ClassDecorators';
-import { IChordQuality, ChordQualities } from './IChordQualities';
+import { IChordQuality, ChordQualities } from './IChordQuality';
 
 @sealed
 class ChordQuality implements IChordQuality {

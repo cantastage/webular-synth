@@ -1,7 +1,7 @@
 import { IPitchClass } from '../IPitchClass';
 
-export interface IChordNote {
+export interface IPitch {
     readonly pitchClass: IPitchClass;
-    readonly octave: number; // 0? - 4, 5, 6
+    readonly octave: number;
     readonly frequency: number;
 }

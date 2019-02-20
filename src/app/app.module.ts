@@ -36,7 +36,8 @@ import { ChordSubstitutionComponent } from './synth-modules/chord-substitution/c
     ADSRComponent,
     OscillatorComponent,
     AmplifierComponent,
-    ProgSequencerComponent,
+    ChordSubstitutionComponent,
+    ProgSequencerComponent
   ],
   entryComponents: [MoogLadderFilterComponent, FilterComponent,
     LfoComponent, ClockComponent, SequencerComponent, ADSRComponent, OscillatorComponent, AmplifierComponent,

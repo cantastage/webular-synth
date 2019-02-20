@@ -78,8 +78,6 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
     this.loadPatch();
     if (this.isInSoundChain) {
       this.clockManager.attach(this);
-    }
-    if (this.isInSoundChain) {
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
     }
   }

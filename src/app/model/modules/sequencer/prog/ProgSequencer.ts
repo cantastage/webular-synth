@@ -1,27 +1,31 @@
 import { IProgSequencer } from './IProgSequencer';
-import { Scale } from '../Scale';
-import { IHarmonization } from '../IHarmonization';
-import { PitchClassesProvider } from '../PitchClassesProvider';
-import { HarmonizationsProvider } from '../HarmonizationsProvider';
-import { ProgMeasure } from './ProgMeasure';
+import { Progression } from './Progression';
 
 export class ProgSequencer implements IProgSequencer {
-    private _scale: Scale;
-    private _measure: ProgMeasure;
+    private _difficulty: number;
+    private _progression: Progression;
 
-    public get scale(): Scale {
-        return this._scale;
+    public get difficulty(): number {
+        return this._difficulty;
     }
-    public get measure(): ProgMeasure {
-        return this._measure;
+    public set difficulty(difficulty: number) {
+        if (difficulty === undefined || difficulty < 1 || difficulty > 3) {
+            throw new Error('error while assigning the difficulty value');
+        }
+        this._difficulty = difficulty;
     }
-    public get harmonization(): IHarmonization {
-        return this.scale.harmonization;
+    public get progression(): Progression {
+        return this._progression;
+    }
+    public set progression(progression: Progression) {
+        if (progression === undefined) {
+            throw new Error('error while assigning the progression value');
+        }
+        this._progression = progression;
     }
 
-    public constructor() {
-        // default initialization
-        this._scale = new Scale(PitchClassesProvider.retrieveInstance('C'),
-            HarmonizationsProvider.retrieveInstance('chromatic'));
+    public constructor(difficulty: number, progression: Progression) {
+        this.difficulty = difficulty;
+        this.progression = progression;
     }
 }

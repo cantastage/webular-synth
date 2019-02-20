@@ -12,6 +12,9 @@ import { HarmonizationsProvider } from '../model/modules/sequencer/Harmonization
 import { Measure } from '../model/modules/sequencer/basic/Measure';
 import { AmplifierComponent } from '../synth-modules/amplifier/amplifier.component';
 import { ChordSubstitutionComponent } from '../synth-modules/chord-substitution/chord-substitution.component';
+import { Progression } from '../model/modules/sequencer/prog/Progression';
+import { Chord } from '../model/modules/sequencer/prog/Chord';
+import { ChordQualitiesProvider } from '../model/modules/chord-substitution/ChordQualitiesProvider';
 
 @Injectable({
   providedIn: 'root'
@@ -31,8 +34,14 @@ export class ModuleManagerService {
     );
   }
   private get progSequencerDefaultState(): any {
-    // alter the ProgSequencer in the model
-    return new ProgSequencer();
+    return new ProgSequencer(1,
+      new Progression([
+        new Chord(PitchClassesProvider.retrieveInstance('D'), ChordQualitiesProvider.retrieveInstance('min7')),
+        new Chord(PitchClassesProvider.retrieveInstance('A'), ChordQualitiesProvider.retrieveInstance('min7')),
+        new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')),
+        new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj7'))
+      ])
+    );
   }
   private get oscillatorDefaultState(): any {
     return { waveForm: 'sine', maxVelocity: 100, addSemitone: 0, finePitch: 0, active: 0 };
@@ -49,8 +58,8 @@ export class ModuleManagerService {
 
   public getModules(): ModuleItem[] {
     return [
-      new ModuleItem(SequencerComponent, { name: 'SEQUENCER', state: this.sequencerDefaultState }),
-      // new ModuleItem(ProgSequencerComponent, { name: 'SEQUENCER', state: this.progSequencerDefaultState }),
+      // new ModuleItem(SequencerComponent, { name: 'SEQUENCER', state: this.sequencerDefaultState }),
+      new ModuleItem(ProgSequencerComponent, { name: 'SEQUENCER', state: this.progSequencerDefaultState }),
       new ModuleItem(OscillatorComponent, { name: 'OSCILLATOR', state: this.oscillatorDefaultState }),
       new ModuleItem(MoogLadderFilterComponent, { name: 'MOOG LADDER FILTER', state: this.mlFilterDefaultState }),
       new ModuleItem(FilterComponent, { name: 'BIQUADRATIC FILTER', state: this.filterDefaultState }),

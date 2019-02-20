@@ -1,29 +1,17 @@
 <div class="container-block">
-  <div class="sequencer">
+  <div class="prog-sequencer">
     <div class="title">{{this.data.name}}</div>
-    <table class="table2">
-      <tbody class="measure">
-        <tr *ngFor="let diatonicNote of sequencer.scale.diatonicNotes; let notei = index;">
-          <td class="column-off">{{diatonicNote.pitchClassName}}</td>
-
-          <!-- HANDLE POSSIBLE CHORDS, NO LONGER THE OCTAVES - MODEL CHANGE -->
-          <td class="inputcell column-off" *ngFor="let subdivision of sequencer.measure.subdivisions; let subdivisioni = index;"
-          [ngClass]="{'column-on': (subdivisioni == subdivisionCounter)}">
-            <select [(ngModel)]="subdivision.octaves[notei]">
-                <option *ngFor="let possibleOctave of possibleOctaves;" [ngValue]="possibleOctave">{{possibleOctave}}</option>
-            </select>
-          </td>
-        </tr>
-  
-        <tr> <!-- DURATION ASSUMPTION ALWAYS AT 100%? -->
-          <td class="column-off">DURATION</td>
-          <td class="column-off" *ngFor="let subdivision of sequencer.measure.subdivisions; let subdivisioni = index;">
-              <input type="range" class="inputcell"
-              min="0" max="1" step="0.25"
-              [(ngModel)]="subdivision.duration" (mousedown)="$event.stopPropagation()" />
-          </td>
-        </tr>
-      </tbody>
+    <table> <!-- classes?! -->
+      <tr>
+        <td *ngFor="let chord of progSequencer.progression.chords;">
+          <select [(ngModel)]="chord.root">
+            <option *ngFor="let pitchClass of pitchClasses;" [ngValue]="pitchClass">{{pitchClass.pitchClassName}}</option>
+          </select>
+          <select [(ngModel)]="chord.quality">
+            <option *ngFor="let chordQuality of chordQualities;" [ngValue]="chordQuality">{{chordQuality.chordQualityName}}</option>
+          </select>
+        </td>
+      </tr>
     </table>
   </div>
 </div>

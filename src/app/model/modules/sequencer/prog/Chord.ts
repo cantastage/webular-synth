@@ -1,21 +1,22 @@
-import { PitchClassesProvider } from 'src/app/model/modules/sequencer/PitchClassesProvider';
-import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
 import { IPitchClass } from 'src/app/model/modules/sequencer/IPitchClass';
-import { IChordQuality } from 'src/app/model/modules/chord-substitution/IChordQualities';
+import { IChordQuality } from 'src/app/model/modules/chord-substitution/IChordQuality';
 import { Scale } from 'src/app/model/modules/sequencer/Scale';
-import { IChordNote } from './IChordNote';
+import { IPitch } from './IPitch';
+import { HarmonizationsProvider } from '../HarmonizationsProvider';
+import { Pitch } from './Pitch';
 
 /**
  * Root is played on the 4th octave, extensions on the 5th
  *
  */
 export class Chord {
+    public static readonly FLAG_COUNT = 18;
     private _root: IPitchClass;
     private _quality: IChordQuality;
 
     // cache field depending on private ones
     private _chromaticScale: Scale;
-    private _chordNotes: IChordNote[];
+    private _chordNotes: IPitch[];
 
     public get root(): IPitchClass {
         return this._root;
@@ -41,16 +42,41 @@ export class Chord {
             this.updateCache();
         }
     }
-    public get chordNotes(): IChordNote[] {
+    public get chordNotes(): IPitch[] {
         return this._chordNotes;
     }
 
-    constructor(root: IPitchClass, quality: IChordQuality) {
+    public constructor(root: IPitchClass, quality: IChordQuality) {
+        this._chordNotes = new Array<IPitch>();
         this.root = root;
         this.quality = quality;
     }
 
     private updateCache(): void {
-        throw new Error('NOT IMPLEMENTED YET');
+        this._chromaticScale = new Scale(this.root, HarmonizationsProvider.retrieveInstance('chromatic'));
+
+        this.chordNotes.splice(0, this.chordNotes.length); // clear all
+        this.chordNotes.push(new Pitch(this.root, Pitch.OCTAVE_MIN));
+
+        let i2 = 0, oct = Pitch.OCTAVE_MIN;
+        let nip: IPitchClass;
+        // tslint:disable-next-line:no-bitwise
+        let flag_mask = 1 << (Chord.FLAG_COUNT - 1);
+        let on = false;
+        // NEED TO CHECK THE flag_mask AND THE RANGE of i!!!
+        for (let i = 0; i < Chord.FLAG_COUNT - 1; i++) { // && flag_mask >= 1
+            // tslint:disable-next-line:no-bitwise
+            on = (this.quality.chordQualityValue & flag_mask) === flag_mask;
+            if (on) {
+                i2 = Math.floor(i / this._chromaticScale.diatonicNotes.length);
+                nip = this._chromaticScale.diatonicNotes[i2];
+                if (i > 0 && nip.pitchClassName === 'C') { oct++; }
+                this.chordNotes.push(new Pitch(nip, oct));
+            }
+
+            // tslint:disable-next-line:no-bitwise
+            flag_mask = flag_mask >> 1;
+        }
+        // FULFILL OF BREAKPOINTS
     }
 }

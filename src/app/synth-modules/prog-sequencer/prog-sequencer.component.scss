@@ -1,4 +1,4 @@
-.sequencer {
+.prog-sequencer {
     display: block;
     border: 1px solid rgb(10, 10, 10);
     border-radius: 5px;
@@ -13,32 +13,15 @@
 .container-block{
     display: inline-flex;
 }
-.sequencer .title {
+.prog-sequencer .title {
     background-color: #4a4a4c;
     color: #8c8c8c;
     border: 1px solid rgb(10, 10, 10);
     border-radius: 5px;
     padding: 2px;
 }
-.sequencer .table1 {
-	width: 100%;
-    padding: 2px;
-}
-.sequencer .table2 {
-    padding: 2px;
-}
 
-.sequencer .table2 tr {
-	height: 20px;
-}
-.sequencer .table2 tr td {
-    border: 1px solid rgb(10, 10, 10);
-	vertical-align: middle;
-}
-.sequencer .table2 tr td .inputcell {
-	width: 80px;
-	vertical-align: middle;
-}
+
 
 .column-off {
 	background-color: transparent;
