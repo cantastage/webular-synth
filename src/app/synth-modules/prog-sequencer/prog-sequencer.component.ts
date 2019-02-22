@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-
+import { SubstitutionManagerService } from 'src/app/services/substitution-manager.service';
+import { MessageService } from 'src/app/services/message.service';
 import { IProgSequencer } from '../../model/modules/sequencer/prog/IProgSequencer';
 import { PitchClassesProvider } from '../../model/modules/sequencer/PitchClassesProvider';
 import { IPitchClass } from '../../model/modules/sequencer/IPitchClass';
@@ -37,7 +38,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, IObserver<numb
   }
 
   constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
-    private contextManager: AudioContextManagerService) { }
+    private contextManager: AudioContextManagerService, private substitutionManager: SubstitutionManagerService,
+    private messageService: MessageService) { }
 
   public loadPatch(): void {
     this._progSequencer = this.data.state;
