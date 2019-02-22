@@ -77,4 +77,7 @@ export class Chord {
             flag_mask = flag_mask >> 1;
         }
     }
+    public toString(): string {
+        return this.root.pitchClassName + this.quality.chordQualityName;
+    }
 }

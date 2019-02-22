@@ -69,7 +69,16 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, IObserver<numb
 
   // IObserver member
   update(beatNumber: number): void {
-    // WHAT TODO?!?!
+    const aeiou = SubstitutionManagerService.buildSubstitutionSequence(
+      SubstitutionManagerService.funny(this.progSequencer.progression, 3)
+    );
+    // console.log(this.progSequencer.progression.chords[0].toString());
+    // console.log('subst with ' + aeiou[1].toString());
+    // for (let i = 0; i < aeiou[1].chordNotes.length; i++) {
+    //   this.midiManager.sendRawNote(15, aeiou[1].chordNotes[i].frequency,
+    //     60 / this.clockManager.bpm * 1000,
+    //     127);
+    // }
   }
 
   getInput(): AudioNode {

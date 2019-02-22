@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable} from '../system2/patterns/observer/Observable.js';
-import { MessageService} from 'src/app/services/message.service';
 import { NoteNames, EnharmonicNames } from 'src/app/model/modules/sequencer/IPitchClass';
 import { PitchClassesProvider } from 'src/app/model/modules/sequencer/PitchClassesProvider';
-import { IChordQuality } from 'src/app/model/modules/chord-substitution/IChordQuality';
 import { Chord } from '../model/modules/sequencer/prog/Chord.js';
 import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
 import { sub_tables, substitutionRulesets } from 'src/app/model/modules/chord-substitution/SubstitutionRules';
+import { Progression } from '../model/modules/sequencer/prog/Progression.js';
 /*
 This Service provides support for the chord substitution module
  */
@@ -15,38 +13,26 @@ This Service provides support for the chord substitution module
   providedIn: 'root'
 })
 
-export class SubstitutionManagerService extends Observable<Array<Array<Chord>>> {
+export class SubstitutionManagerService {
 
-  private message: any;
-  private _chordQualities: IChordQuality[];
   private substitutionTable: any;
-  private difficultyLevel: number;
-  private substitutedProgression: any;
 
-  constructor(private messageService: MessageService) {
-    super();
-    this.messageService.getMessage().subscribe(message => { this.message = message;
-    this.onMessageReceive(this.message.message);
-     });
-  }
+  constructor() { }
 
-  private onMessageReceive(message: any) {
-    // Message comes in an array of 4 chords and 1 number indicating difficulty, elaborate actions for every chord
-    this.substitutedProgression = [];
-    this.difficultyLevel = message[message.length - 1];
-    // console.log('starting Chords', message);
-
-    for (let i = 0; i < message.length - 1; i++) {
+  public static funny(message: Progression, difficultyLevel: number): Array<Array<Chord>> {
+    const substitutedProgression = new Array<Array<Chord>>();
+    for (let i = 0; i < message.chords.length; i++) {
       // const a = this.convertEnharmonic(message[i]);
-      this.substitutedProgression[i] = this.findSubstitutionRules(message[i]); // (message[i]);
+      substitutedProgression[i] = SubstitutionManagerService.findSubstitutionRules(message.chords[i], difficultyLevel);
     }
-    // console.log('substitutions', this.substitutedProgression);
-    this.notify(this.substitutedProgression);
+    return substitutedProgression;
   }
-  private findSubstitutionRules(chord: Chord): Array<Chord> {
+
+  private static findSubstitutionRules(chord: Chord, difficultyLevel: number): Array<Chord> {
     // console.log(chord);
     const substitution_rules = Array<any>();
     const possible_substitutions = Array<any>();
+    let substitutionTable: any[] = new Array<any>();
     const qualities = ChordQualitiesProvider.retrieveInstances();
     for (let i = 0; i < qualities.length; i++) {
       substitution_rules[i] = {
@@ -54,21 +40,24 @@ export class SubstitutionManagerService extends Observable<Array<Array<Chord>>> 
         sub_table: sub_tables[i]
       };
       if (chord.quality.chordQualityName ===  substitution_rules[i].name) {
-        this.substitutionTable = substitutionRulesets[i];
+        substitutionTable = substitutionRulesets[i];
       }
     }
     const transpositionValue = (chord.root).pitchClassValue;
     // console.log('trans', transpositionValue);
-    const intermediate = this.transposeChord(this.findChordSubstitution(), transpositionValue);
+    const intermediate = SubstitutionManagerService.transposeChord(
+      SubstitutionManagerService.findChordSubstitution(substitutionTable, difficultyLevel),
+      transpositionValue
+    );
     return intermediate;
   }
 
-  private findChordSubstitution(): any {
+  private static findChordSubstitution(substitutionTable: any[], difficultyLevel: number): Array<Chord> {
     const tableConstraint = [];
     // console.log(this.substitutionTable);
-    for (let i = 0; i < this.substitutionTable.length; i++) {
-      if ( this.substitutionTable[i].difficulty <= this.difficultyLevel) {
-        tableConstraint.push(this.substitutionTable[i]);
+    for (let i = 0; i < substitutionTable.length; i++) {
+      if ( substitutionTable[i].difficulty <= difficultyLevel) {
+        tableConstraint.push(substitutionTable[i]);
       }
     }
     const choice = Math.floor(Math.random() * tableConstraint.length);
@@ -76,8 +65,7 @@ export class SubstitutionManagerService extends Observable<Array<Array<Chord>>> 
     return [tableConstraint[choice].chord1, tableConstraint[choice].chord2];
   }
 
-
-  private transposeChord (arg: Array<Chord>, value: number): Array<Chord> {
+  private static transposeChord (arg: Array<Chord>, value: number): Array<Chord> {
     const pitchValue = [];
     const transposedPitch = [];
     const transposedChords = [];
@@ -100,13 +88,24 @@ export class SubstitutionManagerService extends Observable<Array<Array<Chord>>> 
           } else {
             transposedPitch[i] = NoteNames[pitchValue[i] + value];
         }
-
       }
       // console.log('trans pitch', transposedPitch[i]);
       transposedChords[i] = new Chord(PitchClassesProvider.retrieveInstance(transposedPitch[i]), arg[i].quality);
     }
     // console.log('transp chords: ', transposedChords);
     return transposedChords;
+  }
+
+  public static buildSubstitutionSequence(arg: Array<Array<Chord>>): Array<Chord> {
+    const chordSeq = [];
+    // TODO
+    for (let i = 0; i < arg.length; i++) {
+      for (let j = 0; j < arg[i].length; j++) {
+        chordSeq.push(arg[i][j]);
+      }
+    }
+    // console.log(chordSeq);
+    return chordSeq;
   }
 /*
   private convertEnharmonic(chord: Chord): Chord {
