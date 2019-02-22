@@ -15,7 +15,7 @@ This Service provides support for the chord substitution module
   providedIn: 'root'
 })
 
-export class SubstitutionManagerService extends Observable<Chord> {
+export class SubstitutionManagerService extends Observable<Array<Array<Chord>>> {
 
   private message: any;
   private _chordQualities: IChordQuality[];
