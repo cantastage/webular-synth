@@ -7,18 +7,19 @@ import { IPitchClass } from '../../model/modules/sequencer/IPitchClass';
 import { IHarmonization } from '../../model/modules/sequencer/IHarmonization';
 import { HarmonizationsProvider } from 'src/app/model/modules/sequencer/HarmonizationsProvider';
 import { Subdivision } from '../../model/modules/sequencer/basic/Subdivision';
-import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
+// import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
 import { SynthModule } from 'src/app/interfaces/module.component';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { Observer } from 'rxjs';
 
 @Component({
   selector: 'app-sequencer',
   templateUrl: './sequencer.component.html',
   styleUrls: ['./sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>, SynthModule {
+export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
   @Input() data: any;
   @Input() isInSoundChain: boolean;
   @Input() position: number;
@@ -29,6 +30,7 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
   private _metrics: number[];
   private _possibleOctaves: number[];
   private _subdivisionCounter: number;
+  private _clockObserver: Observer<number>;
 
   private _sequencer: ISequencer;
   public get pitchClasses(): IPitchClass[] {
@@ -51,7 +53,13 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
   }
 
   constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
-    private contextManager: AudioContextManagerService) { }
+    private contextManager: AudioContextManagerService) {
+    this._clockObserver = {
+      next: (value) => { console.log('questa è la funzione che viene chiamata ogni volta che il clock spara valori'); },
+      error: (error) => { console.log('Error in clock observer from prog sequencer: ', error); },
+      complete: () => console.log('Observer completed task')
+    };
+  }
 
   public loadPatch(): void {
     this._sequencer = this.data.state;
@@ -77,14 +85,14 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
 
     this.loadPatch();
     if (this.isInSoundChain) {
-      this.clockManager.attach(this);
+      this.clockManager.attach(this._clockObserver);
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
     }
   }
 
   ngOnDestroy() {
     if (this.isInSoundChain) {
-      this.clockManager.detach(this);
+      this.clockManager.detach(this._clockObserver);
     }
   }
 
