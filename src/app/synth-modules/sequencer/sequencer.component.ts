@@ -7,7 +7,6 @@ import { IPitchClass } from '../../model/modules/sequencer/IPitchClass';
 import { IHarmonization } from '../../model/modules/sequencer/IHarmonization';
 import { HarmonizationsProvider } from 'src/app/model/modules/sequencer/HarmonizationsProvider';
 import { Subdivision } from '../../model/modules/sequencer/basic/Subdivision';
-// import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
 import { SynthModule } from 'src/app/interfaces/module.component';
@@ -52,12 +51,12 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
     return this._sequencer;
   }
 
-  constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
+  public constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
     private contextManager: AudioContextManagerService) {
     this._clockObserver = {
-      next: (value) => { console.log('questa è la funzione che viene chiamata ogni volta che il clock spara valori'); },
-      error: (error) => { console.log('Error in clock observer from prog sequencer: ', error); },
-      complete: () => console.log('Observer completed task')
+      next: (value) => { this.onTick(value); },
+      error: (error) => { return; },
+      complete: () => { return; }
     };
   }
 
@@ -65,7 +64,7 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
     this._sequencer = this.data.state;
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this._pitchClasses = PitchClassesProvider.retrieveInstances();
     this._harmonizations = HarmonizationsProvider.retrieveInstances();
     this._metrics = function (): number[] {
@@ -90,7 +89,7 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
     }
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.isInSoundChain) {
       this.clockManager.detach(this._clockObserver);
     }
@@ -101,8 +100,7 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
     return this.data;
   }
 
-  // IObserver member
-  update(beatNumber: number): void {
+  private onTick(beatNumber: number): void {
     this._subdivisionCounter = beatNumber % this._sequencer.measure.subdivisions.length;
     const currentSubdivision = this._sequencer.measure.subdivisions[this._subdivisionCounter];
     if (currentSubdivision.duration !== 0 && currentSubdivision.velocity !== 0) {

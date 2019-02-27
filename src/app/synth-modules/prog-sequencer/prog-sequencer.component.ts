@@ -4,7 +4,6 @@ import { MessageService } from 'src/app/services/message.service';
 import { IProgSequencer } from '../../model/modules/sequencer/prog/IProgSequencer';
 import { PitchClassesProvider } from '../../model/modules/sequencer/PitchClassesProvider';
 import { IPitchClass } from '../../model/modules/sequencer/IPitchClass';
-// import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
 import { SynthModule } from 'src/app/interfaces/module.component';
@@ -19,7 +18,6 @@ import { Observer } from 'rxjs';
   styleUrls: ['./prog-sequencer.component.scss']
 })
 export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
-
   @Input() data: any;
   @Input() isInSoundChain: boolean;
   @Input() position: number;
@@ -28,8 +26,9 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   private _pitchClasses: IPitchClass[];
   private _chordQualities: IChordQuality[];
   private _progSequencer: IProgSequencer;
-  private _clock_observer: Observer<number>;
-  private _midi_observer: Observer<number>;
+
+  private _clockObserver: Observer<number>;
+  private _midiObserver: Observer<[number, boolean, number, number]>;
 
   public get pitchClasses(): IPitchClass[] {
     return this._pitchClasses;
@@ -41,19 +40,19 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     return this._progSequencer;
   }
 
-  constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
+  public constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
     private contextManager: AudioContextManagerService, private substitutionManager: SubstitutionManagerService,
     private messageService: MessageService) {
     // init observers
-    this._clock_observer = {
-      next: (value) => { console.log('questa è la funzione che viene chiamata ogni volta che il clock spara valori'); },
-      error: (error) => { console.log('Error in clock observer from prog sequencer: ', error); },
-      complete: () => console.log('Observer completed task')
+    this._clockObserver = {
+      next: (value) => { this.onTick(value); },
+      error: (error) => { return; },
+      complete: () => { return; }
     };
-    this._midi_observer = {
-      next: (value) => { console.log('questa è la funzione che viene chiamata ogni volta che il clock spara valori'); },
-      error: (error) => { console.log('Error in midi observer from prog sequencer: ', error); },
-      complete: () => console.log('Observer completed task')
+    this._midiObserver = {
+      next: (value) => { this.onMessage(value); },
+      error: (error) => { return; },
+      complete: () => { return; }
     };
   }
 
@@ -62,20 +61,22 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   }
 
   // OnInit lifecycle
-  ngOnInit() {
+  public ngOnInit() {
     this._pitchClasses = PitchClassesProvider.retrieveInstances();
     this._chordQualities = ChordQualitiesProvider.retrieveInstances();
 
     this.loadPatch();
     if (this.isInSoundChain) {
-      this.clockManager.attach(this._clock_observer);
+      this.clockManager.attach(this._clockObserver);
+      this.midiManager.attach(this._midiObserver);
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
     }
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.isInSoundChain) {
-      this.clockManager.detach(this._clock_observer);
+      this.clockManager.detach(this._clockObserver);
+      this.midiManager.detach(this._midiObserver);
     }
   }
 
@@ -84,11 +85,12 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     return this.data;
   }
 
-  // IObserver member
-  update(beatNumber: number): void {
-    const aeiou = SubstitutionManagerService.buildSubstitutionSequence(
-      SubstitutionManagerService.funny(this.progSequencer.progression, 3)
-    );
+  private onTick(beatNumber: number): void {
+    console.log(this);
+    console.log(beatNumber);
+    // const aeiou = SubstitutionManagerService.buildSubstitutionSequence(
+    //   SubstitutionManagerService.funny(this.progSequencer.progression, 3)
+    // );
     // console.log(this.progSequencer.progression.chords[0].toString());
     // console.log('subst with ' + aeiou[1].toString());
     // for (let i = 0; i < aeiou[1].chordNotes.length; i++) {
@@ -96,6 +98,9 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     //     60 / this.clockManager.bpm * 1000,
     //     127);
     // }
+  }
+  private onMessage(message: [number, boolean, number, number]) {
+    console.log('received things!');
   }
 
   getInput(): AudioNode {
@@ -112,10 +117,4 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   disconnectSynthModule(): void {
     return;
   }
-
-  // CALLBACK FOR THE OBSERVABLE
-  // public next(value: number): void {
-  //   // console.log('MERDAAAAAAAAAAAAAAAAAAAAA');
-  //   this.update(value);
-  // }
 }
