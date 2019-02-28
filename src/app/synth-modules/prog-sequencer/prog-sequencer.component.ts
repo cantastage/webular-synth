@@ -27,6 +27,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   private _pitchClasses: IPitchClass[];
   private _chordQualities: IChordQuality[];
   private _progSequencer: IProgSequencer;
+  private _chordPlaying: string;
+  private _chordNext: string;
 
   private _substitutedChords: Array<Chord>;
 

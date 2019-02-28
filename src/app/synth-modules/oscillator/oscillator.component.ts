@@ -128,11 +128,15 @@ export class OscillatorComponent implements OnInit, OnDestroy, SynthModule {
 
   public noteOff(channel, midiNote) {
     if (channel === 15) {
-      this.active_voices[100 + midiNote].stopNote();
-      delete this.active_voices[100 + midiNote];
+      if (this.active_voices[100 + midiNote]) {
+        this.active_voices[100 + midiNote].stopNote();
+        delete this.active_voices[100 + midiNote];
+      }
     } else {
-      this.active_voices[midiNote].stopNote();
-      delete this.active_voices[midiNote];
+      if (this.active_voices[midiNote]) {
+        this.active_voices[midiNote].stopNote();
+        delete this.active_voices[midiNote];
+      }
     }
   }
 
