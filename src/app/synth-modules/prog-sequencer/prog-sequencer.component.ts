@@ -11,6 +11,7 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
 import { IChordQuality } from 'src/app/model/modules/chord-substitution/IChordQuality';
 import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
 import { Observer } from 'rxjs';
+import { Chord } from 'src/app/model/modules/sequencer/prog/Chord';
 
 @Component({
   selector: 'app-sequencer',
@@ -26,6 +27,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   private _pitchClasses: IPitchClass[];
   private _chordQualities: IChordQuality[];
   private _progSequencer: IProgSequencer;
+
+  private _substitutedChords: Array<Chord>;
 
   private _clockObserver: Observer<number>;
   private _midiObserver: Observer<[number, boolean, number, number]>;
@@ -86,22 +89,38 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   }
 
   private onTick(beatNumber: number): void {
-    console.log(this);
-    console.log(beatNumber);
-    // const aeiou = SubstitutionManagerService.buildSubstitutionSequence(
-    //   SubstitutionManagerService.funny(this.progSequencer.progression, 3)
-    // );
-    // console.log(this.progSequencer.progression.chords[0].toString());
-    // console.log('subst with ' + aeiou[1].toString());
-    // for (let i = 0; i < aeiou[1].chordNotes.length; i++) {
-    //   this.midiManager.sendRawNote(15, aeiou[1].chordNotes[i].frequency,
-    //     60 / this.clockManager.bpm * 1000,
-    //     127);
-    // }
+    // TEMPORARY
+    if (this._substitutedChords === undefined) {
+      this._substitutedChords =
+        SubstitutionManagerService.retrieveSubstitutionSequence(this.progSequencer.progression, 3);
+    }
+    // NECESSARY
+    // TODO handle of basic case with chords of duration 4/4 (no substitutions)
+
+    if (beatNumber % 2 === 0) { // each substituted chord has duration 2/4
+      const currenti = (beatNumber / 2) %
+        (2 * this.progSequencer.progression.chords.length);
+        // if (this._substitutedChords[currenti] !==
+        //   this._substitutedChords[currenti === 0 ?
+        //     this._substitutedChords.length - 1 : currenti - 1]) { // current != previous in circular array
+          // this.midiManager.sendChord(15, this._substitutedChords[currenti],
+          //   60 / this.clockManager.bpm * 2 * 1000, 127);
+        // }
+        this.midiManager.sendChord(15, this.progSequencer.progression.chords[currenti % 4],
+          60 / this.clockManager.bpm * 2 * 1000, 127);
+    }
   }
-  private onMessage(message: [number, boolean, number, number]) {
-    console.log('received things!');
+  // TODO: classification of [] into MidiExtract{channel, isOn, midiNote, velocity}
+  private onMessage(arg: [number, boolean, number, number]) {
+    // HERE remember to check that the channel is not 15, the one of this same sequencer!
+    if (arg[0] !== 15) {
+      console.log(arg);
+    }
   }
+
+  // MORE TODO: the state is automatically updated in the model,
+  // the rievaluation of the substituted chords vector must be done only on changes
+  // in order to improve the performances
 
   getInput(): AudioNode {
     return null;

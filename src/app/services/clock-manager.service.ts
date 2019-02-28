@@ -107,8 +107,9 @@ export class ClockManagerService implements IClock {
 
       return {
         unsubscribe() {
+          // TODO WHAT TO DO?
           // Remove from the observers array so it's no longer notified
-          this._clockObservers.splice(this._clockObservers.indexOf(observer), 1);
+          // this._clockObservers.splice(this._clockObservers.indexOf(observer), 1);
         }
       };
     };

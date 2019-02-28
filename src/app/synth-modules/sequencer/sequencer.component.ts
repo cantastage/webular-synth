@@ -101,17 +101,17 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
   }
 
   private onTick(beatNumber: number): void {
-    this._subdivisionCounter = beatNumber % this._sequencer.measure.subdivisions.length;
-    const currentSubdivision = this._sequencer.measure.subdivisions[this._subdivisionCounter];
+    this._subdivisionCounter = beatNumber % this.sequencer.measure.subdivisions.length;
+    const currentSubdivision = this.sequencer.measure.subdivisions[this._subdivisionCounter];
     if (currentSubdivision.duration !== 0 && currentSubdivision.velocity !== 0) {
       let currentReferralFreq, currentOctave, currentResultingFreq;
       // ASSUMPTION: HARMONIZATION COVERING A WHOLE OCTAVE
       const voiceRepetition =
         currentSubdivision.octaves[0] === currentSubdivision.octaves[currentSubdivision.octaves.length - 1];
-      const upperBound = this._sequencer.scale.diatonicNotes.length - (voiceRepetition ? 1 : 0);
+      const upperBound = this.sequencer.scale.diatonicNotes.length - (voiceRepetition ? 1 : 0);
       // SEND AUDIO/MIDI MESSAGE
       for (let i = 0; i < upperBound; i++) {
-        currentReferralFreq = this._sequencer.scale.diatonicNotes[i].referralFrequency;
+        currentReferralFreq = this.sequencer.scale.diatonicNotes[i].referralFrequency;
         currentOctave = currentSubdivision.octaves[i];
         if (currentOctave !== 0) {
           currentResultingFreq = currentReferralFreq * (2 ** (currentOctave - 4));

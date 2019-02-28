@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { A4, SD } from '../model/modules/sequencer/IPitchClass.js';
 import { Observable, Observer } from 'rxjs';
+import { Chord } from '../model/modules/sequencer/prog/Chord.js';
+import { IPitch } from '../model/modules/sequencer/prog/IPitch.js';
 
 @Injectable({
   providedIn: 'root'
@@ -100,8 +102,9 @@ export class MidiContextManagerService {
 
       return {
         unsubscribe() {
+          // TODO WHAT TO DO?
           // Remove from the observers array so it's no longer notified
-          this._midiObservers.splice(this._midiObservers.indexOf(observer), 1);
+          // this._midiObservers.splice(this._midiObservers.indexOf(observer), 1);
         }
       };
     };
@@ -127,5 +130,14 @@ export class MidiContextManagerService {
     const midiNote = MidiContextManagerService.frequencyToMIDINote(frequency);
     this.sendRawNoteON(channel, midiNote, velocity);
     setTimeout(this.sendRawNoteOFF, duration - 20, this, channel, midiNote, velocity);
+  }
+
+  public sendPitch(channel: number, pitch: IPitch, duration: number, velocity: number): void {
+    this.sendRawNote(channel, pitch.frequency, duration, velocity);
+  }
+  public sendChord(channel: number, chord: Chord, duration: number, velocity: number): void {
+    chord.chordNotes.forEach(element => {
+      this.sendPitch(channel, element, duration, velocity);
+    });
   }
 }
