@@ -62,6 +62,11 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   public loadPatch(): void {
     this._progSequencer = this.data.state;
   }
+  private updateSubstituted(): void {
+    this._substitutedChords = // MUST BE UPDATED ON CHANGES
+      SubstitutionManagerService.retrieveSubstitutionSequence(this.progSequencer.progression,
+        this.progSequencer.difficulty);
+  }
 
   // OnInit lifecycle
   public ngOnInit() {
@@ -69,6 +74,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     this._chordQualities = ChordQualitiesProvider.retrieveInstances();
 
     this.loadPatch();
+    this.updateSubstituted();
+
     if (this.isInSoundChain) {
       this.clockManager.attach(this._clockObserver);
       this.midiManager.attach(this._midiObserver);
@@ -76,6 +83,9 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     }
   }
 
+  // TODO decide whether to delete the attach and detach functions
+  // leaving the sole subscription on the observable and maintaining
+  // a subscription here which can be "discarded" onDestroy
   public ngOnDestroy() {
     if (this.isInSoundChain) {
       this.clockManager.detach(this._clockObserver);
@@ -89,11 +99,6 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   }
 
   private onTick(beatNumber: number): void {
-    // TEMPORARY
-    if (this._substitutedChords === undefined) {
-      this._substitutedChords =
-        SubstitutionManagerService.retrieveSubstitutionSequence(this.progSequencer.progression, 3);
-    }
     // NECESSARY
     // TODO handle of basic case with chords of duration 4/4 (no substitutions)
 
@@ -104,10 +109,10 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
         //   this._substitutedChords[currenti === 0 ?
         //     this._substitutedChords.length - 1 : currenti - 1]) { // current != previous in circular array
           // this.midiManager.sendChord(15, this._substitutedChords[currenti],
-          //   60 / this.clockManager.bpm * 2 * 1000, 127);
+          //   this.clockManager.bms * 2, 127);
         // }
         this.midiManager.sendChord(15, this.progSequencer.progression.chords[currenti % 4],
-          60 / this.clockManager.bpm * 2 * 1000, 127);
+          this.clockManager.bms * 2, 127);
     }
   }
   // TODO: classification of [] into MidiExtract{channel, isOn, midiNote, velocity}
@@ -121,6 +126,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   // MORE TODO: the state is automatically updated in the model,
   // the rievaluation of the substituted chords vector must be done only on changes
   // in order to improve the performances
+  // (hint: exploit this.updateSubstituted())
 
   getInput(): AudioNode {
     return null;

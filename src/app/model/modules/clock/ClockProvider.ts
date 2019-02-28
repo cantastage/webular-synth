@@ -28,6 +28,9 @@ class Clock implements IClock {
     }
     this._bpm = bpm;
   }
+  public get bms(): number {
+    return 60 / this.bpm * 1000;
+  }
 
   public constructor(bpm: number) {
     this.bpm = bpm;

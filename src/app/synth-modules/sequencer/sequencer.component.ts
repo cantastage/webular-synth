@@ -116,7 +116,7 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
         if (currentOctave !== 0) {
           currentResultingFreq = currentReferralFreq * (2 ** (currentOctave - 4));
           this.midiManager.sendRawNote(15, currentResultingFreq,
-            60 / this.clockManager.bpm * currentSubdivision.duration * 1000,
+            this.clockManager.bms * currentSubdivision.duration,
             currentSubdivision.velocity);
         }
       }

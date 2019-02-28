@@ -38,8 +38,11 @@ export class ClockManagerService implements IClock {
       // partial stop with no isRunning modification
       clearInterval(this._th);
       // partial restart with no isRunning modification
-      this._th = setInterval(this.callback, 60.0 / this.bpm * 1000, this);
+      this._th = setInterval(this.callback, this.bms, this);
     }
+  }
+  public get bms(): number {
+    return this._clock.bms;
   }
   public get beatCount(): number {
     return this._beatCount;

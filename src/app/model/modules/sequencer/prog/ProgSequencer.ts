@@ -24,8 +24,8 @@ export class ProgSequencer implements IProgSequencer {
         this._progression = progression;
     }
 
-    public constructor(difficulty: number, progression: Progression) {
-        this.difficulty = difficulty;
+    public constructor(progression: Progression, difficulty: number) {
         this.progression = progression;
+        this.difficulty = difficulty;
     }
 }

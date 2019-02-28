@@ -33,14 +33,14 @@ export class ModuleManagerService {
     );
   }
   private get progSequencerDefaultState(): any {
-    return new ProgSequencer(1,
+    return new ProgSequencer(
       new Progression([
         new Chord(PitchClassesProvider.retrieveInstance('D'), ChordQualitiesProvider.retrieveInstance('min7')),
         new Chord(PitchClassesProvider.retrieveInstance('A'), ChordQualitiesProvider.retrieveInstance('min7')),
         new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')),
         new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj7'))
-      ])
-    );
+      ]),
+    3);
   }
   private get oscillatorDefaultState(): any {
     return { waveForm: 'sine', maxVelocity: 100, addSemitone: 0, finePitch: 0, active: 0 };
