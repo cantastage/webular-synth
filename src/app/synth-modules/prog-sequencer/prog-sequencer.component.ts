@@ -27,6 +27,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, IObserver<numb
   private _chordQualities: IChordQuality[];
 
   private _progSequencer: IProgSequencer;
+  private _chordPlaying: string;
+  private _chordNext: string;
   public get pitchClasses(): IPitchClass[] {
     return this._pitchClasses;
   }
@@ -72,13 +74,16 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, IObserver<numb
     const aeiou = SubstitutionManagerService.buildSubstitutionSequence(
       SubstitutionManagerService.funny(this.progSequencer.progression, 3)
     );
+    console.log(aeiou);
+    this._chordPlaying = aeiou[1].toString();
     // console.log(this.progSequencer.progression.chords[0].toString());
     // console.log('subst with ' + aeiou[1].toString());
-    // for (let i = 0; i < aeiou[1].chordNotes.length; i++) {
-    //   this.midiManager.sendRawNote(15, aeiou[1].chordNotes[i].frequency,
-    //     60 / this.clockManager.bpm * 1000,
-    //     127);
-    // }
+    for (let i = 0; i < aeiou[1].chordNotes.length; i++) {
+      this.midiManager.sendRawNote(15, aeiou[1].chordNotes[i].frequency,
+        60 / this.clockManager.bpm * 1000,
+        127);
+        // console.log(aeiou[1].chordNotes[i]);
+    }
   }
 
   getInput(): AudioNode {

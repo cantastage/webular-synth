@@ -61,7 +61,6 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   }
 
   update(arg: [number, boolean, number, number]): void {
-    console.log('called');
     if (arg[1] === true) {
       this.noteOn(arg[0], arg[2], arg[3]);
     } else {
@@ -122,11 +121,15 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
   public noteOff(channel, midiNote) {
     if (channel === 15) {
-      this.active_voices[100 + midiNote].stopNote();
-      delete this.active_voices[100 + midiNote];
+      if (this.active_voices[100 + midiNote]) {
+        this.active_voices[100 + midiNote].stopNote();
+        delete this.active_voices[100 + midiNote];
+      }
     } else {
-      this.active_voices[midiNote].stopNote();
-      delete this.active_voices[midiNote];
+      if (this.active_voices[midiNote]) {
+        this.active_voices[midiNote].stopNote();
+        delete this.active_voices[midiNote];
+      }
     }
   }
 
