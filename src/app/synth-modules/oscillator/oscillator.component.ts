@@ -3,9 +3,8 @@ import { AudioContextManagerService } from 'src/app/services/audio-context-manag
 import { AngularWaitBarrier } from 'blocking-proxy/built/lib/angular_wait_barrier';
 import { Voice } from 'src/app/synth-modules/oscillator/voice';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
-import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { SynthModule } from 'src/app/interfaces/module.component';
-import { Subscription } from 'rxjs';
+import { Subscription, Observer } from 'rxjs';
 import { MessageService } from 'src/app/services/message.service';
 import { KnobComponent } from '../sub-components/knob/knob.component';
 
@@ -15,7 +14,7 @@ import { KnobComponent } from '../sub-components/knob/knob.component';
   styleUrls: ['./oscillator.component.scss']
 })
 
-export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number, boolean, number, number]>, SynthModule {
+export class OscillatorComponent implements OnInit, OnDestroy, SynthModule {
   @Input() data: any;
   @Input() isInSoundChain: boolean;
   @Input() position: number;
@@ -32,6 +31,8 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
 
   private message: any;
   private subscription: Subscription;
+
+  private _midiObserver: Observer<[number, boolean, number, number]>;
 
   public get active(): number {
     return this._active;
@@ -58,9 +59,15 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     private contextManager: AudioContextManagerService,
     private messageService: MessageService,
     private midiManager: MidiContextManagerService) {
+      this._midiObserver = {
+        next: (value) => { this.onMessage(value); },
+        error: (error) => { return; },
+        complete: () => { return; }
+      };
   }
 
-  update(arg: [number, boolean, number, number]): void {
+  private onMessage(arg: [number, boolean, number, number]): void {
+    console.log('called');
     if (arg[1] === true) {
       this.noteOn(arg[0], arg[2], arg[3]);
     } else {
@@ -69,7 +76,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
   }
 
   // la onInit leggerà tutti i valori da synthModuleData.data
-  ngOnInit() {
+  public ngOnInit() {
     this.subscription = this.messageService.getMessage().subscribe(message => { this.message = message; });
     if (this.message === undefined) {
       this.message = { message: [0, 0, 1, 0] };
@@ -81,7 +88,7 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     this.g.gain.setValueAtTime(1, this.c.currentTime);
 
     if (this.isInSoundChain) {
-      this.midiManager.attach(this);
+      this.midiManager.attach(this._midiObserver);
     }
     // createAudioNode in audio context manager service
     if (this.isInSoundChain) {
@@ -89,10 +96,10 @@ export class OscillatorComponent implements OnInit, OnDestroy, IObserver<[number
     }
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this.subscription.unsubscribe();
     if (this.isInSoundChain) {
-      this.midiManager.detach(this);
+      this.midiManager.detach(this._midiObserver);
     }
   }
 

@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 
 import { A4, SD } from '../model/modules/sequencer/IPitchClass.js';
-import { Observable } from '../system2/patterns/observer/Observable.js';
+import { Observable, Observer } from 'rxjs';
+import { Chord } from '../model/modules/sequencer/prog/Chord.js';
+import { IPitch } from '../model/modules/sequencer/prog/IPitch.js';
 
 @Injectable({
   providedIn: 'root'
 })
 // Observable<[ch, isON, midiNote, velocity]>
-export class MidiContextManagerService extends Observable<[number, boolean, number, number]> {
+export class MidiContextManagerService {
   private static readonly MIDI_MSG_TYPE_MASK = 0xF0;
   private static readonly MIDI_MSG_TYPE_ON = 0x90;
   private static readonly MIDI_MSG_TYPE_OFF = 0x80;
@@ -19,12 +21,17 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
   private _midiAccess: any;
   private _midiInputDevices: any;
 
+  private _midiObservable: Observable<[number, boolean, number, number]>;
+  private _midiObservers: Array<Observer<[number, boolean, number, number]>>;
+
   public get midiAccess(): any {
     return this._midiAccess;
   }
 
   public constructor() {
-    super();
+    this._midiObservable = new Observable<[number, boolean, number, number]>(this.multicastSequenceSubscriber());
+    this._midiObservers = new Array<Observer<[number, boolean, number, number]>>();
+
     if (navigator['requestMIDIAccess']) {
       navigator['requestMIDIAccess']({
         sysex: false
@@ -70,6 +77,39 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
 
     return [ch, isON, note, v];
   }
+
+  /**
+   * Attach an observer to the clock observable
+   * @param observer the observer to be attached
+   */
+  public attach(observer: Observer<[number, boolean, number, number]>): void {
+    this._midiObservable.subscribe(observer);
+  }
+  private notify(value: [number, boolean, number, number]) {
+    this._midiObservers.forEach(obs => obs.next(value));
+  }
+  public detach(observer: Observer<[number, boolean, number, number]>): void {
+    // this._midiObservable.
+  }
+
+  // called when instantiating observable
+  private multicastSequenceSubscriber() {
+    // Return the subscriber function (runs when subscribe()
+    // function is invoked)
+    return (observer) => {
+      this._midiObservers.push(observer);
+      // When this is the first subscription, start the sequence
+
+      return {
+        unsubscribe() {
+          // TODO WHAT TO DO?
+          // Remove from the observers array so it's no longer notified
+          // this._midiObservers.splice(this._midiObservers.indexOf(observer), 1);
+        }
+      };
+    };
+  }
+
   // RX
   private onMIDIMessage(ctx: MidiContextManagerService, midiMessageEventArg: any): void {
     const midiArgs = MidiContextManagerService.extractMIDIFields(midiMessageEventArg);
@@ -90,5 +130,14 @@ export class MidiContextManagerService extends Observable<[number, boolean, numb
     const midiNote = MidiContextManagerService.frequencyToMIDINote(frequency);
     this.sendRawNoteON(channel, midiNote, velocity);
     setTimeout(this.sendRawNoteOFF, duration - 20, this, channel, midiNote, velocity);
+  }
+
+  public sendPitch(channel: number, pitch: IPitch, duration: number, velocity: number): void {
+    this.sendRawNote(channel, pitch.frequency, duration, velocity);
+  }
+  public sendChord(channel: number, chord: Chord, duration: number, velocity: number): void {
+    chord.chordNotes.forEach(element => {
+      this.sendPitch(channel, element, duration, velocity);
+    });
   }
 }

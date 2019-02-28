@@ -7,18 +7,18 @@ import { IPitchClass } from '../../model/modules/sequencer/IPitchClass';
 import { IHarmonization } from '../../model/modules/sequencer/IHarmonization';
 import { HarmonizationsProvider } from 'src/app/model/modules/sequencer/HarmonizationsProvider';
 import { Subdivision } from '../../model/modules/sequencer/basic/Subdivision';
-import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
 import { SynthModule } from 'src/app/interfaces/module.component';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
+import { Observer } from 'rxjs';
 
 @Component({
   selector: 'app-sequencer',
   templateUrl: './sequencer.component.html',
   styleUrls: ['./sequencer.component.scss']
 })
-export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>, SynthModule {
+export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
   @Input() data: any;
   @Input() isInSoundChain: boolean;
   @Input() position: number;
@@ -29,6 +29,7 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
   private _metrics: number[];
   private _possibleOctaves: number[];
   private _subdivisionCounter: number;
+  private _clockObserver: Observer<number>;
 
   private _sequencer: ISequencer;
   public get pitchClasses(): IPitchClass[] {
@@ -50,14 +51,20 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
     return this._sequencer;
   }
 
-  constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
-    private contextManager: AudioContextManagerService) { }
+  public constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
+    private contextManager: AudioContextManagerService) {
+    this._clockObserver = {
+      next: (value) => { this.onTick(value); },
+      error: (error) => { return; },
+      complete: () => { return; }
+    };
+  }
 
   public loadPatch(): void {
     this._sequencer = this.data.state;
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this._pitchClasses = PitchClassesProvider.retrieveInstances();
     this._harmonizations = HarmonizationsProvider.retrieveInstances();
     this._metrics = function (): number[] {
@@ -77,14 +84,14 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
 
     this.loadPatch();
     if (this.isInSoundChain) {
-      this.clockManager.attach(this);
+      this.clockManager.attach(this._clockObserver);
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
     }
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.isInSoundChain) {
-      this.clockManager.detach(this);
+      this.clockManager.detach(this._clockObserver);
     }
   }
 
@@ -93,19 +100,18 @@ export class SequencerComponent implements OnInit, OnDestroy, IObserver<number>,
     return this.data;
   }
 
-  // IObserver member
-  update(beatNumber: number): void {
-    this._subdivisionCounter = beatNumber % this._sequencer.measure.subdivisions.length;
-    const currentSubdivision = this._sequencer.measure.subdivisions[this._subdivisionCounter];
+  private onTick(beatNumber: number): void {
+    this._subdivisionCounter = beatNumber % this.sequencer.measure.subdivisions.length;
+    const currentSubdivision = this.sequencer.measure.subdivisions[this._subdivisionCounter];
     if (currentSubdivision.duration !== 0 && currentSubdivision.velocity !== 0) {
       let currentReferralFreq, currentOctave, currentResultingFreq;
       // ASSUMPTION: HARMONIZATION COVERING A WHOLE OCTAVE
       const voiceRepetition =
         currentSubdivision.octaves[0] === currentSubdivision.octaves[currentSubdivision.octaves.length - 1];
-      const upperBound = this._sequencer.scale.diatonicNotes.length - (voiceRepetition ? 1 : 0);
+      const upperBound = this.sequencer.scale.diatonicNotes.length - (voiceRepetition ? 1 : 0);
       // SEND AUDIO/MIDI MESSAGE
       for (let i = 0; i < upperBound; i++) {
-        currentReferralFreq = this._sequencer.scale.diatonicNotes[i].referralFrequency;
+        currentReferralFreq = this.sequencer.scale.diatonicNotes[i].referralFrequency;
         currentOctave = currentSubdivision.octaves[i];
         if (currentOctave !== 0) {
           currentResultingFreq = currentReferralFreq * (2 ** (currentOctave - 4));

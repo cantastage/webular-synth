@@ -107,6 +107,11 @@ export class SubstitutionManagerService {
     // console.log(chordSeq);
     return chordSeq;
   }
+  public static retrieveSubstitutionSequence(message: Progression, difficultyLevel: number): Array<Chord> {
+    return SubstitutionManagerService.buildSubstitutionSequence(
+      SubstitutionManagerService.funny(message, difficultyLevel)
+    );
+  }
 /*
   private convertEnharmonic(chord: Chord): Chord {
     if (NoteNames[chord.root.pitchClassName] === undefined) {

@@ -4,20 +4,21 @@ import { MessageService } from 'src/app/services/message.service';
 import { IProgSequencer } from '../../model/modules/sequencer/prog/IProgSequencer';
 import { PitchClassesProvider } from '../../model/modules/sequencer/PitchClassesProvider';
 import { IPitchClass } from '../../model/modules/sequencer/IPitchClass';
-import { IObserver } from 'src/app/system2/patterns/observer/IObserver';
 import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
 import { SynthModule } from 'src/app/interfaces/module.component';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
 import { IChordQuality } from 'src/app/model/modules/chord-substitution/IChordQuality';
 import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
+import { Observer } from 'rxjs';
+import { Chord } from 'src/app/model/modules/sequencer/prog/Chord';
 
 @Component({
   selector: 'app-sequencer',
   templateUrl: './prog-sequencer.component.html',
   styleUrls: ['./prog-sequencer.component.scss']
 })
-export class ProgSequencerComponent implements OnInit, OnDestroy, IObserver<number>, SynthModule {
+export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   @Input() data: any;
   @Input() isInSoundChain: boolean;
   @Input() position: number;
@@ -25,10 +26,15 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, IObserver<numb
   // UI selections
   private _pitchClasses: IPitchClass[];
   private _chordQualities: IChordQuality[];
-
   private _progSequencer: IProgSequencer;
   private _chordPlaying: string;
   private _chordNext: string;
+
+  private _substitutedChords: Array<Chord>;
+
+  private _clockObserver: Observer<number>;
+  private _midiObserver: Observer<[number, boolean, number, number]>;
+
   public get pitchClasses(): IPitchClass[] {
     return this._pitchClasses;
   }
@@ -39,28 +45,43 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, IObserver<numb
     return this._progSequencer;
   }
 
-  constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
+  public constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
     private contextManager: AudioContextManagerService, private substitutionManager: SubstitutionManagerService,
-    private messageService: MessageService) { }
+    private messageService: MessageService) {
+    // init observers
+    this._clockObserver = {
+      next: (value) => { this.onTick(value); },
+      error: (error) => { return; },
+      complete: () => { return; }
+    };
+    this._midiObserver = {
+      next: (value) => { this.onMessage(value); },
+      error: (error) => { return; },
+      complete: () => { return; }
+    };
+  }
 
   public loadPatch(): void {
     this._progSequencer = this.data.state;
   }
 
-  ngOnInit() {
+  // OnInit lifecycle
+  public ngOnInit() {
     this._pitchClasses = PitchClassesProvider.retrieveInstances();
     this._chordQualities = ChordQualitiesProvider.retrieveInstances();
 
     this.loadPatch();
     if (this.isInSoundChain) {
-      this.clockManager.attach(this);
+      this.clockManager.attach(this._clockObserver);
+      this.midiManager.attach(this._midiObserver);
       this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
     }
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.isInSoundChain) {
-      this.clockManager.detach(this);
+      this.clockManager.detach(this._clockObserver);
+      this.midiManager.detach(this._midiObserver);
     }
   }
 
@@ -69,22 +90,39 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, IObserver<numb
     return this.data;
   }
 
-  // IObserver member
-  update(beatNumber: number): void {
-    const aeiou = SubstitutionManagerService.buildSubstitutionSequence(
-      SubstitutionManagerService.funny(this.progSequencer.progression, 3)
-    );
-    console.log(aeiou);
-    this._chordPlaying = aeiou[1].toString();
-    // console.log(this.progSequencer.progression.chords[0].toString());
-    // console.log('subst with ' + aeiou[1].toString());
-    for (let i = 0; i < aeiou[1].chordNotes.length; i++) {
-      this.midiManager.sendRawNote(15, aeiou[1].chordNotes[i].frequency,
-        60 / this.clockManager.bpm * 1000,
-        127);
-        // console.log(aeiou[1].chordNotes[i]);
+  private onTick(beatNumber: number): void {
+    // TEMPORARY
+    if (this._substitutedChords === undefined) {
+      this._substitutedChords =
+        SubstitutionManagerService.retrieveSubstitutionSequence(this.progSequencer.progression, 3);
+    }
+    // NECESSARY
+    // TODO handle of basic case with chords of duration 4/4 (no substitutions)
+
+    if (beatNumber % 2 === 0) { // each substituted chord has duration 2/4
+      const currenti = (beatNumber / 2) %
+        (2 * this.progSequencer.progression.chords.length);
+        // if (this._substitutedChords[currenti] !==
+        //   this._substitutedChords[currenti === 0 ?
+        //     this._substitutedChords.length - 1 : currenti - 1]) { // current != previous in circular array
+          // this.midiManager.sendChord(15, this._substitutedChords[currenti],
+          //   60 / this.clockManager.bpm * 2 * 1000, 127);
+        // }
+        this.midiManager.sendChord(15, this.progSequencer.progression.chords[currenti % 4],
+          60 / this.clockManager.bpm * 2 * 1000, 127);
     }
   }
+  // TODO: classification of [] into MidiExtract{channel, isOn, midiNote, velocity}
+  private onMessage(arg: [number, boolean, number, number]) {
+    // HERE remember to check that the channel is not 15, the one of this same sequencer!
+    if (arg[0] !== 15) {
+      console.log(arg);
+    }
+  }
+
+  // MORE TODO: the state is automatically updated in the model,
+  // the rievaluation of the substituted chords vector must be done only on changes
+  // in order to improve the performances
 
   getInput(): AudioNode {
     return null;
