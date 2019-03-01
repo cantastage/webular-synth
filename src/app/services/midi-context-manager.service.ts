@@ -129,7 +129,7 @@ export class MidiContextManagerService {
     // we could check the parameters...
     const midiNote = MidiContextManagerService.frequencyToMIDINote(frequency);
     this.sendRawNoteON(channel, midiNote, velocity);
-    setTimeout(this.sendRawNoteOFF, duration - 20, this, channel, midiNote, velocity);
+    setTimeout(this.sendRawNoteOFF, duration - 35, this, channel, midiNote, velocity);
   }
 
   public sendPitch(channel: number, pitch: IPitch, duration: number, velocity: number): void {

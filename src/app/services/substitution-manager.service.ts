@@ -14,16 +14,24 @@ This Service provides support for the chord substitution module
 })
 
 export class SubstitutionManagerService {
-
-  private substitutionTable: any;
-
   constructor() { }
 
+  public static substituteChord(chord: Chord, difficultyLevel: number): Chord {
+    throw new Error('NOT IMPLEMENTED YET');
+  }
+  // is this needed?! at the moment I don't think...
+  // might however exploit the function just above foreach chord of the progression
+  public static substituteProgression(progression: Progression, difficultyLevel: number): Array<Chord> {
+    throw new Error('NOT IMPLEMENTED YET');
+  }
+
+  // this will be deleted or private?!
   public static funny(message: Progression, difficultyLevel: number): Array<Array<Chord>> {
     const substitutedProgression = new Array<Array<Chord>>();
     for (let i = 0; i < message.chords.length; i++) {
       // const a = this.convertEnharmonic(message[i]);
-      substitutedProgression[i] = SubstitutionManagerService.findSubstitutionRules(message.chords[i], difficultyLevel);
+      substitutedProgression[i] =
+      SubstitutionManagerService.findSubstitutionRules(message.chords[i], difficultyLevel);
     }
     return substitutedProgression;
   }

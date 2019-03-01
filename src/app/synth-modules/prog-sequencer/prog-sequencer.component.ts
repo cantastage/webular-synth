@@ -27,10 +27,9 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   private _pitchClasses: IPitchClass[];
   private _chordQualities: IChordQuality[];
   private _progSequencer: IProgSequencer;
-  private _chordPlaying: string;
-  private _chordNext: string;
 
   private _substitutedChords: Array<Chord>;
+  private _currentSubstitutedIndex: number; // better than chordPlaying or chordNext
 
   private _clockObserver: Observer<number>;
   private _midiObserver: Observer<[number, boolean, number, number]>;
@@ -43,6 +42,17 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   }
   public get progSequencer(): IProgSequencer {
     return this._progSequencer;
+  }
+  public get substitutedChords(): Array<Chord> {
+    return this._substitutedChords;
+  }
+  public get chordPlaying(): Chord {
+    return this.substitutedChords[this._currentSubstitutedIndex];
+  }
+  public get chordNext(): Chord {
+    return this.substitutedChords[
+      (this._currentSubstitutedIndex + 1) % this.substitutedChords.length
+    ];
   }
 
   public constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
@@ -64,11 +74,6 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   public loadPatch(): void {
     this._progSequencer = this.data.state;
   }
-  private updateSubstituted(): void {
-    this._substitutedChords = // MUST BE UPDATED ON CHANGES
-      SubstitutionManagerService.retrieveSubstitutionSequence(this.progSequencer.progression,
-        this.progSequencer.difficulty);
-  }
 
   // OnInit lifecycle
   public ngOnInit() {
@@ -76,7 +81,10 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     this._chordQualities = ChordQualitiesProvider.retrieveInstances();
 
     this.loadPatch();
-    this.updateSubstituted();
+    // at the beginning the substituted chords are a replica of the ones introduced by the user
+    // each chord is repeated twice
+    this._substitutedChords = new Array<Chord>();
+    this.resetDefaultSubstituted();
 
     if (this.isInSoundChain) {
       this.clockManager.attach(this._clockObserver);
@@ -100,35 +108,62 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     return this.data;
   }
 
-  private onTick(beatNumber: number): void {
-    // NECESSARY
-    // TODO handle of basic case with chords of duration 4/4 (no substitutions)
-
-    if (beatNumber % 2 === 0) { // each substituted chord has duration 2/4
-      const currenti = (beatNumber / 2) %
-        (2 * this.progSequencer.progression.chords.length);
-        // if (this._substitutedChords[currenti] !==
-        //   this._substitutedChords[currenti === 0 ?
-        //     this._substitutedChords.length - 1 : currenti - 1]) { // current != previous in circular array
-          // this.midiManager.sendChord(15, this._substitutedChords[currenti],
-          //   this.clockManager.bms * 2, 127);
-        // }
-        this.midiManager.sendChord(15, this.progSequencer.progression.chords[currenti % 4],
-          this.clockManager.bms * 2, 127);
+  private resetDefaultSubstituted(): void {
+    this._currentSubstitutedIndex = 0;
+    this.substitutedChords.splice(0, this.substitutedChords.length);
+    for (let i = 0; i < this.progSequencer.progression.chords.length; i++) {
+      this._substitutedChords.push(this.progSequencer.progression.chords[i]);
+      this._substitutedChords.push(this.progSequencer.progression.chords[i]);
     }
   }
-  // TODO: classification of [] into MidiExtract{channel, isOn, midiNote, velocity}
+
+  private onTick(beatNumber: number): void {
+    // if first beat or reset, I refill the substituted chords with defaults
+    if (beatNumber === 0) {
+      // --> here only once over bpm
+      this.resetDefaultSubstituted();
+      // otherwise, AT EACH TURNAROUND (modular condition below),
+      // apart from the first one,
+      // I substitute a chord of the progression starting from the last one
+    } else if (beatNumber % this.progSequencer.progression.chords.length === 0) {
+      // eg. for prog of 4 chords, --> here only once over 4/4 beats (once per measure)
+      // here beatNumber is like [4, 8, 12, 16, 20, 24, 28...]
+      const which = (this.progSequencer.progression.chords.length - 1) -
+        (((beatNumber - this.progSequencer.progression.chords.length) /
+        this.progSequencer.progression.chords.length) %
+        this.progSequencer.progression.chords.length);
+      // while which is 3 - [0, 1, 2, 3, 0, 1, 2, 3...] = [3, 2, 1, 0, 3, 2, 1, 0...]
+
+      // TODO IMPLEMENT THE FOLLOWING FUNCTION substituteChord
+      // SO THAT IT RETURNS THE 2 CHORDS
+
+      // const tmp = SubstitutionManagerService.substituteChord(
+      //   this.progSequencer.progression.chords[which], this.progSequencer.difficulty
+      // );
+      // this.substitutedChords[which * 2] = tmp[0];
+      // this.substitutedChords[which * 2 + 1] = tmp[1];
+    }
+
+    // then, I exploit the substituted chords each 2*2/4 for 4 measures
+    // and I play them
+    if (beatNumber % 2 === 0) { // each substituted chord has duration 2/4
+      // --> here only once over 2/4 beats (once per half-measure)
+      // here beatNumber is like [0, 2, 4, 6, 8, 10, 12, 14, 16...]
+      this._currentSubstitutedIndex = (beatNumber / 2) % this.substitutedChords.length;
+      // while _currentSubstitutedIndex is [0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7...]
+
+      // TODO IMPROVE CHORDS LEGATO, HOW?
+      this.midiManager.sendChord(15, this.substitutedChords[this._currentSubstitutedIndex],
+        this.clockManager.bms * 2, 127); // 2 for twice a 1/4
+    }
+  }
+  // TODO classification of [] into MidiExtract{channel, isOn, midiNote, velocity}
   private onMessage(arg: [number, boolean, number, number]) {
     // HERE remember to check that the channel is not 15, the one of this same sequencer!
     if (arg[0] !== 15) {
       console.log(arg);
     }
   }
-
-  // MORE TODO: the state is automatically updated in the model,
-  // the rievaluation of the substituted chords vector must be done only on changes
-  // in order to improve the performances
-  // (hint: exploit this.updateSubstituted())
 
   getInput(): AudioNode {
     return null;
