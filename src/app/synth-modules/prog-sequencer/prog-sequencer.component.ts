@@ -191,11 +191,12 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
       this.midiManager.sendChord(15, this.substitutingChords[this._substitutingIndex],
         this.clockManager.bms * 2, 127); // 2 for twice a 1/4
 
-      // TODO
-      // UI is messed up because this following function should wait for the chord to finish
-      // before changing the index!
-      this.updateSubstitutingIndex();
+      // TODO THINK OF BETTER APPROACHES
+      setTimeout(this.doWhenWaited, this.clockManager.bms * 2 - 50, this);
     }
+  }
+  private doWhenWaited(ctx: ProgSequencerComponent): void {
+    ctx.updateSubstitutingIndex();
   }
   // TODO classification of [] into MidiExtract{channel, isOn, midiNote, velocity}
   private onMessage(arg: [number, boolean, number, number]) {
