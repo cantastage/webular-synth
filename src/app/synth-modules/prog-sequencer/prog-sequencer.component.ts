@@ -171,20 +171,17 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     } else if (ProgSequencerComponent.isTurnaround(beatNumber)) { // next ones til infty
       // usage of the substituted index [3,2,1,0,0,1,2,3...]
       // changed at each turnaround
-      // console.log('subed: ' + this._substitutedIndex + '\trollback: ' + this._rollback);
 
-// UNCOMMENT BELOW
-      // if (!this._rollback) { // substitution
-      //   const tmp = SubstitutionManagerService.substituteChord(
-      //     this.progSequencer.progression.chords[this._substitutedIndex],
-      //     this.progSequencer.difficulty
-      //   );
-      //   this.substitutingChords[2 * this._substitutedIndex] = tmp[0];
-      //   this.substitutingChords[2 * this._substitutedIndex + 1] = tmp[1];
-      // } else { // rollback
-      //   this.resetithSubstituting(this._substitutedIndex);
-      // }
-// TIL HERE
+      if (!this._rollback) { // substitution
+        const tmp = SubstitutionManagerService.substituteChord(
+          this.progSequencer.progression.chords[this._substitutedIndex],
+          this.progSequencer.difficulty
+        );
+        this.substitutingChords[2 * this._substitutedIndex] = tmp[0];
+        this.substitutingChords[2 * this._substitutedIndex + 1] = tmp[1];
+      } else { // rollback
+        this.resetithSubstituting(this._substitutedIndex);
+      }
 
       // update the substituted index
       this.updateSubstitutedIndex();
@@ -193,7 +190,6 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     // let's play the substituting chords!
     if (ProgSequencerComponent.is2on4(beatNumber)) { // each substituted chord has duration 2/4
       // --> here only once over 2/4 beats (once per half-measure)
-      console.log('bn: ' + beatNumber + '\tsubing: ' + this._substitutingIndex);
       // TODO IMPROVE CHORDS SUCCESSION, HOW?
       this.midiManager.sendChord(15, this.substitutingChords[this._substitutingIndex],
         this.clockManager.bms * 2, 127); // 2 for twice a 1/4

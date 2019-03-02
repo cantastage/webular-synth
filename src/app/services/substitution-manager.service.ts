@@ -34,7 +34,7 @@ export class SubstitutionManagerService {
     return substitutedProgression;
   }
 
-  private static substituteChord(chord: Chord, difficultyLevel: number): Array<Chord> {
+  public static substituteChord(chord: Chord, difficultyLevel: number): Array<Chord> {
     // console.log(chord);
     const substitution_rules = Array<any>();
     const possible_substitutions = Array<any>();
