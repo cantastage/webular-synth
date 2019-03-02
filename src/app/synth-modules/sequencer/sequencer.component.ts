@@ -101,6 +101,7 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
   }
 
   private onTick(beatNumber: number): void {
+    beatNumber--;
     this._subdivisionCounter = beatNumber % this.sequencer.measure.subdivisions.length;
     const currentSubdivision = this.sequencer.measure.subdivisions[this._subdivisionCounter];
     if (currentSubdivision.duration !== 0 && currentSubdivision.velocity !== 0) {

@@ -22,6 +22,7 @@ export class MidiContextManagerService {
   private _midiInputDevices: any;
 
   private _midiObservable: Observable<[number, boolean, number, number]>;
+  // TODO should be a map of <Observers, Subscription[]>
   private _midiObservers: Array<Observer<[number, boolean, number, number]>>;
 
   public get midiAccess(): any {
@@ -89,7 +90,7 @@ export class MidiContextManagerService {
     this._midiObservers.forEach(obs => obs.next(value));
   }
   public detach(observer: Observer<[number, boolean, number, number]>): void {
-    // this._midiObservable.
+    // TODO
   }
 
   // called when instantiating observable
@@ -100,13 +101,7 @@ export class MidiContextManagerService {
       this._midiObservers.push(observer);
       // When this is the first subscription, start the sequence
 
-      return {
-        unsubscribe() {
-          // TODO WHAT TO DO?
-          // Remove from the observers array so it's no longer notified
-          // this._midiObservers.splice(this._midiObservers.indexOf(observer), 1);
-        }
-      };
+      return { unsubscribe() { } }; // needed?!
     };
   }
 

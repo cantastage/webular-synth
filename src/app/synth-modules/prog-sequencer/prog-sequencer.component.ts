@@ -28,8 +28,10 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   private _chordQualities: IChordQuality[];
   private _progSequencer: IProgSequencer;
 
-  private _substitutedChords: Array<Chord>;
-  private _currentSubstitutedIndex: number; // better than chordPlaying or chordNext
+  private _substitutedIndex: number;
+  private _substitutingChords: Array<Chord>;
+  private _substitutingIndex: number;
+  private _rollback: boolean;
 
   private _clockObserver: Observer<number>;
   private _midiObserver: Observer<[number, boolean, number, number]>;
@@ -43,16 +45,28 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   public get progSequencer(): IProgSequencer {
     return this._progSequencer;
   }
-  public get substitutedChords(): Array<Chord> {
-    return this._substitutedChords;
+  public get substitutingChords(): Array<Chord> {
+    return this._substitutingChords;
   }
   public get chordPlaying(): Chord {
-    return this.substitutedChords[this._currentSubstitutedIndex];
+    return this.substitutingChords[this._substitutingIndex];
   }
   public get chordNext(): Chord {
-    return this.substitutedChords[
-      (this._currentSubstitutedIndex + 1) % this.substitutedChords.length
+    return this.substitutingChords[
+      (this._substitutingIndex + 1) % this.substitutingChords.length
     ];
+  }
+  private static isFirstTurnaround(bn: number): boolean {
+    return bn === 0;
+  }
+  private static is2on4(bn: number): boolean {
+    return bn % 2 === 0;
+  }
+  private static is4on4(bn: number): boolean {
+    return bn % 4 === 0;
+  }
+  private static isTurnaround(bn: number): boolean {
+    return bn % 16 === 0;
   }
 
   public constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
@@ -61,12 +75,12 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     // init observers
     this._clockObserver = {
       next: (value) => { this.onTick(value); },
-      error: (error) => { return; },
+      error: () => { return; },
       complete: () => { return; }
     };
     this._midiObserver = {
       next: (value) => { this.onMessage(value); },
-      error: (error) => { return; },
+      error: () => { return; },
       complete: () => { return; }
     };
   }
@@ -83,8 +97,10 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     this.loadPatch();
     // at the beginning the substituted chords are a replica of the ones introduced by the user
     // each chord is repeated twice
-    this._substitutedChords = new Array<Chord>();
-    this.resetDefaultSubstituted();
+    this._substitutedIndex = this.progSequencer.progression.chords.length - 1;
+    this._rollback = false;
+    this._substitutingChords = new Array<Chord>(2 * this.progSequencer.progression.chords.length);
+    this.resetDefaultSubstituting();
 
     if (this.isInSoundChain) {
       this.clockManager.attach(this._clockObserver);
@@ -108,53 +124,77 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     return this.data;
   }
 
-  private resetDefaultSubstituted(): void {
-    this._currentSubstitutedIndex = 0;
-    this.substitutedChords.splice(0, this.substitutedChords.length);
+  private resetithSubstituting(i: number): void {
+    this.substitutingChords[2 * i]  = this.progSequencer.progression.chords[i];
+    this.substitutingChords[2 * i + 1] = this.progSequencer.progression.chords[i];
+  }
+  private resetDefaultSubstituting(): void {
+    this._substitutingIndex = 0;
     for (let i = 0; i < this.progSequencer.progression.chords.length; i++) {
-      this._substitutedChords.push(this.progSequencer.progression.chords[i]);
-      this._substitutedChords.push(this.progSequencer.progression.chords[i]);
+      this.resetithSubstituting(i);
     }
+  }
+  private toggleRollback(): void {
+    this._rollback = !this._rollback;
+  }
+  private updateSubstitutedIndex(): void {
+    if (!this._rollback) {
+      if (this._substitutedIndex > 0) {
+        this._substitutedIndex--;
+      } else {
+        this.toggleRollback();
+      }
+    } else {
+      if (this._substitutedIndex < this.progSequencer.progression.chords.length - 1) {
+        this._substitutedIndex++;
+      } else {
+        this.toggleRollback();
+      }
+    }
+  }
+  private updateSubstitutingIndex(): void {
+    this._substitutingIndex = (this._substitutingIndex + 1) % this.substitutingChords.length;
   }
 
   private onTick(beatNumber: number): void {
-    // if first beat or reset, I refill the substituted chords with defaults
-    if (beatNumber === 0) {
-      // --> here only once over bpm
-      this.resetDefaultSubstituted();
-      // otherwise, AT EACH TURNAROUND (modular condition below),
-      // apart from the first one,
-      // I substitute a chord of the progression starting from the last one
-    } else if (beatNumber % this.progSequencer.progression.chords.length === 0) {
-      // eg. for prog of 4 chords, --> here only once over 4/4 beats (once per measure)
-      // here beatNumber is like [4, 8, 12, 16, 20, 24, 28...]
-      const which = (this.progSequencer.progression.chords.length - 1) -
-        (((beatNumber - this.progSequencer.progression.chords.length) /
-        this.progSequencer.progression.chords.length) %
-        this.progSequencer.progression.chords.length);
-      // while which is 3 - [0, 1, 2, 3, 0, 1, 2, 3...] = [3, 2, 1, 0, 3, 2, 1, 0...]
+    beatNumber--;
 
-      // TODO IMPLEMENT THE FOLLOWING FUNCTION substituteChord
-      // SO THAT IT RETURNS THE 2 CHORDS
+    if (ProgSequencerComponent.isFirstTurnaround(beatNumber)) { // first turnaround
+      this.resetDefaultSubstituting();
+    } else if (ProgSequencerComponent.isTurnaround(beatNumber)) { // next ones til infty
+      // usage of the substituted index [3,2,1,0,0,1,2,3...]
+      // changed at each turnaround
+      // console.log('subed: ' + this._substitutedIndex + '\trollback: ' + this._rollback);
 
-      // const tmp = SubstitutionManagerService.substituteChord(
-      //   this.progSequencer.progression.chords[which], this.progSequencer.difficulty
-      // );
-      // this.substitutedChords[which * 2] = tmp[0];
-      // this.substitutedChords[which * 2 + 1] = tmp[1];
+// UNCOMMENT BELOW
+      // if (!this._rollback) { // substitution
+      //   const tmp = SubstitutionManagerService.substituteChord(
+      //     this.progSequencer.progression.chords[this._substitutedIndex],
+      //     this.progSequencer.difficulty
+      //   );
+      //   this.substitutingChords[2 * this._substitutedIndex] = tmp[0];
+      //   this.substitutingChords[2 * this._substitutedIndex + 1] = tmp[1];
+      // } else { // rollback
+      //   this.resetithSubstituting(this._substitutedIndex);
+      // }
+// TIL HERE
+
+      // update the substituted index
+      this.updateSubstitutedIndex();
     }
 
-    // then, I exploit the substituted chords each 2*2/4 for 4 measures
-    // and I play them
-    if (beatNumber % 2 === 0) { // each substituted chord has duration 2/4
+    // let's play the substituting chords!
+    if (ProgSequencerComponent.is2on4(beatNumber)) { // each substituted chord has duration 2/4
       // --> here only once over 2/4 beats (once per half-measure)
-      // here beatNumber is like [0, 2, 4, 6, 8, 10, 12, 14, 16...]
-      this._currentSubstitutedIndex = (beatNumber / 2) % this.substitutedChords.length;
-      // while _currentSubstitutedIndex is [0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7...]
-
-      // TODO IMPROVE CHORDS LEGATO, HOW?
-      this.midiManager.sendChord(15, this.substitutedChords[this._currentSubstitutedIndex],
+      console.log('bn: ' + beatNumber + '\tsubing: ' + this._substitutingIndex);
+      // TODO IMPROVE CHORDS SUCCESSION, HOW?
+      this.midiManager.sendChord(15, this.substitutingChords[this._substitutingIndex],
         this.clockManager.bms * 2, 127); // 2 for twice a 1/4
+
+      // TODO
+      // UI is messed up because this following function should wait for the chord to finish
+      // before changing the index!
+      this.updateSubstitutingIndex();
     }
   }
   // TODO classification of [] into MidiExtract{channel, isOn, midiNote, velocity}

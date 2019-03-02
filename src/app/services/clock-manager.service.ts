@@ -11,7 +11,7 @@ export class ClockManagerService implements IClock {
   private _beatCount: number;
 
   private _clockObservable: Observable<number>;
-  private _clockObservers: Array<Observer<number>>;
+  private _clockObservers: Array<Observer<number>>; // TODO should be a map of <Observers, Subscription[]>
 
   private _isRunning: boolean;
   private _th: any;
@@ -82,7 +82,7 @@ export class ClockManagerService implements IClock {
 
 
   private callback(ctx: ClockManagerService) {
-    ctx.notify(ctx.beatCount);
+    ctx.notify(ctx.beatCount + 1);
     ctx._beatCount = (ctx._beatCount + 1) % ctx.bpm;
   }
   /**
@@ -97,7 +97,7 @@ export class ClockManagerService implements IClock {
     this._clockObservers.forEach(obs => obs.next(value));
   }
   public detach(observer: Observer<number>): void {
-    // this._clockObservable.
+    // TODO
   }
 
   // called when instantiating observable
@@ -108,13 +108,7 @@ export class ClockManagerService implements IClock {
       this._clockObservers.push(observer);
       // When this is the first subscription, start the sequence
 
-      return {
-        unsubscribe() {
-          // TODO WHAT TO DO?
-          // Remove from the observers array so it's no longer notified
-          // this._clockObservers.splice(this._clockObservers.indexOf(observer), 1);
-        }
-      };
+      return { unsubscribe() { } }; // needed?!
     };
   }
 }
