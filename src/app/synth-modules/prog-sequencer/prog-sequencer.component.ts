@@ -12,6 +12,8 @@ import { IChordQuality } from 'src/app/model/modules/chord-substitution/IChordQu
 import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
 import { Observer } from 'rxjs';
 import { Chord } from 'src/app/model/modules/sequencer/prog/Chord';
+import { BasicProgressions } from 'src/app/model/modules/sequencer/prog/BasicProgressions';
+import { Progression } from 'src/app/model/modules/sequencer/prog/Progression';
 
 @Component({
   selector: 'app-sequencer',
@@ -27,6 +29,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   private _pitchClasses: IPitchClass[];
   private _chordQualities: IChordQuality[];
   private _progSequencer: IProgSequencer;
+  private _progressionList: Array<string>;
+  private _activeProgression: any;
 
   private _substitutedChords: Array<Chord>;
   private _currentSubstitutedIndex: number; // better than chordPlaying or chordNext
@@ -77,8 +81,11 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
 
   // OnInit lifecycle
   public ngOnInit() {
+    this._progressionList = this.retrieveProgressionNames(BasicProgressions);
     this._pitchClasses = PitchClassesProvider.retrieveInstances();
     this._chordQualities = ChordQualitiesProvider.retrieveInstances();
+    this._activeProgression = BasicProgressions[0].name;
+    // this._activeProgression = BasicProgressions[0];
 
     this.loadPatch();
     // at the beginning the substituted chords are a replica of the ones introduced by the user
@@ -162,6 +169,38 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     // HERE remember to check that the channel is not 15, the one of this same sequencer!
     if (arg[0] !== 15) {
       console.log(arg);
+    }
+  }
+
+  private retrieveProgressionNames(progression: {name: string, progression: Progression}[]) {
+
+    const progressionNames = [];
+    for (let i = 0; i < progression.length; i++) {
+      progressionNames[i] = progression[i].name;
+    }
+    return progressionNames;
+
+    /*
+    const progressionNames = new Array<string>(progression.length).fill('');
+    for (let j = 0; j < progression.length; j++) {
+      for (let i = 0; i < progression[j].chords.length; i++) {
+        progressionNames[j] += progression[j].chords[i].root.pitchClassName + progression[j].chords[i].quality.chordQualityName;
+        if (i < progression[j].chords.length - 1) {
+          progressionNames[j] += ' - ';
+        }
+      }
+    }
+    return progressionNames;
+    */
+  }
+
+  private chooseProgression() {
+    for (let i = 0; i < BasicProgressions.length; i++) {
+      if (BasicProgressions[i].name === this._activeProgression) {
+        for (let j = 0; j < BasicProgressions[i].progression.chords.length; j++) {
+          this.progSequencer.progression.chords[j] = BasicProgressions[i].progression.chords[j];
+        }
+      }
     }
   }
 

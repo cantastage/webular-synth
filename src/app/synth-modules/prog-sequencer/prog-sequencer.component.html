@@ -34,3 +34,9 @@
     </div>
   </div>
 </div>
+
+<div>
+  <select [(ngModel)]="_activeProgression" (change) = "chooseProgression()">
+    <option *ngFor="let progression of _progressionList;" [ngValue]="progression">{{progression.toUpperCase()}}</option>
+</select>
+</div>
