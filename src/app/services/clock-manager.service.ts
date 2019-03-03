@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
 import { IClock } from '../model/modules/clock/IClock';
 import { ClockProvider } from '../model/modules/clock/ClockProvider';
-import { Observable, Observer } from 'rxjs';
+import { SuperObservable } from '../system2/patterns/observer/SuperObservable';
+import { Observer } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClockManagerService implements IClock {
+export class ClockManagerService extends SuperObservable<number> implements IClock {
   private _clock: IClock;
   private _beatCount: number;
-
-  private _clockObservable: Observable<number>;
-  private _clockObservers: Array<Observer<number>>; // TODO should be a map of <Observers, Subscription[]>
 
   private _isRunning: boolean;
   private _th: any;
@@ -52,8 +50,7 @@ export class ClockManagerService implements IClock {
     this._beatCount = 0;
   }
   public constructor() {
-    this._clockObservable = new Observable<number>(this.multicastSequenceSubscriber());
-    this._clockObservers = new Array<Observer<number>>();
+    super();
 
     this._clock = ClockProvider.retrieveInstance();
     this.resetBeatCount();
@@ -85,30 +82,9 @@ export class ClockManagerService implements IClock {
     ctx.notify(ctx.beatCount + 1);
     ctx._beatCount = (ctx._beatCount + 1) % ctx.bpm;
   }
-  /**
-   * Attach an observer to the clock observable
-   * @param observer the observer to be attached
-   */
+
   public attach(observer: Observer<number>): void {
-    this._clockObservable.subscribe(observer);
+    super.attach(observer);
     this.restart();
-  }
-  private notify(value: number) {
-    this._clockObservers.forEach(obs => obs.next(value));
-  }
-  public detach(observer: Observer<number>): void {
-    // TODO
-  }
-
-  // called when instantiating observable
-  private multicastSequenceSubscriber() {
-    // Return the subscriber function (runs when subscribe()
-    // function is invoked)
-    return (observer) => {
-      this._clockObservers.push(observer);
-      // When this is the first subscription, start the sequence
-
-      return { unsubscribe() { } }; // needed?!
-    };
   }
 }

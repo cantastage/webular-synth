@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 
 import { A4, SD } from '../model/modules/sequencer/IPitchClass.js';
-import { Observable, Observer } from 'rxjs';
 import { Chord } from '../model/modules/sequencer/prog/Chord.js';
 import { IPitch } from '../model/modules/sequencer/prog/IPitch.js';
+import { SuperObservable } from '../system2/patterns/observer/SuperObservable.js';
 
 @Injectable({
   providedIn: 'root'
 })
-// Observable<[ch, isON, midiNote, velocity]>
-export class MidiContextManagerService {
+// SuperObservable<[ch, isON, midiNote, velocity]>
+export class MidiContextManagerService
+  extends SuperObservable<[number, boolean, number, number]> {
   private static readonly MIDI_MSG_TYPE_MASK = 0xF0;
   private static readonly MIDI_MSG_TYPE_ON = 0x90;
   private static readonly MIDI_MSG_TYPE_OFF = 0x80;
@@ -21,18 +22,12 @@ export class MidiContextManagerService {
   private _midiAccess: any;
   private _midiInputDevices: any;
 
-  private _midiObservable: Observable<[number, boolean, number, number]>;
-  // TODO should be a map of <Observers, Subscription[]>
-  private _midiObservers: Array<Observer<[number, boolean, number, number]>>;
-
   public get midiAccess(): any {
     return this._midiAccess;
   }
 
   public constructor() {
-    this._midiObservable = new Observable<[number, boolean, number, number]>(this.multicastSequenceSubscriber());
-    this._midiObservers = new Array<Observer<[number, boolean, number, number]>>();
-
+    super();
     if (navigator['requestMIDIAccess']) {
       navigator['requestMIDIAccess']({
         sysex: false
@@ -77,32 +72,6 @@ export class MidiContextManagerService {
     const v = Number(midiMessage.data[2]);
 
     return [ch, isON, note, v];
-  }
-
-  /**
-   * Attach an observer to the clock observable
-   * @param observer the observer to be attached
-   */
-  public attach(observer: Observer<[number, boolean, number, number]>): void {
-    this._midiObservable.subscribe(observer);
-  }
-  private notify(value: [number, boolean, number, number]) {
-    this._midiObservers.forEach(obs => obs.next(value));
-  }
-  public detach(observer: Observer<[number, boolean, number, number]>): void {
-    // TODO
-  }
-
-  // called when instantiating observable
-  private multicastSequenceSubscriber() {
-    // Return the subscriber function (runs when subscribe()
-    // function is invoked)
-    return (observer) => {
-      this._midiObservers.push(observer);
-      // When this is the first subscription, start the sequence
-
-      return { unsubscribe() { } }; // needed?!
-    };
   }
 
   // RX
