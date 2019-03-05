@@ -27,6 +27,7 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
   private _pitchClasses: IPitchClass[];
   private _harmonizations: IHarmonization[];
   private _metrics: number[];
+  private _channels: number[];
   private _possibleOctaves: number[];
   private _subdivisionCounter: number;
   private _clockObserver: Observer<number>;
@@ -40,6 +41,9 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
   }
   public get metrics(): number[] {
     return this._metrics;
+  }
+  public get channels(): number[] {
+    return this._channels;
   }
   public get possibleOctaves(): number[] {
     return this._possibleOctaves;
@@ -75,6 +79,7 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
       return ret;
     }();
 
+    this._channels = MidiContextManagerService.generateMIDIChannelVector();
     this._possibleOctaves = new Array<number>();
     this._possibleOctaves.push(Subdivision.OCTAVE_DEFAULT);
     for (let i = Subdivision.OCTAVE_MIN; i <= Subdivision.OCTAVE_MAX; i++) {
@@ -116,7 +121,8 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
         currentOctave = currentSubdivision.octaves[i];
         if (currentOctave !== 0) {
           currentResultingFreq = currentReferralFreq * (2 ** (currentOctave - 4));
-          this.midiManager.sendRawNote(15, currentResultingFreq,
+          this.midiManager.sendRawNote(this.sequencer.channel,
+            currentResultingFreq,
             this.clockManager.bms * currentSubdivision.duration,
             currentSubdivision.velocity);
         }

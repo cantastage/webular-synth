@@ -8,7 +8,7 @@
           <td>KEY</td>
           <td>HARMONIZATION</td>
           <td>METRIC</td>
-          <!-- <td>midiCh</td> -->
+          <td>CH</td>
         </tr>
         <tr>
             <td><select class="key" [(ngModel)]="sequencer.key">
@@ -21,9 +21,9 @@
               (ngModelChange)="morethanMetricChange($event)">
                 <option *ngFor="let metric of metrics;" [ngValue]="metric">{{metric}}</option>
             </select></td>
-            <!-- <td><select class="midiCh">
-              ...can be added...
-            </select></td> -->
+            <td><select class="ch" [(ngModel)]="sequencer.channel">
+                <option *ngFor="let channel of channels;" [ngValue]="channel">{{channel}}</option>
+            </select></td>
         </tr>
       </tbody>
     </table>

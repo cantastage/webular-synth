@@ -29,7 +29,8 @@ export class ModuleManagerService {
     return new Sequencer(
       PitchClassesProvider.retrieveInstance('C'),
       HarmonizationsProvider.retrieveInstance('M'),
-      Measure.METRIC_MIN
+      Measure.METRIC_MIN,
+      16
     );
   }
   private get progSequencerDefaultState(): any {
@@ -40,7 +41,7 @@ export class ModuleManagerService {
         new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')),
         new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj7'))
       ]),
-    3);
+    3, 16);
   }
   private get oscillatorDefaultState(): any {
     return { waveForm: 'sine', maxVelocity: 100, addSemitone: 0, finePitch: 0, active: 0 };

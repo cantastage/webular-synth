@@ -19,6 +19,9 @@ export class MidiContextManagerService
 
   private static readonly MIDI_A4 = 69;
 
+  public static readonly MIDI_CH_MIN = 1;
+  public static readonly MIDI_CH_MAX = 16;
+
   private _midiAccess: any;
   private _midiInputDevices: any;
 
@@ -59,8 +62,8 @@ export class MidiContextManagerService
 
   private static extractMIDIFields(midiMessage: any): [number, boolean, number, number] {
     // tslint:disable-next-line:no-bitwise
-    const ch = Number(midiMessage.data[0]) &
-      Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK);
+    const ch = (Number(midiMessage.data[0]) &
+      Number(MidiContextManagerService.MIDI_CH_NUMBER_MASK)) + 1;
     // tslint:disable-next-line:no-bitwise
     const type = Number(midiMessage.data[0]) &
       Number(MidiContextManagerService.MIDI_MSG_TYPE_MASK);
@@ -72,6 +75,14 @@ export class MidiContextManagerService
     const v = Number(midiMessage.data[2]);
 
     return [ch, isON, note, v];
+  }
+  public static generateMIDIChannelVector(): number[] {
+    const ret = new Array<number>();
+    for (let i = MidiContextManagerService.MIDI_CH_MIN;
+      i <= MidiContextManagerService.MIDI_CH_MAX; i++) {
+        ret.push(i);
+    }
+    return ret;
   }
 
   // RX

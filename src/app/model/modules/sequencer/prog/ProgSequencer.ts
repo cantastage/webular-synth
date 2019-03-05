@@ -4,6 +4,7 @@ import { Progression } from './Progression';
 export class ProgSequencer implements IProgSequencer {
     private _difficulty: number;
     private _progression: Progression;
+    private _channel: number;
 
     public get difficulty(): number {
         return this._difficulty;
@@ -23,9 +24,20 @@ export class ProgSequencer implements IProgSequencer {
         }
         this._progression = progression;
     }
+    public get channel(): number {
+        return this._channel;
+    }
+    public set channel(channel: number) {
+        if (channel === undefined || !Number.isInteger(channel) ||
+            channel < 1 || channel > 16) {
+            throw Error('error while assigning the channel value');
+        }
+        this._channel = channel;
+    }
 
-    public constructor(progression: Progression, difficulty: number) {
+    public constructor(progression: Progression, difficulty: number, channel: number) {
         this.progression = progression;
         this.difficulty = difficulty;
+        this.channel = channel;
     }
 }

@@ -8,6 +8,7 @@ import { Subdivision } from './Subdivision';
 export class Sequencer implements ISequencer {
     private _scale: Scale;
     private _measure: Measure;
+    private _channel: number;
 
     public get scale(): Scale {
         return this._scale;
@@ -61,8 +62,19 @@ export class Sequencer implements ISequencer {
             }
         }
     }
+    public get channel(): number {
+        return this._channel;
+    }
+    public set channel(channel: number) {
+        if (channel === undefined || !Number.isInteger(channel) ||
+            channel < 1 || channel > 16) {
+            throw Error('error while assigning the channel value');
+        }
+        this._channel = channel;
+    }
 
-    public constructor(key: IPitchClass, harmonization: IHarmonization, metric: number) {
+    public constructor(key: IPitchClass, harmonization: IHarmonization, metric: number,
+        channel: number) {
         // default initialization
         this._scale = new Scale(key, harmonization);
         this._measure = new Measure(
@@ -72,5 +84,6 @@ export class Sequencer implements ISequencer {
         this.key = this.scale.key;
         this.harmonization = this.scale.harmonization;
         this.metric = metric;
+        this.channel = channel;
     }
 }

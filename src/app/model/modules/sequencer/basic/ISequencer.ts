@@ -10,4 +10,5 @@ export interface ISequencer {
     key: IPitchClass;
     harmonization: IHarmonization;
     metric: number;
+    channel: number;
 }

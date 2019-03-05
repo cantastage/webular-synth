@@ -1,17 +1,33 @@
 <div class="container-block">
   <div class="prog-sequencer">
     <div class="title">{{this.data.name}}</div>
-    <table> <!-- classes?! -->
-      <tr>
-        <td *ngFor="let chord of progSequencer.progression.chords;">
-          <select [(ngModel)]="chord.root">
-            <option *ngFor="let pitchClass of pitchClasses;" [ngValue]="pitchClass">{{pitchClass.pitchClassName}}</option>
-          </select>
-          <select [(ngModel)]="chord.quality">
-            <option *ngFor="let chordQuality of chordQualities;" [ngValue]="chordQuality">{{chordQuality.chordQualityName}}</option>
-          </select>
-        </td>
-      </tr>
+    <table class="table1">
+      <tbody>
+        <tr>
+          <td>DIFFICULTY</td>
+          <td>CH</td>
+        </tr>
+        <tr>
+          <td>sel1</td>
+          <td><select class="ch" [(ngModel)]="progSequencer.channel">
+              <option *ngFor="let channel of channels;" [ngValue]="channel">{{channel}}</option>
+          </select></td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table2">
+      <tbody>
+        <tr>
+          <td *ngFor="let chord of progSequencer.progression.chords;">
+            <select [(ngModel)]="chord.root" (ngModelChange)="morethanChordChange($event)">
+              <option *ngFor="let pitchClass of pitchClasses;" [ngValue]="pitchClass">{{pitchClass.pitchClassName}}</option>
+            </select>
+            <select [(ngModel)]="chord.quality" (ngModelChange)="morethanChordChange($event)">
+              <option *ngFor="let chordQuality of chordQualities;" [ngValue]="chordQuality">{{chordQuality.chordQualityName}}</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>
