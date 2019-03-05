@@ -13,6 +13,15 @@
   <div class="dot" [ngClass]="this.active == 3 ? 'dot active' : 'dot'" id="tri-dot">
   </div>
 
+  <div class="channel">
+    <div>CH</div>
+          <div>
+            <select class="ch" [(ngModel)]="_selectedChannel" (change)="checkActive()">
+              <option *ngFor="let channel of _channels;" [ngValue]="channel">{{channel}}</option>
+            </select>
+          </div>
+  </div>
+
   <div class="button" id="sin" (click)="selectWaveform(0)">
     <img src = './assets/sine.png'>
   </div>

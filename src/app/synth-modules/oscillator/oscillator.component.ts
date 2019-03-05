@@ -28,6 +28,8 @@ export class OscillatorComponent implements OnInit, OnDestroy, SynthModule {
   private _addSemitone: number;
   private _finePitch: number;
   private _active: number;
+  private _selectedChannel: number;
+  private _channels: number[];
 
   private message: any;
   private subscription: Subscription;
@@ -67,7 +69,6 @@ export class OscillatorComponent implements OnInit, OnDestroy, SynthModule {
   }
 
   private onMessage(arg: [number, boolean, number, number]): void {
-    console.log('called');
     if (arg[1] === true) {
       this.noteOn(arg[0], arg[2], arg[3]);
     } else {
@@ -82,6 +83,11 @@ export class OscillatorComponent implements OnInit, OnDestroy, SynthModule {
       this.message = { message: [0, 0, 1, 0] };
     }
     this.loadPatch();
+    this._selectedChannel = 1;
+    this._channels = [];
+    for (let i = 1; i <= 16; i++) {
+      this._channels.push(i);
+    }
     this.active_voices = [];
     this.c = this.contextManager.audioContext;
     this.g = this.c.createGain();
@@ -118,26 +124,52 @@ export class OscillatorComponent implements OnInit, OnDestroy, SynthModule {
     this.g.gain.value = this.maxVelocity / 127;
     this.frequency = MidiContextManagerService.midiNoteToFrequency(midiNote + this.addSemitone) + this.finePitch;
     const note = new Voice(this.c, this.g, (velocity), this.waveForm, this.message.message);
-    if (channel === 15) {
-      this.active_voices[100 + midiNote] = note;
-    } else {
+    if (channel === this._selectedChannel) {
       this.active_voices[midiNote] = note;
+      note.playNote(this.frequency);
     }
-    note.playNote(this.frequency);
+
+    // if (channel === 15) {
+    //   this.active_voices[100 + midiNote] = note;
+    // } else {
+    //   this.active_voices[midiNote] = note;
+    // }
+    // note.playNote(this.frequency);
   }
 
   public noteOff(channel, midiNote) {
-    if (channel === 15) {
-      if (this.active_voices[100 + midiNote]) {
-        this.active_voices[100 + midiNote].stopNote();
-        delete this.active_voices[100 + midiNote];
-      }
-    } else {
-      if (this.active_voices[midiNote]) {
+    if (channel === this._selectedChannel) {
+      if (this.active_voices[midiNote] !== undefined) {
         this.active_voices[midiNote].stopNote();
         delete this.active_voices[midiNote];
       }
     }
+
+
+    // if (channel === 15) {
+    //   if (this.active_voices[100 + midiNote]) {
+    //     this.active_voices[100 + midiNote].stopNote();
+    //     delete this.active_voices[100 + midiNote];
+    //   }
+    // } else {
+    //   if (this.active_voices[midiNote]) {
+    //     this.active_voices[midiNote].stopNote();
+    //     delete this.active_voices[midiNote];
+    //   }
+    // }
+  }
+
+  public checkActive() {
+    this.midiManager.detach(this._midiObserver);
+    console.log(this.active_voices);
+    for (let i = 0; i < this.active_voices.length; i++) {
+      if (this.active_voices[i] !== undefined) {
+        this.active_voices[i].stopNote();
+        delete this.active_voices[i];
+      }
+    }
+    this.midiManager.attach(this._midiObserver);
+    console.log(this.active_voices);
   }
 
   public onVolumeChange(value) {

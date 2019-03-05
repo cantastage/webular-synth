@@ -56,7 +56,7 @@
     text-align: center;
     transform: translateX(-50%);
     left: 50%;
-    top: 180px;
+    top: 200px;
     
   }
 
@@ -80,14 +80,14 @@
   #sin{
     position: absolute;
     top: 44px;
-    left: 25%;
+    left: 20%;
     
   }
   
   #sqr{
     position: absolute;
     top: 72px;
-    left: 25%;
+    left: 20%;
     
   }
   
@@ -95,7 +95,7 @@
     width: 35px;
     position: absolute;
     top: 44px;
-    left: 65%;
+    left: 70%;
     
     
   }
@@ -104,7 +104,7 @@
     width: 35px;
     position: absolute;
     top: 72px;
-    left: 65%;
+    left: 70%;
    
   }
   
@@ -118,23 +118,23 @@
   }
   
   #sin-dot{
-    left: 65px;
+    left: 45px;
     top: 53px;
   }
   
   #sqr-dot{
-    left: 65px;
+    left: 45px;
     top: 77.6px;
   }
   
   #saw-dot{
-    right: 65px;
+    right: 45px;
     top: 53px;
     
   }
   
   #tri-dot{
-    right: 65px;
+    right: 45px;
     top: 77.6px;
   }
   
@@ -182,7 +182,7 @@ knob.skin4 /deep/ .knob{
 #volumeKnob{
   width: 70px;
   height: 70px;
-  top: 100px;
+  top: 120px;
   left: 50%;
   align-content: center;
   position: absolute;
@@ -207,6 +207,7 @@ knob.skin4 /deep/ .knob{
 }
 
 .info{
+  position: absolute;
   border: 1px solid #555555;
   width: 50px;
   // margin-top: 22px;
@@ -230,4 +231,12 @@ knob.skin4 /deep/ .knob{
   transform: translateX(-50%);
   left: 20%;
   top: 130px;
+}
+
+.channel{
+  position: absolute;
+  left: 190px;
+  top: 50px;
+  transform: translateX(-49%);
+  text-align: center;
 }
