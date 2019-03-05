@@ -60,7 +60,10 @@ export class HarmonizationsProvider { // fly-weight pattern
                 new Harmonization('pentatonic', [3, 2, 2, 3, 2]),
                 new Harmonization('esatonic', [2, 2, 2, 2, 2, 2]),
                 new Harmonization('chromatic', [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]),
-                new Harmonization('dorian', [1, 2, 2, 1, 2, 2, 2 ])
+                // new Harmonization('dorian', [1, 2, 2, 1, 2, 2, 2]),
+                // new Harmonization('phrygian', [2, 1, 2, 2, 1, 2, 2]),
+                // new Harmonization('lydian', [2, 2, 1, 2, 2, 1, 2]),
+                // new Harmonization('mixolydian', [2,2,2,1,2,2,1,2])
             ];
         }
     }

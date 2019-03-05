@@ -19,11 +19,15 @@ import { nextContext } from '@angular/core/src/render3';
 export class AudioContextManagerService {
   private _ctx: AudioContext;
   private soundChain: Array<SynthModule> = new Array<SynthModule>(0); // stores all the nodes in the audiochain
+  private _progSeqSoundChain: Array<SynthModule>;
+
   public subject: Subject<Pair<string, number>>;
 
   constructor() {
     this._ctx = new AudioContext();
     this.subject = new Subject();
+    // this._progSeqSoundChain = new Array<AudioNode>(0);
+    this._progSeqSoundChain = [null, null];
   }
 
   /**
@@ -137,5 +141,29 @@ export class AudioContextManagerService {
     }
     // delete module.
     this.soundChain.splice(position, 1);
+  }
+
+  // /**
+  //  * Creates the prog sequencer oscillator node
+  //  */
+  // public addProgSecOsc(osc: AudioNode): void {
+  //   // const osc = this.audioContext.createOscillator();
+  //   this._progSeqSoundChain.splice(0, 0, osc);
+  // }
+
+  // /**
+  //  * Creates prog sequencer amp
+  //  */
+  // public addProgSeqAmp(ampNode: AudioNode): void {
+  //   this._progSeqSoundChain.splice(1, 0, ampNode);  // TODO check if index 1 creates errors during creation
+  // }
+
+
+  public addProgSeqSynthModule(module: SynthModule, position: number): void {
+    this._progSeqSoundChain[position] = module;
+  }
+
+  private updateProgSeqChain(): void {
+    
   }
 }
