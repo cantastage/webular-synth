@@ -2,14 +2,15 @@ import { Chord } from 'src/app/model/modules/sequencer/prog/Chord';
 import { SubstitutionManagerService } from 'src/app/services/substitution-manager.service';
 import { PitchClassesProvider } from '../sequencer/PitchClassesProvider';
 import { ChordQualitiesProvider } from './ChordQualitiesProvider';
-// Substitution rules for maj7 chords:
-// - every rule contains 2 chords of half value with respect to starting chord. If chord1 = chord2, the rule is 1:1
-// - every rule is based on chord transitions: every chord is referred to C,
-//   if the input chord is of a different key it will be transposed
-// chord1: first half of the whole value
-// chord2: second half of the whole value
-// difficulty: arbitrary variable expressing the difficulty level of the substitution
-
+/*
+*  Substitution rules for maj7 chords:
+*  - every rule contains 2 chords of half value with respect to starting chord. If chord1 = chord2, the rule is 1:1
+*  - every rule is based on chord transitions: every chord is referred to C,
+*    if the input chord is of a different key it will be transposed
+*  chord1: first half of the whole value
+*  chord2: second half of the whole value
+*  difficulty: arbitrary variable expressing the difficulty level of the substitution
+*/
 // X MAJ7 Chord Substitution Rules
 const sub_maj7: {chord1: Chord, chord2: Chord, difficulty: number}[] = [
     {'chord1': new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('dom7')),

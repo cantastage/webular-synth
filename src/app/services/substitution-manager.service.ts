@@ -6,8 +6,14 @@ import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution
 import { sub_tables, substitutionRulesets } from 'src/app/model/modules/chord-substitution/SubstitutionRules';
 import { Progression } from '../model/modules/sequencer/prog/Progression.js';
 /*
-This Service provides support for the chord substitution module
- */
+* This Service provides support for the chord substitution module.
+* The method substituteChord take a Chord and a level as input, and builds a table of possible
+* substitutions that can be made on the input chord. It passes the table to the findChordSubstitution method,
+* which selects the 2 substituted chords (for every input chords a 1:2 substitution is operated) based on the
+* chosen difficulty level. The transposeChord method is used to traspose the substituted chords (which are based
+* on chord transitions in the C key) in the key of the input chord, and returns the chords to be substituted to the
+* progression sequencer.
+*/
 
 @Injectable({
   providedIn: 'root'
@@ -15,13 +21,6 @@ This Service provides support for the chord substitution module
 
 export class SubstitutionManagerService {
   constructor() { }
-
-
-  // is this needed?! at the moment I don't think...
-  // might however exploit the function just above foreach chord of the progression
-  // public static substituteProgression(progression: Progression, difficultyLevel: number): Array<Chord> {
-  //   throw new Error('NOT IMPLEMENTED YET');
-  // }
 
   // this will be deleted or private?!
   public static funny(message: Progression, difficultyLevel: number): Array<Array<Chord>> {
@@ -102,6 +101,7 @@ export class SubstitutionManagerService {
     return transposedChords;
   }
 
+  // Is this still used?
   public static buildSubstitutionSequence(arg: Array<Array<Chord>>): Array<Chord> {
     const chordSeq = [];
     // TODO
@@ -113,6 +113,8 @@ export class SubstitutionManagerService {
     // console.log(chordSeq);
     return chordSeq;
   }
+
+  // Is this still used?
   public static retrieveSubstitutionSequence(message: Progression, difficultyLevel: number): Array<Chord> {
     return SubstitutionManagerService.buildSubstitutionSequence(
       SubstitutionManagerService.funny(message, difficultyLevel)

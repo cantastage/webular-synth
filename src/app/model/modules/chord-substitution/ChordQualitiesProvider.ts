@@ -4,7 +4,6 @@ import { IChordQuality, ChordQualities } from './IChordQuality';
 @sealed
 class ChordQuality implements IChordQuality {
     private _chordQuality: ChordQualities;
-    // private _quality: string;
 
     public get chordQualitySymbol(): string {
         return ChordQualities[this._chordQuality];

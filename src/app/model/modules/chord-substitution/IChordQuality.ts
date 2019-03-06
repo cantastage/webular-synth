@@ -1,3 +1,11 @@
+/*
+*
+* The enum provides chord types allowed in the chord substitution application. The binary value provides
+* the notes in the chromatic scales by assigning 1 to the notes present in the chord, from root (most significant
+* bit), to the 13th (least significant bit).
+*
+*/
+
 export enum ChordQualities {
     'maj' = 0b100010010000000000,
     'min' = 0b100100010000000000,
