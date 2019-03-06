@@ -4,10 +4,16 @@
     <table class="table1">
       <tbody>
         <tr>
+          <td>PROGRESSION</td>
           <td>DIFFICULTY</td>
           <td> CH </td>
         </tr>
         <tr>
+          <td>
+            <select [(ngModel)]="_activeProgression" (change) = "chooseProgression()">
+                <option *ngFor="let progression of _progressionList;" [ngValue]="progression">{{progression.toUpperCase()}}</option>
+            </select>
+          </td>
           <td>sel1</td>
           <td><select class="ch" [(ngModel)]="progSequencer.channel">
               <option *ngFor="let channel of channels;" [ngValue]="channel">{{channel}}</option>
@@ -22,6 +28,10 @@
             <select [(ngModel)]="chord.root" (ngModelChange)="morethanChordChange($event)">
               <option *ngFor="let pitchClass of pitchClasses;" [ngValue]="pitchClass">{{pitchClass.pitchClassName}}</option>
             </select>
+          </td>
+        </tr>
+        <tr>
+          <td *ngFor="let chord of progSequencer.progression.chords;">
             <select [(ngModel)]="chord.quality" (ngModelChange)="morethanChordChange($event)">
               <option *ngFor="let chordQuality of chordQualities;" [ngValue]="chordQuality">{{chordQuality.chordQualityName}}</option>
             </select>
@@ -29,30 +39,24 @@
         </tr>
       </tbody>
     </table>
-  </div>
-</div>
 
-<div class = "mainDisplay">
-  <div id = "playing">
-    <div class= "section">
-      Playing
-    </div>
-    <div id= "chordPlaying">
-      {{chordPlaying.root.pitchClassName}}{{chordPlaying.quality.chordQualityName}}
+    <div class = "mainDisplay">
+      <div id = "playing">
+        <div class= "section">
+          Playing
+        </div>
+        <div id= "chordPlaying">
+          {{chordPlaying.root.pitchClassName}}{{chordPlaying.quality.chordQualityName}}
+        </div>
+      </div>
+      <div id = "next">
+        <div class = "section">
+          Next
+        </div>
+        <div id = "chordNext">
+            {{chordNext.root.pitchClassName}}{{chordNext.quality.chordQualityName}}
+        </div>
+      </div>
     </div>
   </div>
-  <div id = "next">
-    <div class = "section">
-      Next
-    </div>
-    <div id = "chordNext">
-        {{chordNext.root.pitchClassName}}{{chordNext.quality.chordQualityName}}
-    </div>
-  </div>
-</div>
-
-<div>
-  <select [(ngModel)]="_activeProgression" (change) = "chooseProgression()">
-    <option *ngFor="let progression of _progressionList;" [ngValue]="progression">{{progression.toUpperCase()}}</option>
-</select>
 </div>

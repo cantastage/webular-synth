@@ -8,11 +8,13 @@
     font-weight: 700;
     text-align: center;
     padding: 2px;
+    width: 520px;
 }
 
 .container-block{
     display: inline-flex;
 }
+
 .prog-sequencer .title {
     background-color: #4a4a4c;
     color: #8c8c8c;
@@ -26,6 +28,8 @@
 }
 .prog-sequencer .table2 {
     padding: 2px;
+    margin-top: 20px;
+    width: 100%;
 }
 
 
@@ -53,6 +57,9 @@
     0px 0px 4px 2px #777;
     text-align: center;
     color: rgb(207, 209, 218);
+    margin-left: 50%;
+    margin-top: 20px;
+    transform: translateX(-50%);
   }
 
 #playing {
