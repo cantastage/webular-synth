@@ -6,7 +6,7 @@
         <tr>
           <td>PROGRESSION</td>
           <td>DIFFICULTY</td>
-          <td> CH </td>
+          <td>CH</td>
         </tr>
         <tr>
           <td>
@@ -14,10 +14,16 @@
                 <option *ngFor="let progression of _progressionList;" [ngValue]="progression">{{progression.toUpperCase()}}</option>
             </select>
           </td>
-          <td>sel1</td>
-          <td><select class="ch" [(ngModel)]="progSequencer.channel">
+          <td>
+              <select class="difficulty" [(ngModel)]="progSequencer.difficulty">
+                <option *ngFor="let difficulty of difficulties;" [ngValue]="difficulty">{{difficultyNames[difficulty - 1]}}</option>
+              </select>
+          </td>
+          <td>
+            <select class="ch" [(ngModel)]="progSequencer.channel">
               <option *ngFor="let channel of channels;" [ngValue]="channel">{{channel}}</option>
-          </select></td>
+            </select>
+          </td>
         </tr>
       </tbody>
     </table>
