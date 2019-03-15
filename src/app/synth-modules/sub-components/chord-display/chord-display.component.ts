@@ -31,7 +31,7 @@ export class ChordDisplayComponent implements OnInit {
 
   ngOnInit() {
     // this.stave.setContext(this.context).draw();
-    const div = document.getElementById('boo');
+    const div = document.getElementById('score');
     this.VF = Vex.Flow;
     const renderer = new this.VF.Renderer(div, this.VF.Renderer.Backends.SVG);
     renderer.resize(500, 500);
