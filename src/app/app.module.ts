@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { KnobModule } from 'ng2-knob';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,11 +18,11 @@ import { SequencerComponent } from './synth-modules/sequencer/sequencer.componen
 import { ADSRComponent } from './synth-modules/adsr/adsr.component';
 import { OscillatorComponent } from './synth-modules/oscillator/oscillator.component';
 import { AmplifierComponent } from './synth-modules/amplifier/amplifier.component';
-import { ScrollDispatchModule } from '@angular/cdk/scrolling';
-import { ScrollingModule } from '@angular/cdk-experimental/scrolling';
 import { ProgSequencerComponent } from './synth-modules/prog-sequencer/prog-sequencer.component';
 import { ProgSeqOscillatorComponent } from './synth-modules/prog-seq-oscillator/prog-seq-oscillator.component';
 import { ProgSeqAmpComponent } from './synth-modules/prog-seq-amp/prog-seq-amp.component';
+// import { NgxScoreModule } from 'ngx-score';
+import { ChordDisplayComponent } from './synth-modules/sub-components/chord-display/chord-display.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +39,8 @@ import { ProgSeqAmpComponent } from './synth-modules/prog-seq-amp/prog-seq-amp.c
     AmplifierComponent,
     ProgSequencerComponent,
     ProgSeqOscillatorComponent,
-    ProgSeqAmpComponent
+    ProgSeqAmpComponent,
+    ChordDisplayComponent
   ],
   entryComponents: [MoogLadderFilterComponent, FilterComponent,
     LfoComponent, ClockComponent, SequencerComponent, ADSRComponent, OscillatorComponent, AmplifierComponent,
@@ -50,7 +51,8 @@ import { ProgSeqAmpComponent } from './synth-modules/prog-seq-amp/prog-seq-amp.c
     DragDropModule,
     FormsModule,
     KnobModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    // NgxScoreModule.forRoot()
   ],
   providers: [
   ],

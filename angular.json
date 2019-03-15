@@ -31,6 +31,7 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": [
+              "./node_modules/vexflow/releases/vexflow-min.js"
             ]
           },
           "configurations": {
