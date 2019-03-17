@@ -9,37 +9,35 @@ import { ViewFlags } from '@angular/core/src/view';
 })
 export class ChordDisplayComponent implements OnInit {
   public VF;
-  // private static vf: any = Vex.Flow;
-  // // private score: any;
-  // // private system: any;
-  // private div: any;
-  // private renderer: any;
-  // private context: any;
-  // private stave: any;
+  public div: any;
+  public renderer: any;
+  public context: any;
+  public stave: any;
+  // private staves: Array<any>;
 
-  constructor() {
-    // this.vf = Vex.Flow;
-    // this.score = this.vf.EasyScore();
-    // this.system = this.vf.System();
-    // this.div = document.getElementById('boo');
-    // this.renderer = new ChordDisplayComponent.vf.Renderer(this.div, ChordDisplayComponent.vf.Renderer.Backends.SVG);
-    // this.renderer.resize(500, 500);
-    // this.context = this.renderer.getContext();
-    // this.stave = new ChordDisplayComponent.vf.Stave(10, 40, 400);
-    // this.stave.addClef('treble').addTimeSignature('4/4');
+  constructor() { 
+    // this.staves = new Array<any>(4); // assume 4 staves (4 chords)
+    // this.staves.forEach(s => {
+    //   s = new this.VF.Stave(10, 40, 400);
+    //   // s.addClef('treble').addTimeSignature('4/4');
+    // });
   }
 
   ngOnInit() {
-    // this.stave.setContext(this.context).draw();
-    const div = document.getElementById('score');
+    this.div = document.getElementById('score');
     this.VF = Vex.Flow;
-    const renderer = new this.VF.Renderer(div, this.VF.Renderer.Backends.SVG);
-    renderer.resize(500, 500);
-    const context = renderer.getContext();
-    context.setFont('Arial', 10, '').setBackgroundFillStyle('#eed');
-    const stave = new this.VF.Stave(10, 40, 400);
-    stave.addClef('treble').addTimeSignature('4/4');
-    stave.setContext(context).draw();
+    this.stave = new this.VF.Stave(10, 40, 400);
+    this.renderer = new this.VF.Renderer(this.div, this.VF.Renderer.Backends.SVG);
+    this.renderer.resize(500, 500);
+    this.context = this.renderer.getContext();
+    this.context.setFont('Arial', 10, '').setBackgroundFillStyle('#eed');
+    // const stave = new this.VF.Stave(10, 40, 400);
+    this.stave.addClef('treble').addTimeSignature('4/4');
+    this.stave.setContext(this.context).draw();
+    // this.staves.forEach(s => {
+    //   s.addClef('treble').addTimeSignature('4/4');
+    //   s.setContext(this.context).draw();
+    // });
   }
 
 }
