@@ -14,16 +14,17 @@ import { Observer } from 'rxjs';
 import { Chord } from 'src/app/model/modules/sequencer/prog/Chord';
 import { BasicProgressions } from 'src/app/model/modules/sequencer/prog/BasicProgressions';
 import { Progression } from 'src/app/model/modules/sequencer/prog/Progression';
+import { ProgSequencer } from 'src/app/model/modules/sequencer/prog/ProgSequencer';
 
 @Component({
-  selector: 'app-sequencer',
+  selector: 'app-prog-sequencer',
   templateUrl: './prog-sequencer.component.html',
   styleUrls: ['./prog-sequencer.component.scss']
 })
-export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
+export class ProgSequencerComponent implements OnInit, OnDestroy {
   @Input() data: any;
-  @Input() isInSoundChain: boolean;
-  @Input() position: number;
+  // @Input() isInSoundChain: boolean;
+  // @Input() position: number;
 
   // UI selections
   private _channels: number[];
@@ -83,7 +84,14 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   }
 
   public loadPatch(): void {
-    this._progSequencer = this.data.state;
+    this._progSequencer = new ProgSequencer(
+      new Progression([
+        new Chord(PitchClassesProvider.retrieveInstance('D'), ChordQualitiesProvider.retrieveInstance('min7')),
+        new Chord(PitchClassesProvider.retrieveInstance('A'), ChordQualitiesProvider.retrieveInstance('min7')),
+        new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')),
+        new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj7'))
+      ]),
+      3, 16);
   }
 
   // OnInit lifecycle
@@ -101,18 +109,15 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     this._substitutingChords = new Array<Chord>(2 * this.progSequencer.progression.chords.length);
     this.resetWholeState();
 
-    if (this.isInSoundChain) {
-      this.clockManager.attach(this._clockObserver);
-      this.midiManager.attach(this._midiObserver);
-      this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
-    }
+    // mettere la condizione if (this.play)
+    this.clockManager.attach(this._clockObserver);
+    this.midiManager.attach(this._midiObserver);
+    // this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
   }
 
   public ngOnDestroy() {
-    if (this.isInSoundChain) {
-      this.clockManager.detach(this._clockObserver);
-      this.midiManager.detach(this._midiObserver);
-    }
+    this.clockManager.detach(this._clockObserver);
+    this.midiManager.detach(this._midiObserver);
   }
 
   public savePatch(): any {
@@ -121,7 +126,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
   }
 
   private resetithSubstituting(i: number): void {
-    this.substitutingChords[2 * i]  = this.progSequencer.progression.chords[i];
+    this.substitutingChords[2 * i] = this.progSequencer.progression.chords[i];
     this.substitutingChords[2 * i + 1] = this.progSequencer.progression.chords[i];
   }
   private resetDefaultSubstituting(): void {
@@ -236,7 +241,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy, SynthModule {
     }
   }
 
-  private retrieveProgressionNames(progression: {name: string, progression: Progression}[]) {
+  private retrieveProgressionNames(progression: { name: string, progression: Progression }[]) {
 
     const progressionNames = [];
     for (let i = 0; i < progression.length; i++) {

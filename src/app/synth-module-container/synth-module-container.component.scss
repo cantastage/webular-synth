@@ -6,7 +6,8 @@
   position: fixed;  //necessary to fill fullscreen
   background-color: rgb(53,58,64);
   font-family: webular;
-  overflow: hidden;
+  // overflow: hidden;
+  overflow-y: auto;
 }
 
 .list-container {

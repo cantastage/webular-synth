@@ -15,14 +15,10 @@
     </ul>
   </nav>
 
-  <!-- <app-chord-display></app-chord-display> -->
-
-
-
   <div class="row list-container">
 
     <div class="col-4 module-list-container">
-      <!-- List that represents new modules -->
+
       <h3 class="module-list-title">NEW MODULES</h3>
       <div cdkDropList #unconnectedList="cdkDropList" [cdkDropListData]="unconnectedModules"
         [cdkDropListConnectedTo]="[connectedList]" class="module-list new-module-list"
@@ -33,7 +29,7 @@
     </div>
 
     <div class="col-8 module-list-container">
-      <!-- List that represents the sound chain -->
+
       <h3 class="module-list-title">SYNTH MODULES</h3>
       <div cdkDropList cdkDropListOrientation="horizontal" #connectedList="cdkDropList" [cdkDropListData]="soundChain"
         [cdkDropListConnectedTo]="[unconnectedList]" class="module-list rack-list" (cdkDropListDropped)="drop($event)"
@@ -42,6 +38,7 @@
           [index]="i" [listName]="connectedList.id" [isInSoundChain]="true"></app-synth-module-wrapper>
       </div>
     </div>
+    <app-prog-sequencer></app-prog-sequencer>
   </div>
 
   <!-- <button type="button" class="btn module-button" (click)="toggleImproTrainer()">
@@ -53,6 +50,13 @@
       class="col-lg-12 module-list rack-list" (cdkDropListDropped)="dropImproTrainer($event)" id="trainerChain">
       <app-synth-module-wrapper cdkDrag [synthModuleData]="item" *ngFor="let item of trainerChain; let i = index"
         [index]="i" [listName]="connectedList.id" [isInSoundChain]="false"></app-synth-module-wrapper>
+    </div>
+  </div> -->
+
+  
+  <!-- <div class="row list-container">
+    <div class="col-12">
+      <app-prog-sequencer></app-prog-sequencer>
     </div>
   </div> -->
 </div>
