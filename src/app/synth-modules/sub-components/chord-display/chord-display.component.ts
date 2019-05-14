@@ -33,7 +33,7 @@ export class ChordDisplayComponent implements OnInit {
     this.context.setFont('Arial', 10, '').setBackgroundFillStyle('#eed');
     // this.stave.addClef('treble').addTimeSignature('4/4');
     // this.stave.setContext(this.context).draw();
-    for (let i = 0, x = 10, y = 40, w = 400; i < this.staves.length; i++ , x += 400) {
+    for (let i = 0, x = 10, y = 40, w = 100; i < this.staves.length; i++ , x += w) {
       if (i === 0) {
         this.staves[i] = new this.VF.Stave(x, y, w);
         this.staves[i].addClef('treble').addTimeSignature('4/4');
