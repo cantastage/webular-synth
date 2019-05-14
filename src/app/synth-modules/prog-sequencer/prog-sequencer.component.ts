@@ -30,6 +30,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private _channels: number[];
   private _pitchClasses: IPitchClass[];
   private _chordQualities: IChordQuality[];
+  private _difficulties: number[];
+  private _difficultyNames: string[];
   private _progSequencer: IProgSequencer;
   private _progressionList: Array<string>;
   private _activeProgression: any;
@@ -51,6 +53,12 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   }
   public get chordQualities(): IChordQuality[] {
     return this._chordQualities;
+  }
+  public get difficulties(): number[] {
+    return this._difficulties;
+  }
+  public get difficultyNames(): string[] { // not wonderful, but useful
+    return this._difficultyNames;
   }
   public get progSequencer(): IProgSequencer {
     return this._progSequencer;
@@ -99,6 +107,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     this._progressionList = this.retrieveProgressionNames(BasicProgressions);
     this._pitchClasses = PitchClassesProvider.retrieveInstances();
     this._chordQualities = ChordQualitiesProvider.retrieveInstances();
+    this._difficulties = [1, 2, 3];
+    this._difficultyNames = ['easy', 'mid', 'pro'];
     this._activeProgression = BasicProgressions[0].name;
     // this._activeProgression = BasicProgressions[0];
     this._channels = MidiContextManagerService.generateMIDIChannelVector();
