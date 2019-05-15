@@ -29,7 +29,7 @@
     "ng2-knob": "^1.1.0",
     "popper": "^1.0.1",
     "rxjs": "~6.3.3",
-    "vexflow": "^1.2.88",
+    "vexflow": "^1.2.89",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

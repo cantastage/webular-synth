@@ -52,7 +52,8 @@
           Playing
         </div>
         <div id= "chordPlaying">
-          {{chordPlaying.root.pitchClassName}}{{chordPlaying.quality.chordQualityName}}
+          <!-- {{chordPlaying.root.pitchClassName}}{{chordPlaying.quality.chordQualityName}} -->
+          {{chordPlaying | chordNameFormatter }}
         </div>
       </div>
       <div id = "next">
