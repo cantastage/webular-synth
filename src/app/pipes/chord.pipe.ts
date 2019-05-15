@@ -1,13 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Chord } from '../model/modules/sequencer/prog/Chord';
 
-/**
- * This pipe formats the chord names in a musician friendly fashion.
- */
 @Pipe({
-  name: 'chordNameFormatter'
+  name: 'chordFormat'
 })
-export class ChordNamePipePipe implements PipeTransform {
+export class ChordPipe implements PipeTransform {
 
   transform(chord: Chord): String {
     const chord_root = chord.root.pitchClassName;

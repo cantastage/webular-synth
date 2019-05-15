@@ -23,7 +23,8 @@ import { ProgSeqOscillatorComponent } from './synth-modules/prog-seq-oscillator/
 import { ProgSeqAmpComponent } from './synth-modules/prog-seq-amp/prog-seq-amp.component';
 // import { NgxScoreModule } from 'ngx-score';
 import { ChordDisplayComponent } from './synth-modules/sub-components/chord-display/chord-display.component';
-import { ChordNamePipePipe } from './pipes/chord-name-pipe.pipe';
+import { ChordQualityPipe } from './pipes/chord-quality.pipe';
+import { ChordPipe } from './pipes/chord.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,7 +43,8 @@ import { ChordNamePipePipe } from './pipes/chord-name-pipe.pipe';
     ProgSeqOscillatorComponent,
     ProgSeqAmpComponent,
     ChordDisplayComponent,
-    ChordNamePipePipe
+    ChordQualityPipe,
+    ChordPipe
   ],
   entryComponents: [MoogLadderFilterComponent, FilterComponent,
     LfoComponent, ClockComponent, SequencerComponent, ADSRComponent, OscillatorComponent, AmplifierComponent,
