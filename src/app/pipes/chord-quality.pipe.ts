@@ -20,37 +20,37 @@ export class ChordQualityPipe implements PipeTransform {
       case ('aug'):
         formatted_quality = '⁺';
         break;
-        case ('maj7'):
+      case ('maj7'):
         formatted_quality = 'ᵐᵃʲ⁷';
         break;
-        case ('min7'):
+      case ('min7'):
         formatted_quality = 'm⁷';
         break;
-        case ('halfDim7'):
+      case ('halfDim7'):
         formatted_quality = 'ø⁷';
         break;
-        case ('aug7'):
+      case ('aug7'):
         formatted_quality = '⁺⁷';
         break;
-        case ('min9'):
+      case ('min9'):
         formatted_quality = 'ᵐ⁹';
         break;
-        case ('dim9'):
+      case ('dim9'):
         formatted_quality = 'ᵒ⁹';
         break;
-        case ('dim7'):
+      case ('dim7'):
         formatted_quality = 'ᵒ⁷';
         break;
-        case ('aug9'):
+      case ('aug9'):
         formatted_quality = '⁺⁹';
         break;
-        case ('maj9'):
+      case ('maj9'):
         formatted_quality = 'ᵐᵃʲ⁹';
         break;
-        case ('dom7'):
+      case ('dom7'):
         formatted_quality = '⁷';
         break;
-        case ('dom13'):
+      case ('dom13'):
         formatted_quality = '¹³';
         break;
     }

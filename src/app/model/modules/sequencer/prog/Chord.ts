@@ -52,6 +52,7 @@ export class Chord {
         this.quality = quality;
     }
 
+    // update notes?
     private updateCache(): void {
         this._chromaticScale = new Scale(this.root, HarmonizationsProvider.retrieveInstance('chromatic'));
 

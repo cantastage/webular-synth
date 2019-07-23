@@ -28,13 +28,13 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
 
   // UI selections
   private _channels: number[];
-  private _pitchClasses: IPitchClass[];
-  private _chordQualities: IChordQuality[];
+  private _pitchClasses: IPitchClass[]; //?
+  private _chordQualities: IChordQuality[]; //?
   private _difficulties: number[];
-  private _difficultyNames: string[];
-  private _progSequencer: IProgSequencer;
+  private _difficultyNames: string[]; 
+  private _progSequencer: IProgSequencer; // model of prog sequencer?
   private _progressionList: Array<string>;
-  private _activeProgression: any;
+  private _activeProgression: any;  // current sequence of chords
 
   private _substitutedIndex: number;
   private _substitutingChords: Array<Chord>;
@@ -44,6 +44,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
 
   private _clockObserver: Observer<number>;
   private _midiObserver: Observer<[number, boolean, number, number]>;
+  public stocazzo = 'STOCAZZO';
 
   public get channels(): number[] {
     return this._channels;
@@ -75,6 +76,14 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     ];
   }
 
+  /**
+   * Component constructor
+   * @param clockManager 
+   * @param midiManager 
+   * @param contextManager 
+   * @param substitutionManager 
+   * @param messageService 
+   */
   public constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
     private contextManager: AudioContextManagerService, private substitutionManager: SubstitutionManagerService,
     private messageService: MessageService) {
@@ -91,6 +100,10 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * This method loads a patch, in this case a chord progression
+   * TODO connect to db to load patches.
+   */
   public loadPatch(): void {
     this._progSequencer = new ProgSequencer(
       new Progression([
@@ -102,7 +115,9 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
       3, 16);
   }
 
-  // OnInit lifecycle
+  /**
+   *  OnInit lifecycle
+   */
   public ngOnInit() {
     this._progressionList = this.retrieveProgressionNames(BasicProgressions);
     this._pitchClasses = PitchClassesProvider.retrieveInstances();
@@ -118,6 +133,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     // each chord is repeated twice
     this._substitutingChords = new Array<Chord>(2 * this.progSequencer.progression.chords.length);
     this.resetWholeState();
+    console.log('I cazzo di accordi sono: ', this.substitutingChords);
 
     // mettere la condizione if (this.play)
     this.clockManager.attach(this._clockObserver);
