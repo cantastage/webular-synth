@@ -126,7 +126,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     this._difficultyNames = ['easy', 'mid', 'pro'];
     this._activeProgression = BasicProgressions[0].name;
     // this._activeProgression = BasicProgressions[0];
-    this._channels = MidiContextManagerService.generateMIDIChannelVector();
+    this._channels = MidiContextManagerService.generateMIDIChannelVector(); // midi channels
 
     this.loadPatch();
     // at the beginning the substituted chords are a replica of the ones introduced by the user

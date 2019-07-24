@@ -16,7 +16,7 @@ export class Chord {
 
     // cache field depending on private ones
     private _chromaticScale: Scale;
-    private _chordNotes: IPitch[];
+    private _chordNotes: IPitch[]; // corrisponde al voicing dell'accordo 
 
     public get root(): IPitchClass {
         return this._root;
