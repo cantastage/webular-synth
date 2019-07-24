@@ -3,12 +3,10 @@ import { ModuleItem } from '../model/module-item';
 import { Subject } from 'rxjs';
 import { SynthModule } from '../interfaces/module.component';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { NumberValueAccessor } from '@angular/forms/src/directives';
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { PercentPipe } from '@angular/common';
 import { timingSafeEqual } from 'crypto';
 import { Pair } from '../model/pair';
-import { nextContext } from '@angular/core/src/render3';
 
 /**
  * This service provides access to a common audio context shared by all synth modules.

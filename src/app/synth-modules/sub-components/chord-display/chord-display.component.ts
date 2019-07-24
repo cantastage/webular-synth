@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
 import { ReadVarExpr, rendererTypeName } from '@angular/compiler';
-import { ViewFlags } from '@angular/core/src/view';
 import { Chord } from 'src/app/model/modules/sequencer/prog/Chord';
 
 @Component({
