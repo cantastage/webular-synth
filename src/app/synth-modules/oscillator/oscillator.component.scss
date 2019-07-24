@@ -161,7 +161,7 @@ knob.skin1{
     // background: url('ng2-knob/skins/skin1_back.svg');
     background-size: contain;    
 }
-knob.skin1 /deep/ .knob{
+knob.skin1 ::ng-deep .knob{
     background: url('src/assets/knob.png');
     background-size: contain;    
 }
@@ -172,7 +172,7 @@ knob.skin4{
   width:200px;
   height:200px;
 }
-knob.skin4 /deep/ .knob{
+knob.skin4 ::ng-deep .knob{
   background:url('ng2-knob/skins/skin4_front.svg');
   background-size: contain;    
   width:200px;

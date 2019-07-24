@@ -10,7 +10,7 @@ import { MessageService } from 'src/app/services/message.service';
 })
 export class ADSRComponent implements OnInit {
   @Input() data: any;
-  @ViewChild('envCanvas') public envCanvas: ElementRef;
+  @ViewChild('envCanvas', {static: false}) public envCanvas: ElementRef;
 
   private ctx: CanvasRenderingContext2D;
   private points: any;
