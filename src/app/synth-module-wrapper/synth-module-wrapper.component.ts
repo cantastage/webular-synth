@@ -25,7 +25,7 @@ export class SynthModuleWrapperComponent implements OnInit, AfterViewInit {
   private cmpRef: ComponentRef<any>;
 
 
-  @ViewChild('target', { static: false }) target: ViewContainerRef;
+  @ViewChild('target', { static: false, read: ViewContainerRef }) target: ViewContainerRef;
 
   constructor(
     private contextManager: AudioContextManagerService,
