@@ -1,7 +1,48 @@
-<div class="container-block">
-  <div class="prog-sequencer">
+<div class="row container-block">
+  <div class="col-12 prog-sequencer">
     <div class="title">PROG SEQUENCER</div>
-    <table class="table1">
+    <!-- Bootstrap row for the upper part of prog sequencer -->
+    <div class="row">
+      <div class="col-lg-4 prog-seq-options">
+        <div class="row">
+          <div class="col-12">INITIAL PROGRESSION</div>
+          <div class="col-12">
+            <select [(ngModel)]="_activeProgression" (change)="chooseProgression()">
+              <option *ngFor="let progression of _progressionList;" [ngValue]="progression">
+                {{progression.toUpperCase()}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-1 prog-seq-options">
+        <div class="row">
+          <div class="col-12">DIFFICULTY</div>
+          <div class="col-12">
+            <select class="difficulty" [(ngModel)]="progSequencer.difficulty">
+              <option *ngFor="let difficulty of difficulties;" [ngValue]="difficulty">
+                {{difficultyNames[difficulty - 1]}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-1 prog-seq-options">
+          <div class="row">
+            <div class="col-12">CH</div>
+            <div class="col-12">
+                <select class="ch" [(ngModel)]="progSequencer.channel">
+                    <option *ngFor="let channel of channels;" [ngValue]="channel">{{channel}}</option>
+                  </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <app-prog-seq-oscillator [isInSoundChain]="false" [midiChannel]="16" [data]="_oscillatorData"></app-prog-seq-oscillator>
+        </div>
+    </div>
+
+
+
+    <!-- <table class="table1">
       <tbody>
         <tr>
           <td>INITIAL PROGRESSION</td>
@@ -48,28 +89,11 @@
           </td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
 
-    <div class="mainDisplay">
-      <div id="playing">
-        <div class="section">
-          Playing
-        </div>
-        <div id="chordPlaying">
-          <!-- {{chordPlaying.root.pitchClassName}}{{chordPlaying.quality.chordQualityName}} -->
-          {{chordPlaying | chordFormat }}
-        </div>
-      </div>
-      <div id="next">
-        <div class="section">
-          Next
-        </div>
-        <div id="chordNext">
-          <!-- {{chordNext.root.pitchClassName}}{{chordNext.quality.chordQualityName}} -->
-          {{chordNext | chordFormat}}
-        </div>
-      </div>
-    </div>
+    <!-- NB QUI codice del main display -->
+
+
     <app-chord-display [chord_voicings]="stocazzo"></app-chord-display>
   </div>
 </div>

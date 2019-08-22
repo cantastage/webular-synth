@@ -1,3 +1,71 @@
-<p>
-  prog-seq-oscillator works!
-</p>
+<div class="container-block">
+  <div class="oscBlock">
+       <div class="component-name">
+         OSCILLATOR
+       </div>
+ 
+   <div class="dot" [ngClass]="this.active == 0 ? 'dot active' : 'dot'" id="sin-dot">
+   </div>
+   <div class="dot" [ngClass]="this.active == 1 ? 'dot active' : 'dot'" id="sqr-dot">
+   </div>
+   <div class="dot" [ngClass]="this.active == 2 ? 'dot active' : 'dot'" id="saw-dot">
+   </div>
+   <div class="dot" [ngClass]="this.active == 3 ? 'dot active' : 'dot'" id="tri-dot">
+   </div>
+ 
+   <div class="channel">
+     <div>CH</div>
+           <div>
+             <select class="ch" [(ngModel)]="_selectedChannel" (change)="checkActive()">
+               <option *ngFor="let channel of _channels;" [ngValue]="channel">{{channel}}</option>
+             </select>
+           </div>
+   </div>
+ 
+   <div class="button" id="sin" (click)="selectWaveform(0)">
+     <img src = './assets/sine.png'>
+   </div>
+   <div class="button" id="sqr" (click)="selectWaveform(1)">
+     <img src = './assets/square.png'>
+   </div>
+   <div class="button" id="saw" (click)="selectWaveform(2)">
+     <img src = './assets/sawtooth.png'>
+   </div>
+   <div class="button" id="tri" (click)="selectWaveform(3)">
+       <img src = './assets/triangle.png'>
+   </div>
+   <knob class="skin1" #volKnob id="volumeKnob" [min]="0" [max]="127" [value]="40" [startDegree]="-120" [endDegree]="120"
+     (change)="onVolumeChange(volKnob.meterValue)" [(ngModel)]="maxVelocity">
+ 
+   </knob>
+   <div id="label-volume">
+     VOLUME
+   </div>
+   <div>
+     <div class="info coarse">{{crsKnob.meterValue}}</div>
+     <knob class="skin1" #crsKnob id="coarseKnob" [min]="-12" [max]="12" [value]="0" [startDegree]="-120" [endDegree]="120"
+     [(ngModel)]="addSemitone">
+ 
+     </knob>
+   </div>
+   
+ <div>
+     <div class="info fine">{{fnKnob.meterValue}}</div>
+     <knob class="skin1" #fnKnob id="fineKnob" [min]="-10" [max]="10" [value]="0" [startDegree]="-120" [endDegree]="120"
+     [(ngModel)]="finePitch">
+ 
+   </knob>
+ </div>
+ 
+   <div id="label-coarse">
+     FINE
+   </div>
+   <div id="label-fine">
+     COARSE
+   </div>
+ </div>
+ <!-- Commentato perchè non serve ADSR per il prog sequencer -->
+ <!-- <app-adsr></app-adsr>  -->
+ <!-- <button type="button" (click)="toggleDebugOsc()">TOGGLE DEBUG OSCILLATOR</button> -->
+ </div>
+ 

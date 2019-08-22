@@ -9,18 +9,10 @@ import { Chord } from 'src/app/model/modules/sequencer/prog/Chord';
 })
 export class ChordDisplayComponent implements OnInit, OnChanges {
   @Input() rythmic_subdivision; // 4/4, 3/4 ecc...
-  @Input() active_chord;  // current playing chord, TODO decide if it is an index or actual chord. 
-  // @Input() set chord_voicings(chord_voicings: Array<Chord>) {
-  //   this.chord_voicings = chord_voicings;
-  //   this.updateSheet();
-  // }
-  @Input() chord_voicings;
-  // @Input() set stocazzo(val: string) {
-  //   this.stocazzo = val;
-  //   console.log(this.stocazzo);
-  // }
+  @Input() active_chord;  // current playing chord, TODO decide if it is an index or actual chord. MEGLIO index
+  @Input() chord_voicings; // NB deve essere un array di 8 elementi (8 accordi da 2/4 ciascuno)
 
-  public VF; // Vexflow 
+  public VF; // Vexflow
   public div: any;
   public renderer: any;
   public context: any;

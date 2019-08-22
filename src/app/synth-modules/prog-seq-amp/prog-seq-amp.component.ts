@@ -67,7 +67,7 @@ export class ProgSeqAmpComponent implements OnInit, IModulableComponent {
 
 
     this._panNode.connect(this.contextManager.audioContext.destination);
-    this.contextManager.addProgSeqSynthModule(this, 1); // Adds the module to the audio context manager service
+    // this.contextManager.addProgSeqSynthModule(this, 1); // Adds the module to the audio context manager service
 
   }
 

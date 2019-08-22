@@ -4,7 +4,7 @@ import { IHarmonization } from './IHarmonization';
 
 export class Scale {
     private _key: IPitchClass;
-    private _harmonization: IHarmonization;
+    private _harmonization: IHarmonization; // struttura della scala in semitoni, vettore di interi
 
     // cache field depending on private ones
     private _diatonicNotes: IPitchClass[];

@@ -31,20 +31,21 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private _pitchClasses: IPitchClass[]; //?
   private _chordQualities: IChordQuality[]; //?
   private _difficulties: number[];
-  private _difficultyNames: string[]; 
+  private _difficultyNames: string[];
   private _progSequencer: IProgSequencer; // model of prog sequencer?
   private _progressionList: Array<string>;
   private _activeProgression: any;  // current sequence of chords
+  private _oscillatorData: Object;
 
   private _substitutedIndex: number;
-  private _substitutingChords: Array<Chord>;
+  private _substitutingChords: Array<Chord>; // NB array di accordi che vanno passati al chord display component
   private _substitutingIndex: number;
   private _rollback: boolean;
   private _firstTurnaround: boolean;
 
   private _clockObserver: Observer<number>;
   private _midiObserver: Observer<[number, boolean, number, number]>;
-  public stocazzo = 'STOCAZZO';
+  // public stocazzo = 'STOCAZZO';
 
   public get channels(): number[] {
     return this._channels;
@@ -71,6 +72,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     return this.substitutingChords[this._substitutingIndex];
   }
   public get chordNext(): Chord {
+    // 8 accordi della progressione
     return this.substitutingChords[
       (this._substitutingIndex + 1) % this.substitutingChords.length
     ];
@@ -98,6 +100,9 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
       error: () => { return; },
       complete: () => { return; }
     };
+    // initial prog sequencer oscilator params
+    // NB check maxVelocity value to avoid distortions
+    this._oscillatorData = { waveForm: 'sine', maxVelocity: 20, addSemitone: 0, finePitch: 0, active: 0 };
   }
 
   /**

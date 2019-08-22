@@ -11,13 +11,14 @@ import { Pitch } from './Pitch';
  */
 export class Chord {
     public static readonly FLAG_COUNT = 18;
-    private _root: IPitchClass;
-    private _quality: IChordQuality;
+    private _root: IPitchClass; //root note dell'accordo
+    private _quality: IChordQuality; 
 
     // cache field depending on private ones
     private _chromaticScale: Scale;
     private _chordNotes: IPitch[]; // corrisponde al voicing dell'accordo 
 
+    // definisce la root
     public get root(): IPitchClass {
         return this._root;
     }
@@ -46,6 +47,7 @@ export class Chord {
         return this._chordNotes;
     }
 
+    // NB costruttore dell'accordo!
     public constructor(root: IPitchClass, quality: IChordQuality) {
         this._chordNotes = new Array<IPitch>();
         this.root = root;

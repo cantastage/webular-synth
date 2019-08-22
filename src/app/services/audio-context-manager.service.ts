@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ModuleItem } from '../model/module-item';
 import { Subject } from 'rxjs';
 import { SynthModule } from '../interfaces/module.component';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { PercentPipe } from '@angular/common';
-import { timingSafeEqual } from 'crypto';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Pair } from '../model/pair';
 
 /**
@@ -17,7 +13,7 @@ import { Pair } from '../model/pair';
 export class AudioContextManagerService {
   private _ctx: AudioContext;
   private soundChain: Array<SynthModule> = new Array<SynthModule>(0); // stores all the nodes in the audiochain
-  private _progSeqSoundChain: Array<SynthModule>;
+  // private _progSeqSoundChain: Array<SynthModule>;
 
   public subject: Subject<Pair<string, number>>;
 
@@ -25,7 +21,7 @@ export class AudioContextManagerService {
     this._ctx = new AudioContext();
     this.subject = new Subject();
     // this._progSeqSoundChain = new Array<AudioNode>(0);
-    this._progSeqSoundChain = [null, null];
+    // this._progSeqSoundChain = [null, null];
   }
 
   /**
@@ -141,27 +137,12 @@ export class AudioContextManagerService {
     this.soundChain.splice(position, 1);
   }
 
-  // /**
-  //  * Creates the prog sequencer oscillator node
-  //  */
-  // public addProgSecOsc(osc: AudioNode): void {
-  //   // const osc = this.audioContext.createOscillator();
-  //   this._progSeqSoundChain.splice(0, 0, osc);
-  // }
-
-  // /**
-  //  * Creates prog sequencer amp
-  //  */
-  // public addProgSeqAmp(ampNode: AudioNode): void {
-  //   this._progSeqSoundChain.splice(1, 0, ampNode);  // TODO check if index 1 creates errors during creation
-  // }
-
-
-  public addProgSeqSynthModule(module: SynthModule, position: number): void {
-    this._progSeqSoundChain[position] = module;
-  }
-
-  private updateProgSeqChain(): void {
-    
+  /**
+   * 
+   * @param module Connects prog sequencer to the final output
+   * @param position 
+   */
+  public connectProgSequencer(progSequencerModule: SynthModule): void {
+    progSequencerModule.getOutput().connect(this._ctx.destination);
   }
 }
