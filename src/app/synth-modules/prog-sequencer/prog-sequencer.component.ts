@@ -44,7 +44,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private _firstTurnaround: boolean;
 
   private _clockObserver: Observer<number>;
-  private _midiObserver: Observer<[number, boolean, number, number]>;
+  // private _midiObserver: Observer<[number, boolean, number, number]>;
   // public stocazzo = 'STOCAZZO';
 
   public get channels(): number[] {
@@ -95,14 +95,15 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
       error: () => { return; },
       complete: () => { return; }
     };
-    this._midiObserver = {
-      next: (value) => { this.onMessage(value); },
-      error: () => { return; },
-      complete: () => { return; }
-    };
+    // this._midiObserver = {
+    //   next: (value) => { this.onMessage(value); },
+    //   error: () => { return; },
+    //   complete: () => { return; }
+    // };
     // initial prog sequencer oscilator params
     // NB check maxVelocity value to avoid distortions
-    this._oscillatorData = { waveForm: 'sine', maxVelocity: 20, addSemitone: 0, finePitch: 0, active: 0 };
+    this._oscillatorData = { name: "PROGSEQOSC", // conforme al ModuleManagerService
+      state: {waveForm: 'sine', maxVelocity: 20, addSemitone: 0, finePitch: 0, active: 0} };
   }
 
   /**
@@ -142,17 +143,17 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
 
     // mettere la condizione if (this.play)
     this.clockManager.attach(this._clockObserver);
-    this.midiManager.attach(this._midiObserver);
+    // this.midiManager.attach(this._midiObserver);
     // this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
   }
 
   public ngOnDestroy() {
     this.clockManager.detach(this._clockObserver);
-    this.midiManager.detach(this._midiObserver);
+    // this.midiManager.detach(this._midiObserver);
   }
 
   public savePatch(): any {
-    this.data.state = this._progSequencer;
+    this.data = this._progSequencer;
     return this.data;
   }
 
@@ -259,18 +260,18 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private doWhenWaited(ctx: ProgSequencerComponent): void {
     ctx.updateSubstitutingIndex();
   }
-  public morethanChordChange(): void {
-    // TODO
-    this.resetWholeState();
-    this.clockManager.restart();
-  }
+  // public morethanChordChange(): void {
+  //   // TODO
+  //   this.resetWholeState();
+  //   this.clockManager.restart();
+  // }
   // TODO classification of [] into MidiExtract{channel, isOn, midiNote, velocity}
-  private onMessage(arg: [number, boolean, number, number]) {
-    // HERE remember to check that the channel is not my own!
-    if (arg[0] !== this.progSequencer.channel) {
-      console.log(arg);
-    }
-  }
+  // private onMessage(arg: [number, boolean, number, number]) {
+  //   // HERE remember to check that the channel is not my own!
+  //   if (arg[0] !== this.progSequencer.channel) {
+  //     console.log(arg);
+  //   }
+  // }
 
   private retrieveProgressionNames(progression: { name: string, progression: Progression }[]) {
 
