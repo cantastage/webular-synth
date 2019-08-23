@@ -33,7 +33,7 @@ export class ProgSeqOscillatorComponent implements OnInit, OnDestroy, SynthModul
   private debugOsc: OscillatorNode;
 
   private message: any;
-  private subscription: Subscription;
+  // private subscription: Subscription;
 
   private _midiObserver: Observer<[number, boolean, number, number]>;
 
@@ -79,7 +79,7 @@ export class ProgSeqOscillatorComponent implements OnInit, OnDestroy, SynthModul
 
   // la onInit leggerà tutti i valori da synthModuleData.data
   public ngOnInit() {
-    this.subscription = this.messageService.getMessage().subscribe(message => { this.message = message; });
+    // this.subscription = this.messageService.getMessage().subscribe(message => { this.message = message; });
     if (this.message === undefined) {
       this.message = { message: [0, 0, 1, 0] };
     }
@@ -112,7 +112,7 @@ export class ProgSeqOscillatorComponent implements OnInit, OnDestroy, SynthModul
   }
 
   public ngOnDestroy() {
-    this.subscription.unsubscribe();
+    // this.subscription.unsubscribe();
     if (this.isInSoundChain) {
       this.midiManager.detach(this._midiObserver);
     }
@@ -168,18 +168,18 @@ export class ProgSeqOscillatorComponent implements OnInit, OnDestroy, SynthModul
     // }
   }
 
-  public checkActive() {
-    this.midiManager.detach(this._midiObserver);
-    console.log(this.active_voices);
-    for (let i = 0; i < this.active_voices.length; i++) {
-      if (this.active_voices[i] !== undefined) {
-        this.active_voices[i].stopNote();
-        delete this.active_voices[i];
-      }
-    }
-    this.midiManager.attach(this._midiObserver);
-    console.log(this.active_voices);
-  }
+  // public checkActive() {
+  //   this.midiManager.detach(this._midiObserver);
+  //   console.log(this.active_voices);
+  //   for (let i = 0; i < this.active_voices.length; i++) {
+  //     if (this.active_voices[i] !== undefined) {
+  //       this.active_voices[i].stopNote();
+  //       delete this.active_voices[i];
+  //     }
+  //   }
+  //   this.midiManager.attach(this._midiObserver);
+  //   console.log(this.active_voices);
+  // }
 
   public onVolumeChange(value) {
     this.oscGain.gain.value = this.maxVelocity / 127;
@@ -218,12 +218,11 @@ export class ProgSeqOscillatorComponent implements OnInit, OnDestroy, SynthModul
 
   // TODO rivedere in modo che non utilizzi state ma metta impostazioni predefinite
   public loadPatch(): void {
-    // console.log('Oggetto data che arriva: ', this.data);
-    this._active = this.data.active;
-    this.waveForm = this.data.waveForm;
-    this._maxVelocity = this.data.maxVelocity;
-    this._addSemitone = this.data.addSemitone;
-    this._finePitch = this.data.finePitch;
+    this._active = this.data.state.active;
+    this.waveForm = this.data.state.waveForm;
+    this._maxVelocity = this.data.state.maxVelocity;
+    this._addSemitone = this.data.state.addSemitone;
+    this._finePitch = this.data.state.finePitch;
   }
 
   // NB for debug purposes only
