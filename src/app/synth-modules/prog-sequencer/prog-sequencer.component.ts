@@ -43,6 +43,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private _rollback: boolean;
   private _firstTurnaround: boolean;
   private _playing: boolean;
+  private _internalBeatNumber: number;
 
   private _clockObserver: Observer<number>;
   // private _midiObserver: Observer<[number, boolean, number, number]>;
@@ -147,6 +148,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     // this.midiManager.attach(this._midiObserver);
     // this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
 
+    this.resetInternalBeatNumber();
     this._playing = false;
   }
 
@@ -203,11 +205,18 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private resetFirstTurnaround(): void {
     this._firstTurnaround = true;
   }
+  private updateInternalBeatNumber(): void {
+    this._internalBeatNumber = (this._internalBeatNumber + 1) % this.clockManager.bpm;
+  }
+  private resetInternalBeatNumber(): void {
+    this._internalBeatNumber = 0;
+  }
   private resetWholeState(): void {
     this.resetSubstitutedIndex();
     this.resetRollback();
     this.resetDefaultSubstituting();
     this.resetFirstTurnaround();
+    this.resetInternalBeatNumber();
   }
 
   private isFirstTurnaround(bn: number): boolean {
@@ -225,12 +234,10 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     return bn % (4 * this.progSequencer.progression.chords.length) === 0;
   }
   private onTick(beatNumber: number): void {
-    beatNumber--;
     // TODO need to highlight the substituted chord?!
-    console.log(beatNumber);
 
-    if (!this.isFirstTurnaround(beatNumber) &&
-      this.isTurnaround(beatNumber)) { // apart from the first, til infty
+    if (!this.isFirstTurnaround(this._internalBeatNumber) &&
+      this.isTurnaround(this._internalBeatNumber)) { // apart from the first, til infty
       // usage of the substituted index [3,2,1,1,2,3...]
       // changed at each turnaround
 
@@ -250,7 +257,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     }
 
     // let's play the substituting chords!
-    if (this.is2on4(beatNumber)) { // each substituted chord has duration 2/4
+    if (this.is2on4(this._internalBeatNumber)) { // each substituted chord has duration 2/4
       // --> here only once over 2/4 beats (once per half-measure)
       // TODO IMPROVE CHORDS SUCCESSION, HOW?
       this.midiManager.sendChord(this.progSequencer.channel,
@@ -260,6 +267,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
       // TODO THINK OF BETTER APPROACHES
       setTimeout(this.doWhenWaited, this.clockManager.bms * 2 - 50, this);
     }
+    this.updateInternalBeatNumber();
   }
   private doWhenWaited(ctx: ProgSequencerComponent): void {
     ctx.updateSubstitutingIndex();
@@ -327,18 +335,20 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   // start/pause playing the chords
   public toggleSequenceReproduction(): void {
     if (!this._playing) {
+      if (this._internalBeatNumber % 2 === 1) { this._internalBeatNumber--; }
       this.clockManager.attach(this._clockObserver);
-      // NB, LE 2ln A SEGUIRE SONO INUTILI, MA ALTRIMENTI NON ATTACCA A DOVERE, VAI A CAPIRE :D
-      this.resetWholeState();
-      this.clockManager.restart();
     } else {
       this.clockManager.detach(this._clockObserver);
-      this.resetWholeState();
     }
     this._playing = !this._playing;
   }
 
   // stop sequence
-  // public stopSequence(): void {
-  // }
+  public stopSequence(): void {
+    if (this._playing) {
+      this.clockManager.detach(this._clockObserver);
+      this.resetWholeState();
+      this._playing = false;
+    }
+  }
 }
