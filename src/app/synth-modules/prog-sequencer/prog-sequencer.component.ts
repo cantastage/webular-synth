@@ -138,7 +138,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     // each chord is repeated twice
     this._substitutingChords = new Array<Chord>(2 * this.progSequencer.progression.chords.length);
     this.resetWholeState();
-    console.log('I cazzo di accordi sono: ', this.substitutingChords);
+    // console.log('I cazzo di accordi sono: ', this.substitutingChords);
 
     // mettere la condizione if (this.play)
     this.clockManager.attach(this._clockObserver);
@@ -317,5 +317,15 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
 
   disconnectSynthModule(): void {
     return;
+  }
+
+  // start/pause playing the chords
+  toggleSequenceReproduction(): void {
+    // TODO implement
+  }
+
+  // stop sequence
+  stopSequence(): void {
+    this.resetWholeState();
   }
 }

@@ -1,43 +1,58 @@
 <div class="row container-block">
   <div class="col-12 prog-sequencer">
     <div class="title">PROG SEQUENCER</div>
-    <!-- Bootstrap row for the upper part of prog sequencer -->
+    <!-- Bootstrap row for dividing options from oscillator -->
     <div class="row">
-      <div class="col-lg-4 prog-seq-options">
+      <div class="col-lg-6">
+        <!-- row for first three options -->
         <div class="row">
-          <div class="col-12">INITIAL PROGRESSION</div>
-          <div class="col-12">
-            <select [(ngModel)]="_activeProgression" (change)="chooseProgression()">
-              <option *ngFor="let progression of _progressionList;" [ngValue]="progression">
-                {{progression.toUpperCase()}}</option>
-            </select>
+          <div class="col-lg-6 prog-seq-options">
+            <div class="row">
+              <div class="col-12">INITIAL PROGRESSION</div>
+              <div class="col-12">
+                <select [(ngModel)]="_activeProgression" (change)="chooseProgression()">
+                  <option *ngFor="let progression of _progressionList;" [ngValue]="progression">
+                    {{progression.toUpperCase()}}</option>
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="col-lg-1 prog-seq-options">
-        <div class="row">
-          <div class="col-12">DIFFICULTY</div>
-          <div class="col-12">
-            <select class="difficulty" [(ngModel)]="progSequencer.difficulty">
-              <option *ngFor="let difficulty of difficulties;" [ngValue]="difficulty">
-                {{difficultyNames[difficulty - 1]}}</option>
-            </select>
+          <div class="col-lg-3 prog-seq-options">
+            <div class="row">
+              <div class="col-12">DIFFICULTY</div>
+              <div class="col-12">
+                <select class="difficulty" [(ngModel)]="progSequencer.difficulty">
+                  <option *ngFor="let difficulty of difficulties;" [ngValue]="difficulty">
+                    {{difficultyNames[difficulty - 1]}}</option>
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="col-lg-1 prog-seq-options">
-          <div class="row">
-            <div class="col-12">CH</div>
-            <div class="col-12">
+          <div class="col-lg-3 prog-seq-options">
+            <div class="row">
+              <div class="col-12">CH</div>
+              <div class="col-12">
                 <select class="ch" [(ngModel)]="progSequencer.channel">
-                    <option *ngFor="let channel of channels;" [ngValue]="channel">{{channel}}</option>
-                  </select>
+                  <option *ngFor="let channel of channels;" [ngValue]="channel">{{channel}}</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-6">
-          <app-prog-seq-oscillator [isInSoundChain]="false" [midiChannel]="16" [data]="_oscillatorData"></app-prog-seq-oscillator>
+        <div class="row">
+          <div class="col-lg-6">
+            <button type="button" (click)="toggleSequenceReproduction()">PLAY</button>
+          </div>
+          <div class="col-lg-6">
+            <button type="button" (click)="stopSequence()">STOP</button>
+          </div>
         </div>
+      </div>
+
+      <div class="col-lg-6">
+        <app-prog-seq-oscillator [isInSoundChain]="false" [midiChannel]="progSequencer.channel"
+          [data]="_oscillatorData"></app-prog-seq-oscillator>
+      </div>
     </div>
 
 
