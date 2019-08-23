@@ -108,7 +108,7 @@ export class ProgSeqOscillatorComponent implements OnInit, OnDestroy, SynthModul
     // }
 
     // connect to the audio output UNCOMMENT TO HAVE SOUND OUTPUT FROM THE SPEAKERS
-    // this.contextManager.connectProgSequencer(this);
+    this.contextManager.connectProgSequencer(this);
   }
 
   public ngOnDestroy() {

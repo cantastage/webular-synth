@@ -28,8 +28,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
 
   // UI selections
   private _channels: number[];
-  private _pitchClasses: IPitchClass[]; //?
-  private _chordQualities: IChordQuality[]; //?
+  private _pitchClasses: IPitchClass[]; // ?
+  private _chordQualities: IChordQuality[]; // ?
   private _difficulties: number[];
   private _difficultyNames: string[];
   private _progSequencer: IProgSequencer; // model of prog sequencer?
@@ -42,6 +42,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private _substitutingIndex: number;
   private _rollback: boolean;
   private _firstTurnaround: boolean;
+  private _playing: boolean;
 
   private _clockObserver: Observer<number>;
   // private _midiObserver: Observer<[number, boolean, number, number]>;
@@ -80,11 +81,11 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
 
   /**
    * Component constructor
-   * @param clockManager 
-   * @param midiManager 
-   * @param contextManager 
-   * @param substitutionManager 
-   * @param messageService 
+   * @param clockManager
+   * @param midiManager
+   * @param contextManager
+   * @param substitutionManager
+   * @param messageService
    */
   public constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
     private contextManager: AudioContextManagerService, private substitutionManager: SubstitutionManagerService,
@@ -102,8 +103,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     // };
     // initial prog sequencer oscilator params
     // NB check maxVelocity value to avoid distortions
-    this._oscillatorData = { name: "PROGSEQOSC", // conforme al ModuleManagerService
-      state: {waveForm: 'sine', maxVelocity: 20, addSemitone: 0, finePitch: 0, active: 0} };
+    this._oscillatorData = { name: 'PROGSEQOSC', // conforme al ModuleManagerService
+      state: { waveForm: 'sine', maxVelocity: 20, addSemitone: 0, finePitch: 0, active: 0 } };
   }
 
   /**
@@ -142,9 +143,11 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     // console.log('I cazzo di accordi sono: ', this.substitutingChords);
 
     // mettere la condizione if (this.play)
-    this.clockManager.attach(this._clockObserver);
+    // this.clockManager.attach(this._clockObserver);
     // this.midiManager.attach(this._midiObserver);
     // this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
+
+    this._playing = false;
   }
 
   public ngOnDestroy() {
@@ -224,6 +227,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private onTick(beatNumber: number): void {
     beatNumber--;
     // TODO need to highlight the substituted chord?!
+    console.log(beatNumber);
 
     if (!this.isFirstTurnaround(beatNumber) &&
       this.isTurnaround(beatNumber)) { // apart from the first, til infty
@@ -321,12 +325,20 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   }
 
   // start/pause playing the chords
-  toggleSequenceReproduction(): void {
-    // TODO implement
+  public toggleSequenceReproduction(): void {
+    if (!this._playing) {
+      this.clockManager.attach(this._clockObserver);
+      // NB, LE 2ln A SEGUIRE SONO INUTILI, MA ALTRIMENTI NON ATTACCA A DOVERE, VAI A CAPIRE :D
+      this.resetWholeState();
+      this.clockManager.restart();
+    } else {
+      this.clockManager.detach(this._clockObserver);
+      this.resetWholeState();
+    }
+    this._playing = !this._playing;
   }
 
   // stop sequence
-  stopSequence(): void {
-    this.resetWholeState();
-  }
+  // public stopSequence(): void {
+  // }
 }
