@@ -42,8 +42,9 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private _substitutingIndex: number;
   private _rollback: boolean;
   private _firstTurnaround: boolean;
-  private _playing: boolean;
   private _internalBeatNumber: number;
+  private _playing: boolean;
+  private _asyncResetWholeStateNeeded: boolean;
 
   private _clockObserver: Observer<number>;
   // private _midiObserver: Observer<[number, boolean, number, number]>;
@@ -150,6 +151,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
 
     this.resetInternalBeatNumber();
     this._playing = false;
+    this._asyncResetWholeStateNeeded = false;
   }
 
   public ngOnDestroy() {
@@ -265,12 +267,16 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
         this.clockManager.bms * 2, 127); // 2 for twice a 1/4
 
       // TODO THINK OF BETTER APPROACHES
-      setTimeout(this.doWhenWaited, this.clockManager.bms * 2 - 50, this);
+      setTimeout(this.updateSubstitutingWhenWaited, this.clockManager.bms * 2 - 50, this);
     }
     this.updateInternalBeatNumber();
   }
-  private doWhenWaited(ctx: ProgSequencerComponent): void {
+  private updateSubstitutingWhenWaited(ctx: ProgSequencerComponent): void {
     ctx.updateSubstitutingIndex();
+    if (ctx._asyncResetWholeStateNeeded) {
+      ctx.resetWholeState();
+      ctx._asyncResetWholeStateNeeded = false;
+    }
   }
   // public morethanChordChange(): void {
   //   // TODO
@@ -307,12 +313,14 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     */
   }
 
-  private chooseProgression() {
+  public chooseProgression() {
     for (let i = 0; i < BasicProgressions.length; i++) {
       if (BasicProgressions[i].name === this._activeProgression) {
+        this.stopSequence();
         for (let j = 0; j < BasicProgressions[i].progression.chords.length; j++) {
           this.progSequencer.progression.chords[j] = BasicProgressions[i].progression.chords[j];
         }
+        this.resetWholeState(); this._asyncResetWholeStateNeeded = true;
       }
     }
   }
@@ -347,7 +355,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   public stopSequence(): void {
     if (this._playing) {
       this.clockManager.detach(this._clockObserver);
-      this.resetWholeState();
+      this.resetWholeState(); this._asyncResetWholeStateNeeded = true;
       this._playing = false;
     }
   }
