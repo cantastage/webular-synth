@@ -12,7 +12,7 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   @Input() rythmic_subdivision; // 4/4, 3/4 ecc...
   @Input() active_chord;  // current playing chord, TODO decide if it is an index or actual chord. MEGLIO index
   @Input() chord_voicings;
-  
+
   public VF; // Vexflow
   public div: any;
   public renderer: any;
@@ -24,13 +24,17 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   private vf_voice; // vexflow voice (sequence of notes/chords) can be changed to an array if there are more voices
   private vf_notes: Array<any>; // array of stave notes
   private stave_length = 200; // stave length in pixels
-  private displayChords: Array<any>;
+  private displayChords: Array<Object>; //display chords 
+  private displayVoicings: Array<Array<any>>;
 
   constructor(private chordDisplayService: ChordDisplayService) {
     this.staves = new Array<any>(4); // assume 4 staves (4 chords)
   }
 
   ngOnInit() {
+    // init local variables
+    this.displayVoicings = [];
+
     this.div = document.getElementById('score');
     this.VF = Vex.Flow;
     this.renderer = new this.VF.Renderer(this.div, this.VF.Renderer.Backends.SVG);
@@ -48,7 +52,7 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
         this.staves[i].setContext(this.context).draw();
       }
     }
-    this.updateSheet();
+    this.updateSheet(); // TODO spostare nella onchange
     // const notes = [
     //   // A quarter-note C.
     //   new this.VF.StaveNote({ clef: 'treble', keys: ['c/4'], duration: 'q' }),
@@ -87,7 +91,16 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
 
   // re-renders notes in the sheet. TODO check if it is good to render again all notes.
   private updateSheet() {
-    this.chordDisplayService.buildChordsForDisplay(this.chord_voicings);
+    this.displayChords = this.chordDisplayService.buildChordsForDisplay(this.chord_voicings);
+    let index = 0;
+    for (let i = 0; i < this.displayChords.length; i += 2) {
+      this.displayVoicings[index] =
+      new Array<any>(new this.VF.StaveNote(this.displayChords[i]), new this.VF.StaveNote(this.displayChords[i + 1]));
+      index++;
+    }
+    for (let i = 0; i < this.staves.length; i++) {
+      this.VF.Formatter.FormatAndDraw(this.context, this.staves[i], this.displayVoicings[i]);
+    }
   }
 
 }
