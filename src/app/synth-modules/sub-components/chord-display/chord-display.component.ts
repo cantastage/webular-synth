@@ -38,7 +38,7 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
     this.div = document.getElementById('score');
     this.VF = Vex.Flow;
     this.renderer = new this.VF.Renderer(this.div, this.VF.Renderer.Backends.SVG);
-    this.renderer.resize(1600, 1600);
+    this.renderer.resize(1000, 300);
     this.context = this.renderer.getContext();
     this.context.setFont('Arial', 10, '').setBackgroundFillStyle('#eed');
     // Creo tutte le misure in cui mettere i voicing degli accordi
@@ -81,10 +81,11 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     const currentItem: SimpleChange = changes.chord_voicings;
     if (currentItem) {
-      console.log('prev value', currentItem.previousValue);
-      console.log('new value', currentItem.currentValue);
+      // console.log('prev value', currentItem.previousValue);
+      // console.log('new value', currentItem.currentValue);
+      // this.updateSheet();
     } else {
-      console.log('Non arriva una sega');
+      console.log('Non cambia una sega');
     }
   }
 

@@ -55,57 +55,6 @@
       </div>
     </div>
 
-
-
-    <!-- <table class="table1">
-      <tbody>
-        <tr>
-          <td>INITIAL PROGRESSION</td>
-          <td>DIFFICULTY</td>
-          <td>CH</td>
-        </tr>
-        <tr>
-          <td>
-            <select [(ngModel)]="_activeProgression" (change)="chooseProgression()">
-              <option *ngFor="let progression of _progressionList;" [ngValue]="progression">
-                {{progression.toUpperCase()}}</option>
-            </select>
-          </td>
-          <td>
-            <select class="difficulty" [(ngModel)]="progSequencer.difficulty">
-              <option *ngFor="let difficulty of difficulties;" [ngValue]="difficulty">
-                {{difficultyNames[difficulty - 1]}}</option>
-            </select>
-          </td>
-          <td>
-            <select class="ch" [(ngModel)]="progSequencer.channel">
-              <option *ngFor="let channel of channels;" [ngValue]="channel">{{channel}}</option>
-            </select>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <table class="table2">
-      <tbody>
-        <tr>
-          <td *ngFor="let chord of progSequencer.progression.chords;">
-            <select [(ngModel)]="chord.root" (ngModelChange)="morethanChordChange($event)">
-              <option *ngFor="let pitchClass of pitchClasses;" [ngValue]="pitchClass">{{pitchClass.pitchClassName}}
-              </option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td *ngFor="let chord of progSequencer.progression.chords;">
-            <select [(ngModel)]="chord.quality" (ngModelChange)="morethanChordChange($event)">
-              <option *ngFor="let chordQuality of chordQualities;" [ngValue]="chordQuality">
-                {{chordQuality.chordQualityName | chordQualityFormat }}</option>
-            </select>
-          </td>
-        </tr>
-      </tbody>
-    </table> -->
-
     <!-- NB QUI codice del main display -->
     <div class="mainDisplay">
       <div id="playing">
