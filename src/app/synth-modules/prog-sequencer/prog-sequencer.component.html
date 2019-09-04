@@ -107,8 +107,27 @@
     </table> -->
 
     <!-- NB QUI codice del main display -->
+    <div class="mainDisplay">
+      <div id="playing">
+        <div class="section">
+          Playing
+        </div>
+        <div id="chordPlaying">
+          <!-- {{chordPlaying.root.pitchClassName}}{{chordPlaying.quality.chordQualityName}} -->
+          {{chordPlaying | chordFormat }}
+        </div>
+      </div>
+      <div id="next">
+        <div class="section">
+          Next
+        </div>
+        <div id="chordNext">
+          <!-- {{chordNext.root.pitchClassName}}{{chordNext.quality.chordQualityName}} -->
+          {{chordNext | chordFormat}}
+        </div>
+      </div>
+    </div>
 
-
-    <app-chord-display [chord_voicings]="stocazzo"></app-chord-display>
+    <app-chord-display [chord_voicings]="_substitutingChords"></app-chord-display>
   </div>
 </div>

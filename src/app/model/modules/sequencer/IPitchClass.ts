@@ -7,7 +7,7 @@ export enum ChromaticNotes {
 }
 
 export enum NoteNames {
-    C = 0, //0 è il 1o grado della scala cromatica
+    C = 0, // 0 è il 1o grado della scala cromatica
     Db = 1,
     D = 2,
     Eb = 3,

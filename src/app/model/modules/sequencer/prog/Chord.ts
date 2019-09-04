@@ -11,8 +11,8 @@ import { Pitch } from './Pitch';
  */
 export class Chord {
     public static readonly FLAG_COUNT = 18;
-    private _root: IPitchClass; //root note dell'accordo
-    private _quality: IChordQuality; 
+    private _root: IPitchClass; // root note dell'accordo
+    private _quality: IChordQuality;
 
     // cache field depending on private ones
     private _chromaticScale: Scale;
