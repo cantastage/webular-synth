@@ -43,7 +43,9 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private _rollback: boolean;
   private _firstTurnaround: boolean;
   private _internalBeatNumber: number;
-  private _playing: boolean;
+  // private _playing: boolean;
+  private _isStopped: boolean;
+  private _isPaused: boolean;
   private _asyncResetWholeStateNeeded: boolean;
 
   private _clockObserver: Observer<number>;
@@ -141,7 +143,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     // at the beginning the substituted chords are a replica of the ones introduced by the user
     // each chord is repeated twice
     this._substitutingChords = new Array<Chord>(2 * this.progSequencer.progression.chords.length);
-    this.resetWholeState();
+    this.syncReset();
     // console.log('I cazzo di accordi sono: ', this.substitutingChords);
 
     // mettere la condizione if (this.play)
@@ -149,8 +151,9 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     // this.midiManager.attach(this._midiObserver);
     // this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
 
-    this.resetInternalBeatNumber();
-    this._playing = false;
+    // this._playing = false;
+    this._isPaused = false;
+    this._isStopped = true;
     this._asyncResetWholeStateNeeded = false;
   }
 
@@ -220,6 +223,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     this.resetFirstTurnaround();
     this.resetInternalBeatNumber();
   }
+  private syncReset(): void { this.resetWholeState(); }
+  private asyncReset(): void { this.resetWholeState(); this._asyncResetWholeStateNeeded = true; }
 
   private isFirstTurnaround(bn: number): boolean {
     const ret = bn === 0 && this._firstTurnaround;
@@ -274,13 +279,13 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private updateSubstitutingWhenWaited(ctx: ProgSequencerComponent): void {
     ctx.updateSubstitutingIndex();
     if (ctx._asyncResetWholeStateNeeded) {
-      ctx.resetWholeState();
+      ctx.syncReset();
       ctx._asyncResetWholeStateNeeded = false;
     }
   }
   // public morethanChordChange(): void {
   //   // TODO
-  //   this.resetWholeState();
+  //   this.syncReset();
   //   this.clockManager.restart();
   // }
   // TODO classification of [] into MidiExtract{channel, isOn, midiNote, velocity}
@@ -314,15 +319,15 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   }
 
   public chooseProgression() {
+    this.stopSequence();
     for (let i = 0; i < BasicProgressions.length; i++) {
       if (BasicProgressions[i].name === this._activeProgression) {
-        this.stopSequence();
         for (let j = 0; j < BasicProgressions[i].progression.chords.length; j++) {
           this.progSequencer.progression.chords[j] = BasicProgressions[i].progression.chords[j];
         }
-        this.resetWholeState(); this._asyncResetWholeStateNeeded = true;
       }
     }
+    this.syncReset();
   }
 
   getInput(): AudioNode {
@@ -340,23 +345,40 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     return;
   }
 
+  private play(): void {
+    // if (this._internalBeatNumber % 2 === 1) { this._internalBeatNumber--; }
+    this._isPaused = false;
+    this._isStopped = false;
+    this.clockManager.attach(this._clockObserver);
+  }
+  private pause(): void {
+    this._isPaused = true;
+    this._isStopped = false;
+    this.clockManager.detach(this._clockObserver);
+  }
+  private stop(): void {
+    this._isStopped = true;
+    if (!this._isPaused) {
+      this.clockManager.detach(this._clockObserver);
+      this.asyncReset();
+    } else {
+      this._isPaused = false;
+      this.syncReset();
+    }
+  }
   // start/pause playing the chords
   public toggleSequenceReproduction(): void {
-    if (!this._playing) {
-      if (this._internalBeatNumber % 2 === 1) { this._internalBeatNumber--; }
-      this.clockManager.attach(this._clockObserver);
-    } else {
-      this.clockManager.detach(this._clockObserver);
+    if (this._isStopped || this._isPaused) {
+      this.play();
+    } else if (!this._isStopped && !this._isPaused) {
+      this.pause();
     }
-    this._playing = !this._playing;
   }
 
   // stop sequence
   public stopSequence(): void {
-    if (this._playing) {
-      this.clockManager.detach(this._clockObserver);
-      this.resetWholeState(); this._asyncResetWholeStateNeeded = true;
-      this._playing = false;
+    if (!this._isStopped) {
+      this.stop();
     }
   }
 }
