@@ -38,30 +38,22 @@ export class DiatonicNoteInfo {
     get distanceFromPrevDiatonicNote() {
         return this._distance_from_prev_diatonic_note;
     }
- }
+}
 
- /**
-  * Diatonic notes
-  */
-// export const diatonicNotes = [
-//     new DiatonicNoteInfo('C', 0, 0, 1),
-//     new DiatonicNoteInfo('D', 2, 1, 2),
-//     new DiatonicNoteInfo('E', 4, 2, 2),
-//     new DiatonicNoteInfo('F', 5, 3, 1),
-//     new DiatonicNoteInfo('G', 7, 4, 2),
-//     new DiatonicNoteInfo('A', 9, 5, 2),
-//     new DiatonicNoteInfo('B', 11, 6, 2)
-// ];
+export class AccidentalInfo {
+    private _noteIndex: number;
+    private _label: string;
 
-// type DiatonicNote = 'C' | 'D' | 'E' | 'F'| 'G' | 'A'| 'B';
+    public constructor(noteIndex: number, label: string) {
+        this._noteIndex = noteIndex;
+        this._label = label;
+    }
 
-// export const diatonicNotesMap = new Array<Record<DiatonicNote, DiatonicNoteInfo>>(
-//     new Record<string, DiatonicNoteInfo>('C', diatonicNotes[0]),
-// );
+    public get index() {
+        return this._noteIndex;
+    }
 
-// const x: Record
-
-
-// export class DisplayChord {
-//     private 
-// }
+    public get label() {
+        return this._label;
+    }
+}
