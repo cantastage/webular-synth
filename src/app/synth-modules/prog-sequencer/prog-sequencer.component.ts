@@ -8,12 +8,12 @@ import { ClockManagerService } from 'src/app/services/clock-manager.service';
 import { MidiContextManagerService } from 'src/app/services/midi-context-manager.service';
 import { SynthModule } from 'src/app/interfaces/module.component';
 import { AudioContextManagerService } from 'src/app/services/audio-context-manager.service';
-import { IChordQuality } from 'src/app/model/modules/chord-substitution/IChordQuality';
+import { IChordQuality, ChordQualities } from 'src/app/model/modules/chord-substitution/IChordQuality';
 import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
 import { Observer } from 'rxjs';
-import { Chord } from 'src/app/model/modules/sequencer/prog/Chord';
+import { Chord } from 'src/app/model/modules/sequencer/Chord';
 import { BasicProgressions } from 'src/app/model/modules/sequencer/prog/BasicProgressions';
-import { Progression } from 'src/app/model/modules/sequencer/prog/Progression';
+import { Progression } from 'src/app/model/modules/sequencer/Progression';
 import { ProgSequencer } from 'src/app/model/modules/sequencer/prog/ProgSequencer';
 
 @Component({
@@ -118,10 +118,10 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   public loadPatch(): void {
     this._progSequencer = new ProgSequencer(
       new Progression([
-        new Chord(PitchClassesProvider.retrieveInstance('D'), ChordQualitiesProvider.retrieveInstance('min7')),
-        new Chord(PitchClassesProvider.retrieveInstance('A'), ChordQualitiesProvider.retrieveInstance('min7')),
-        new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')),
-        new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj7'))
+        new Chord(PitchClassesProvider.retrieveInstanceByName('D'), ChordQualitiesProvider.retrieveInstanceByName('min7')),
+        new Chord(PitchClassesProvider.retrieveInstanceByName('A'), ChordQualitiesProvider.retrieveInstanceByName('min7')),
+        new Chord(PitchClassesProvider.retrieveInstanceByName('G'), ChordQualitiesProvider.retrieveInstanceByName('dom7')),
+        new Chord(PitchClassesProvider.retrieveInstanceByName('C'), ChordQualitiesProvider.retrieveInstanceByName('maj7'))
       ]),
       3, 16);
   }
@@ -328,6 +328,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
       }
     }
     this.syncReset();
+    console.log('Progressione base cambiata, accordi: ');
+    console.log(this.progSequencer.progression.chords);
   }
 
   getInput(): AudioNode {

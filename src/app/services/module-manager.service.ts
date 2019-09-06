@@ -11,8 +11,8 @@ import { PitchClassesProvider } from '../model/modules/sequencer/PitchClassesPro
 import { HarmonizationsProvider } from '../model/modules/sequencer/HarmonizationsProvider';
 import { Measure } from '../model/modules/sequencer/basic/Measure';
 import { AmplifierComponent } from '../synth-modules/amplifier/amplifier.component';
-import { Progression } from '../model/modules/sequencer/prog/Progression';
-import { Chord } from '../model/modules/sequencer/prog/Chord';
+import { Progression } from '../model/modules/sequencer/Progression';
+import { Chord } from '../model/modules/sequencer/Chord';
 import { ChordQualitiesProvider } from '../model/modules/chord-substitution/ChordQualitiesProvider';
 
 @Injectable({
@@ -27,8 +27,8 @@ export class ModuleManagerService {
   // a fly-weight factory could be used to generate the default modules
   private get sequencerDefaultState(): any {
     return new Sequencer(
-      PitchClassesProvider.retrieveInstance('C'),
-      HarmonizationsProvider.retrieveInstance('M'),
+      PitchClassesProvider.retrieveInstanceByName('C'),
+      HarmonizationsProvider.retrieveInstanceByName('M'),
       Measure.METRIC_MIN,
       16
     );
@@ -36,10 +36,10 @@ export class ModuleManagerService {
   private get progSequencerDefaultState(): any {
     return new ProgSequencer(
       new Progression([
-        new Chord(PitchClassesProvider.retrieveInstance('D'), ChordQualitiesProvider.retrieveInstance('min7')),
-        new Chord(PitchClassesProvider.retrieveInstance('A'), ChordQualitiesProvider.retrieveInstance('min7')),
-        new Chord(PitchClassesProvider.retrieveInstance('G'), ChordQualitiesProvider.retrieveInstance('dom7')),
-        new Chord(PitchClassesProvider.retrieveInstance('C'), ChordQualitiesProvider.retrieveInstance('maj7'))
+        new Chord(PitchClassesProvider.retrieveInstanceByName('D'), ChordQualitiesProvider.retrieveInstanceByName('min7')),
+        new Chord(PitchClassesProvider.retrieveInstanceByName('A'), ChordQualitiesProvider.retrieveInstanceByName('min7')),
+        new Chord(PitchClassesProvider.retrieveInstanceByName('G'), ChordQualitiesProvider.retrieveInstanceByName('dom7')),
+        new Chord(PitchClassesProvider.retrieveInstanceByName('C'), ChordQualitiesProvider.retrieveInstanceByName('maj7'))
       ]),
     3, 16);
   }
@@ -59,7 +59,7 @@ export class ModuleManagerService {
   public getModules(): ModuleItem[] {
     return [
       // new ModuleItem(SequencerComponent, { name: 'SEQUENCER', state: this.sequencerDefaultState }),
-      // new ModuleItem(ProgSequencerComponent, { name: 'SEQUENCER', state: this.progSequencerDefaultState }),
+      // new ModuleItem(ProgSequencerComponent, { name: 'PROGSEQUENCER', state: this.progSequencerDefaultState }),
       new ModuleItem(OscillatorComponent, { name: 'OSCILLATOR', state: this.oscillatorDefaultState }),
       new ModuleItem(MoogLadderFilterComponent, { name: 'MOOG LADDER FILTER', state: this.mlFilterDefaultState }),
       new ModuleItem(FilterComponent, { name: 'BIQUADRATIC FILTER', state: this.filterDefaultState }),

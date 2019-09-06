@@ -15,10 +15,4 @@ export class Progression {
   public constructor(chords: Chord[]) {
     this.chords = chords;
   }
-
-  // REMOVE IF USELESS
-  // public static generateChordVector(): Chord[] {
-  //   const ret = new Array<Chord>();
-  //   return ret;
-  // }
 }

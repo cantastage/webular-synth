@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Chord } from '../model/modules/sequencer/prog/Chord';
+import { Chord } from '../model/modules/sequencer/Chord';
 import { relative } from 'path';
 import { DiatonicNoteInfo, AccidentalInfo } from '../model/chord-display/chord-display-structures';
 import { runInThisContext } from 'vm';
@@ -62,12 +62,12 @@ export class ChordDisplayService {
     // analisi della root dell'accordo
     const accidentals: Array<AccidentalInfo> = [];
     const root = raw_chord.root; // è un IPitchClass
-    const size = root.pitchClassName.length; // length of the string
-    const rootChromaticIndex = root.pitchClassValue;
+    const size = root.name.length; // length of the string
+    const rootChromaticIndex = root.value;
     let diatonicRoot: DiatonicNoteInfo;
     const keys = [];
-    // let diatonic_name = root.pitchClassName[0];
-    switch (root.pitchClassName[0]) {
+    // let diatonic_name = root.name[0];
+    switch (root.name[0]) {
       case 'C':
         diatonicRoot = this.diatonicScale[0];
         break;
@@ -92,7 +92,7 @@ export class ChordDisplayService {
     }
     let offset = 0;
     if (size > 1) {
-      if (root.pitchClassName[1] === 'b') {
+      if (root.name[1] === 'b') {
         // caso in cui sia bemolle => allarga l'intervallo
         offset = 1;
       } else if (root.pitchClassName[1] === '#') {
@@ -104,13 +104,13 @@ export class ChordDisplayService {
     const rawChordNotes = raw_chord.chordNotes;
     // let realative_distances = [];
     for (let j = 0; j < rawChordNotes.length; j++) {
-      // realative_distances[j] = Math.abs(raw_chord_notes[j].pitchClass.pitchClassValue - root_chromatic_index);
+      // realative_distances[j] = Math.abs(raw_chord_notes[j].value - root_chromatic_index);
       let htDistance = 0;
-      // console.log('porca paletta: ', rawChordNotes[0].pitchClass.pitchClassValue);
-      if (rootChromaticIndex > rawChordNotes[j].pitchClass.pitchClassValue) {
-        htDistance = 12 - Math.abs(rawChordNotes[j].pitchClass.pitchClassValue - rootChromaticIndex);
+      // console.log('porca paletta: ', rawChordNotes[0].value);
+      if (rootChromaticIndex > rawChordNotes[j].value) {
+        htDistance = 12 - Math.abs(rawChordNotes[j].value - rootChromaticIndex);
       } else {
-        htDistance = rawChordNotes[j].pitchClass.pitchClassValue - rootChromaticIndex;
+        htDistance = rawChordNotes[j].value - rootChromaticIndex;
       }
       // calcolo dell'intervallo per identificare etichetta che andrà nella nota
       const diatonicInterval = this.htIntervals[htDistance];

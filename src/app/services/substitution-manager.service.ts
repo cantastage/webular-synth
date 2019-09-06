@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { NoteNames, EnharmonicNames } from 'src/app/model/modules/sequencer/IPitchClass';
+import { PrimaryNames, SecondaryNames } from 'src/app/model/modules/sequencer/IPitchClass';
 import { PitchClassesProvider } from 'src/app/model/modules/sequencer/PitchClassesProvider';
-import { Chord } from '../model/modules/sequencer/prog/Chord.js';
+import { Chord } from '../model/modules/sequencer/Chord.js';
 import { ChordQualitiesProvider } from 'src/app/model/modules/chord-substitution/ChordQualitiesProvider';
 import { sub_tables, substitutionRulesets } from 'src/app/model/modules/chord-substitution/SubstitutionRules';
-import { Progression } from '../model/modules/sequencer/prog/Progression.js';
+import { Progression } from '../model/modules/sequencer/Progression.js';
 /*
 * This Service provides support for the chord substitution module.
 * The method substituteChord take a Chord and a level as input, and builds a table of possible
@@ -41,14 +41,14 @@ export class SubstitutionManagerService {
     const qualities = ChordQualitiesProvider.retrieveInstances();
     for (let i = 0; i < qualities.length; i++) {
       substitution_rules[i] = {
-        name: qualities[i].chordQualityName,
+        name: qualities[i].name,
         sub_table: sub_tables[i]
       };
-      if (chord.quality.chordQualityName ===  substitution_rules[i].name) {
+      if (chord.quality.name ===  substitution_rules[i].name) {
         substitutionTable = substitutionRulesets[i];
       }
     }
-    const transpositionValue = (chord.root).pitchClassValue;
+    const transpositionValue = (chord.root).value;
     // console.log('trans', transpositionValue);
     const intermediate = SubstitutionManagerService.transposeChord(
       SubstitutionManagerService.findChordSubstitution(substitutionTable, difficultyLevel),
@@ -75,27 +75,27 @@ export class SubstitutionManagerService {
     const transposedPitch = [];
     const transposedChords = [];
     for (let i = 0; i < arg.length; i++) {
-      if (NoteNames[arg[i].root.pitchClassName] === undefined) {
+      if (PrimaryNames[arg[i].root.primaryName] === undefined) {
         // console.log('is enharmonic');
-        pitchValue[i] = EnharmonicNames[arg[i].root.pitchClassValue];
+        pitchValue[i] = SecondaryNames[arg[i].root.value];
         if (pitchValue[i] + value >= 12) {
-          transposedPitch[i] = EnharmonicNames[pitchValue[i] + value - 12];
+          transposedPitch[i] = SecondaryNames[pitchValue[i] + value - 12];
         } else {
-          transposedPitch[i] = EnharmonicNames[pitchValue[i] + value];
+          transposedPitch[i] = SecondaryNames[pitchValue[i] + value];
         }
       } else {
         // console.log('is not enharmonic');
-        pitchValue[i] = arg[i].root.pitchClassValue;
+        pitchValue[i] = arg[i].root.value;
         // console.log(arg[i]);
         // console.log('pitchvalue', pitchValue[i]);
         if (pitchValue[i] + value >= 12) {
-          transposedPitch[i] = NoteNames[pitchValue[i] + value - 12];
+          transposedPitch[i] = PrimaryNames[pitchValue[i] + value - 12];
           } else {
-            transposedPitch[i] = NoteNames[pitchValue[i] + value];
+            transposedPitch[i] = PrimaryNames[pitchValue[i] + value];
         }
       }
       // console.log('trans pitch', transposedPitch[i]);
-      transposedChords[i] = new Chord(PitchClassesProvider.retrieveInstance(transposedPitch[i]), arg[i].quality);
+      transposedChords[i] = new Chord(PitchClassesProvider.retrieveInstanceByName(transposedPitch[i]), arg[i].quality);
     }
     // console.log('transp chords: ', transposedChords);
     return transposedChords;
@@ -122,10 +122,10 @@ export class SubstitutionManagerService {
   }
 /*
   private convertEnharmonic(chord: Chord): Chord {
-    if (NoteNames[chord.root.pitchClassName] === undefined) {
+    if (PrimaryNames[chord.root.primaryName] === undefined) {
       // console.log('is enharmonic');
       const convertedChord = chord;
-      convertedChord.root = PitchClassesProvider.retrieveInstance(NoteNames[EnharmonicNames[chord.root.pitchClassName]]);
+      convertedChord.root = PitchClassesProvider.retrieveInstanceByName(PrimaryNames[SecondaryNames[chord.root.primaryName]]);
       // console.log('converted', convertedChord);
       return convertedChord;
     } else {

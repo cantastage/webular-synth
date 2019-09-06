@@ -1,6 +1,6 @@
 import { PitchClassesProvider } from './PitchClassesProvider';
-import { IPitchClass, SD } from './IPitchClass';
 import { IHarmonization } from './IHarmonization';
+import { IPitchClass, NOTE_COUNT } from './IPitchClass';
 
 export class Scale {
     private _key: IPitchClass;
@@ -8,7 +8,6 @@ export class Scale {
 
     // cache field depending on private ones
     private _diatonicNotes: IPitchClass[];
-    private _useEnharmonicNames: boolean[];
 
     public get key(): IPitchClass {
         return this._key;
@@ -37,60 +36,31 @@ export class Scale {
     public get diatonicNotes(): IPitchClass[] {
         return this._diatonicNotes;
     }
-    public get useEnharmonicNames(): boolean[] {
-        return this._useEnharmonicNames;
-    }
 
     private updateCache(): void {
         this.diatonicNotes.splice(0, this.diatonicNotes.length); // clear all
         this.diatonicNotes.push(this.key);
-        this.useEnharmonicNames.splice(0, this.useEnharmonicNames.length);
-        this.useEnharmonicNames.push(false);
 
         let incrementalStep = 0;
-        this.harmonization.pattern.forEach(element => {
-            incrementalStep += element;
-            const nextfreq = this.key.referralFrequency * (SD ** incrementalStep);
+        for (let i = 0; i < this.harmonization.pattern.length; i++) {
+            incrementalStep += this.harmonization.pattern[i];
+            this.diatonicNotes.push(
+                PitchClassesProvider.retrieveInstanceByValue((this.key.value + incrementalStep) % NOTE_COUNT)
+            );
+        }
 
-            const nextnote = (): IPitchClass => {
-                let nextnotehp: IPitchClass; let nextfreqhp: number;
-                let found = false;
-                for (let i = 0; i < PitchClassesProvider.retrieveInstances().length; i++) {
-                    nextnotehp = PitchClassesProvider.retrieveInstances()[i];
-                    nextfreqhp = nextnotehp.referralFrequency;
-                    for (let k = 0; k < 10 && !found; k++) { // overdimensioned, maybe 2 (covering 5 octaves) is ok?
-                        if (Math.floor(nextfreq) === Math.floor(nextfreqhp * (2 ** k)) ||
-                            Math.floor(nextfreq) === Math.floor(nextfreqhp / (2 ** k))) {
-                            found = true; // exits from the foreach, occurrence found
-                            break;
-                        }
-                    }
-                    if (found) {
-                        break;
-                    }
-                }
-                return nextnotehp;
-            };
-
-            this.diatonicNotes.push(nextnote());
-        });
-        let prevUsed: string = this.diatonicNotes[0].pitchClassName;
         let delta: number;
         for (let i = 1; i < this.diatonicNotes.length - 1; i++) {
-            delta = Math.abs(this.diatonicNotes[i].pitchClassName.charCodeAt(0) - prevUsed.charCodeAt(0));
-            if (delta !== 1 && delta !== 6) {
-                this.useEnharmonicNames.push(true);
-                prevUsed = this.diatonicNotes[i].enharmonicName;
-            } else {
-                this.useEnharmonicNames.push(false);
-                prevUsed = this.diatonicNotes[i].pitchClassName;
-            }
+            delta = Math.abs(this.diatonicNotes[i].name.charCodeAt(0) -
+                this.diatonicNotes[i - 1].name.charCodeAt(0));
+            // if (delta !== 1 && delta !== 6) {
+            //     this.diatonicNotes[i].name = this.diatonicNotes[i].secondaryName;
+            // }
         }
     }
 
     public constructor(key: IPitchClass, harmonization: IHarmonization) {
         this._diatonicNotes = new Array<IPitchClass>();
-        this._useEnharmonicNames = new Array<boolean>();
         this.key = key;
         this.harmonization = harmonization;
     }

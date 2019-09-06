@@ -1,25 +1,23 @@
 import { sealed } from '../../../system2/utilities/ClassDecorators';
 import { IChordQuality, ChordQualities } from './IChordQuality';
+import { EnumHelper } from 'src/app/system2/utilities/EnumHelper';
 
 @sealed
 class ChordQuality implements IChordQuality {
-    private _chordQuality: ChordQualities;
+    private _value: ChordQualities;
 
-    public get chordQualitySymbol(): string {
-        return ChordQualities[this._chordQuality];
+    private get chordQualityKey(): string {
+        return EnumHelper.getKeyOfValue(ChordQualities, this._value);
     }
-    public get chordQualityName(): string {
-        return this.chordQualitySymbol;
+    public get name(): string {
+        return this.chordQualityKey;
     }
-    public get chordQualityValue(): number {
-        return this._chordQuality;
-    }
-    public set chordQuality(chordQuality: ChordQualities) {
-        this._chordQuality = chordQuality;
+    public get value(): number {
+        return this._value;
     }
 
     constructor(chordQuality: ChordQualities) {
-        this.chordQuality = chordQuality;
+        this._value = chordQuality;
      }
 }
 
@@ -28,26 +26,27 @@ export class ChordQualitiesProvider {
     private static initialize() {
         if (!this._chordQualities) {
             this._chordQualities = new Array<IChordQuality>();
-            Object.keys(ChordQualities).forEach(element => {
-                if (isNaN(parseInt(element, 10))) { // only enum string identifiers
-                    this._chordQualities.push(new ChordQuality(ChordQualities[element]));
-                }
-            });
+            EnumHelper.getValues(ChordQualities).forEach(
+                el => this._chordQualities.push(new ChordQuality(el))
+            );
         }
     }
     public static retrieveInstances(): IChordQuality[] {
         this.initialize();
         return this._chordQualities;
     }
-    public static retrieveInstance(id: string) {
+    public static retrieveInstanceByValue(value: number): IChordQuality {
         this.initialize();
         let ret: IChordQuality;
         for (let i = 0; i < this._chordQualities.length; i++) {
-            if (this._chordQualities[i].chordQualityName === id) {
+            if (this._chordQualities[i].value === value) {
                 ret = this._chordQualities[i];
                 break;
             }
         }
         return ret;
+    }
+    public static retrieveInstanceByName(name: string): IChordQuality {
+        return this.retrieveInstanceByValue(EnumHelper.getValueOfKey(ChordQualities, name));
     }
 }

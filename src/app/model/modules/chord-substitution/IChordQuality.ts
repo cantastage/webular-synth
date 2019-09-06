@@ -25,6 +25,6 @@ export enum ChordQualities {
 }
 
 export interface IChordQuality {
-    readonly chordQualityName: string;
-    readonly chordQualityValue: number;
+    readonly name: string;
+    readonly value: number;
 }

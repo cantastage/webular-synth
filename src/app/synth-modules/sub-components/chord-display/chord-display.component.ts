@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
 import { ReadVarExpr, rendererTypeName } from '@angular/compiler';
-import { Chord } from 'src/app/model/modules/sequencer/prog/Chord';
+import { Chord } from 'src/app/model/modules/sequencer/Chord';
 import { ChordDisplayService } from 'src/app/services/chord-display.service';
 
 @Component({
