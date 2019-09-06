@@ -1,12 +1,14 @@
 export const A4 = 440;
-export const SD = (2 ** (1 / 12));
+export const NOTE_COUNT = 12;
+export const OCTAVE_DEFAULT = 4;
+export const SD = (2 ** (1 / NOTE_COUNT));
 
 export enum ChromaticNotes {
     primogrado = 0, //
     secondo = 1
 }
 
-export enum NoteNames {
+export enum PrimaryNames {
     C = 0, // 0 è il 1o grado della scala cromatica
     Db = 1,
     D = 2,
@@ -19,11 +21,9 @@ export enum NoteNames {
     A = 9,
     Bb = 10,
     B = 11
-
-
 }
 
-export enum EnharmonicNames {
+export enum SecondaryNames {
     'nd' = -1,
     'B#' = 0, // EnharmonicName of the i-th corresponding NoteName
     'C#' = 1,
@@ -37,8 +37,9 @@ export enum EnharmonicNames {
 }
 
 export interface IPitchClass {
-    readonly pitchClassName: string; // contiene nome come nelle enum sopra
-    readonly pitchClassValue: number;
-    readonly referralFrequency: number;
-    readonly enharmonicName: string; // nome enharmonic (nel nostro caso sempre quello col diesis)
+    readonly primaryName: string; // contiene nome come nelle enum sopra
+    readonly secondaryName: string; // nome enharmonic (nel nostro caso sempre quello col diesis)
+    name: string;
+    readonly value: number;
+    readonly frequency: number;
 }

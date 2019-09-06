@@ -71,11 +71,11 @@ export class HarmonizationsProvider { // fly-weight pattern
         this.initialize();
         return this._harmonizations;
     }
-    public static retrieveInstance(id: string): IHarmonization {
+    public static retrieveInstanceByName(name: string): IHarmonization {
         this.initialize();
         let ret: IHarmonization;
         for (let i = 0; i < this._harmonizations.length; i++) {
-            if (this._harmonizations[i].name === id) {
+            if (this._harmonizations[i].name === name) {
                 ret = this._harmonizations[i];
                 break;
             }

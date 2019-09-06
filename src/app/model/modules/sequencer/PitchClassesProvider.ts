@@ -1,77 +1,77 @@
-import { sealed } from '../../../system2/utilities/ClassDecorators';
-import { IPitchClass, NoteNames, EnharmonicNames, A4, SD } from './IPitchClass';
+import { sealed } from 'src/app/system2/utilities/ClassDecorators';
+import { IPitchClass, PrimaryNames, SecondaryNames, A4, SD } from './IPitchClass';
+import { EnumHelper } from 'src/app/system2/utilities/EnumHelper';
 
 @sealed
 class PitchClass implements IPitchClass {
-    private _pitchClass: NoteNames;
+    private _value: PrimaryNames;
+    private _name: string;
 
     // cache fields depending on private ones
-    private _enharmonicName: EnharmonicNames;
-    private _referralFrequency: number;
+    private _frequency: number;
 
-    private get pitchClassKey(): string {
-        return NoteNames[this._pitchClass];
+    private get primaryNameKey(): string {
+        return EnumHelper.getKeyOfValue(PrimaryNames, this._value);
     }
-    public get pitchClassValue(): number {
-        return this._pitchClass;
+    public get primaryName(): string {
+        return this.primaryNameKey;
     }
-    public get pitchClassName(): string {
-        return this.pitchClassKey;
+    private get secondaryNameKey(): string {
+        const tmp = EnumHelper.getKeyOfValue(SecondaryNames, this._value);
+        return tmp ? tmp : 'nd';
     }
-    public set pitchClass(pitchClass: NoteNames) {
-        this._pitchClass = pitchClass;
-        this.updateCache();
+    public get secondaryName(): string {
+        return this.secondaryNameKey;
     }
-    private enharmonicNameKey(): string {
-        return EnharmonicNames[this._enharmonicName];
+    public get value(): number {
+        return this._value;
     }
-    private enharmonicNameValue(): number {
-        return this._enharmonicName;
+    public get name(): string {
+        return this._name;
     }
-    public get enharmonicName(): string {
-        return this.enharmonicNameKey();
+    public set name(name: string) {
+        if (name !== this.primaryName && name !== this.secondaryName) {
+            throw new Error('error while assigning the name value');
+        }
+        this._name = name;
     }
-    public get referralFrequency(): number {
-        return this._referralFrequency;
-    }
-    private updateCache(): void {
-        // maybe no need to convert to string...
-        this._enharmonicName = String(EnharmonicNames[this.pitchClassValue]) !== 'undefined' ?
-            this.pitchClassValue : EnharmonicNames.nd;
-        this._referralFrequency = A4 * (SD ** (this.pitchClassValue - 9));
+    public get frequency(): number {
+        return this._frequency;
     }
 
-    public constructor(pitchClass: NoteNames) {
-        this.pitchClass = pitchClass;
+    public constructor(pitchClass: PrimaryNames) {
+        this._value = pitchClass;
+        this._frequency = A4 * (SD ** (this.value - 9));
+        this.name = this.primaryName;
     }
 }
 
 export class PitchClassesProvider { // fly-weight pattern
     private static _pitchClasses: IPitchClass[];
     private static initialize() {
-        if (!this._pitchClasses) {
+        if (!this._pitchClasses) { // se non già istanziato
             this._pitchClasses = new Array<IPitchClass>();
-            Object.keys(NoteNames).forEach(element => {
-                if (isNaN(parseInt(element, 10))) { // only enum string identifiers
-                    this._pitchClasses.push(new PitchClass(NoteNames[element]));
-                }
-            });
+            EnumHelper.getValues(PrimaryNames).forEach(
+                el => this._pitchClasses.push(new PitchClass(el))
+            );
         }
     }
     public static retrieveInstances(): IPitchClass[] {
         this.initialize();
         return this._pitchClasses;
     }
-    public static retrieveInstance(id: string): IPitchClass {
+    public static retrieveInstanceByValue(value: number): IPitchClass {
         this.initialize();
         let ret: IPitchClass;
         for (let i = 0; i < this._pitchClasses.length; i++) {
-            if (this._pitchClasses[i].pitchClassName === id) {
+            if (this._pitchClasses[i].value === value) {
                 ret = this._pitchClasses[i];
                 break;
             }
         }
-
         return ret;
+    }
+    public static retrieveInstanceByName(name: string): IPitchClass {
+        return this.retrieveInstanceByValue(EnumHelper.getValueOfKey(PrimaryNames, name));
     }
 }

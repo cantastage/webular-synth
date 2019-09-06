@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
 import { A4, SD } from '../model/modules/sequencer/IPitchClass.js';
-import { Chord } from '../model/modules/sequencer/prog/Chord.js';
-import { IPitch } from '../model/modules/sequencer/prog/IPitch.js';
+import { Chord } from '../model/modules/sequencer/Chord.js';
+import { IPitch } from '../model/modules/sequencer/IPitch.js';
 import { SuperObservable } from '../system2/patterns/observer/SuperObservable.js';
 
 @Injectable({

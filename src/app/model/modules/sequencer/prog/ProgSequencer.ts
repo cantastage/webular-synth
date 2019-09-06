@@ -1,5 +1,5 @@
 import { IProgSequencer } from './IProgSequencer';
-import { Progression } from './Progression';
+import { Progression } from '../Progression';
 
 export class ProgSequencer implements IProgSequencer {
     private _difficulty: number;

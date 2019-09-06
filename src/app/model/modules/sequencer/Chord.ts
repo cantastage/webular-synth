@@ -1,12 +1,12 @@
-import { IPitchClass } from 'src/app/model/modules/sequencer/IPitchClass';
-import { IChordQuality } from 'src/app/model/modules/chord-substitution/IChordQuality';
-import { Scale } from 'src/app/model/modules/sequencer/Scale';
+import { IPitchClass, NOTE_COUNT } from './IPitchClass';
+import { IChordQuality } from '../chord-substitution/IChordQuality';
+import { Scale } from './Scale';
 import { IPitch } from './IPitch';
-import { HarmonizationsProvider } from '../HarmonizationsProvider';
-import { Pitch } from './Pitch';
+import { HarmonizationsProvider } from './HarmonizationsProvider';
+import { PitchesProvider } from './PitchesProvider';
 
 /**
- * Root is played on the 4th octave, extensions on the 5th
+ * Root is played on the 4th octave, extensions on the 5th and 6th
  *
  */
 export class Chord {
@@ -16,7 +16,7 @@ export class Chord {
 
     // cache field depending on private ones
     private _chromaticScale: Scale;
-    private _chordNotes: IPitch[]; // corrisponde al voicing dell'accordo 
+    private _chordNotes: IPitch[]; // corrisponde al voicing dell'accordo
 
     // definisce la root
     public get root(): IPitchClass {
@@ -56,11 +56,11 @@ export class Chord {
 
     // update notes?
     private updateCache(): void {
-        this._chromaticScale = new Scale(this.root, HarmonizationsProvider.retrieveInstance('chromatic'));
+        this._chromaticScale = new Scale(this.root, HarmonizationsProvider.retrieveInstanceByName('chromatic'));
 
         this.chordNotes.splice(0, this.chordNotes.length); // clear all
 
-        let i2 = 0, oct = Pitch.OCTAVE_MIN;
+        let oct = PitchesProvider.OCTAVE_MIN;
         let nip: IPitchClass;
         // tslint:disable-next-line:no-bitwise
         let flag_mask = 1 << (Chord.FLAG_COUNT - 1);
@@ -68,12 +68,11 @@ export class Chord {
 
         for (let i = 0; i < Chord.FLAG_COUNT; i++) {
             // tslint:disable-next-line:no-bitwise
-            on = (this.quality.chordQualityValue & flag_mask) === flag_mask;
+            on = (this.quality.value & flag_mask) === flag_mask;
+            if (i > 0 && (this.root.value + i) % NOTE_COUNT === 0) { oct++; }
             if (on) {
-                i2 = i % (this._chromaticScale.diatonicNotes.length - 1);
-                nip = this._chromaticScale.diatonicNotes[i2];
-                if (i > 0 && nip.pitchClassName === 'C') { oct++; }
-                this.chordNotes.push(new Pitch(nip, oct));
+                nip = this._chromaticScale.diatonicNotes[i % NOTE_COUNT];
+                this.chordNotes.push(PitchesProvider.retrieveByIPitchClassOct(nip, oct));
             }
 
             // tslint:disable-next-line:no-bitwise

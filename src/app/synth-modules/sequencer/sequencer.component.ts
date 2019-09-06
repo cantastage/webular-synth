@@ -78,8 +78,8 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
       }
       return ret;
     }();
-
     this._channels = MidiContextManagerService.generateMIDIChannelVector();
+
     this._possibleOctaves = new Array<number>();
     this._possibleOctaves.push(Subdivision.OCTAVE_DEFAULT);
     for (let i = Subdivision.OCTAVE_MIN; i <= Subdivision.OCTAVE_MAX; i++) {
@@ -117,7 +117,7 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
       const upperBound = this.sequencer.scale.diatonicNotes.length - (voiceRepetition ? 1 : 0);
       // SEND AUDIO/MIDI MESSAGE
       for (let i = 0; i < upperBound; i++) {
-        currentReferralFreq = this.sequencer.scale.diatonicNotes[i].referralFrequency;
+        currentReferralFreq = this.sequencer.scale.diatonicNotes[i].frequency;
         currentOctave = currentSubdivision.octaves[i];
         if (currentOctave !== 0) {
           currentResultingFreq = currentReferralFreq * (2 ** (currentOctave - 4));

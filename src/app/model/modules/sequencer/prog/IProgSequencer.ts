@@ -1,6 +1,4 @@
-// import { Scale } from '../Scale';
-import { Progression } from './Progression';
-// import { IHarmonization } from '../IHarmonization';
+import { Progression } from '../Progression';
 
 export interface IProgSequencer {
     readonly difficulty: number;

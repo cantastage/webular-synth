@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Chord } from '../model/modules/sequencer/prog/Chord';
+import { Chord } from '../model/modules/sequencer/Chord';
 import { relative } from 'path';
 import { DiatonicNoteInfo } from '../model/chord-display/chord-display-structures';
 import { runInThisContext } from 'vm';
@@ -14,7 +14,7 @@ import { copyArrayItem } from '@angular/cdk/drag-drop';
  */
 export class ChordDisplayService {
 
-  private VF; //Vexflow variable
+  private VF; // Vexflow variable
   private htIntervals: Array<number>; // represents the intervals in half tones
   private diatonicScale = [
     new DiatonicNoteInfo('C', 0, 0, 1),
@@ -40,8 +40,8 @@ export class ChordDisplayService {
     const displayVoicings = new Array<Object>();
     // per ogni accordo devo creare il voicing da mostrare a schermo 
     for (let i = 0; i < raw_chords.length; i++) {
-      if (i > 0 && raw_chords[i].root.pitchClassValue === raw_chords[i - 1].root.pitchClassValue) {
-        displayVoicings[i] = displayVoicings[i - 1]; //TODO controllare se referenzia lo stesso oggetto o se è una copia
+      if (i > 0 && raw_chords[i].root.value === raw_chords[i - 1].root.value) {
+        displayVoicings[i] = displayVoicings[i - 1]; // TODO controllare se referenzia lo stesso oggetto o se è una copia
       } else {
         displayVoicings.push(this.createDisplayChord(raw_chords[i]));
       }
@@ -58,12 +58,12 @@ export class ChordDisplayService {
   private createDisplayChord(raw_chord: Chord): Object {
     // analisi della root dell'accordo
     const root = raw_chord.root; // è un IPitchClass
-    const size = root.pitchClassName.length; // length of the string
-    const rootChromaticIndex = root.pitchClassValue;
+    const size = root.name.length; // length of the string
+    const rootChromaticIndex = root.value;
     let diatonicRoot: DiatonicNoteInfo;
     const keys = [];
-    // let diatonic_name = root.pitchClassName[0];
-    switch (root.pitchClassName[0]) {
+    // let diatonic_name = root.name[0];
+    switch (root.name[0]) {
       case 'C':
         diatonicRoot = this.diatonicScale[0];
         break;
@@ -88,7 +88,7 @@ export class ChordDisplayService {
     }
     let offset = 0;
     if (size > 1) {
-      if (root.pitchClassName[1] === 'b') {
+      if (root.name[1] === 'b') {
         // caso in cui sia bemolle => allarga l'intervallo
         offset = offset + 1;
       } else {
@@ -100,13 +100,13 @@ export class ChordDisplayService {
     const rawChordNotes = raw_chord.chordNotes;
     // let realative_distances = [];
     for (let j = 0; j < rawChordNotes.length; j++) {
-      // realative_distances[j] = Math.abs(raw_chord_notes[j].pitchClass.pitchClassValue - root_chromatic_index);
+      // realative_distances[j] = Math.abs(raw_chord_notes[j].value - root_chromatic_index);
       let htDistance = 0;
-      // console.log('porca paletta: ', rawChordNotes[0].pitchClass.pitchClassValue);
-      if (rootChromaticIndex > rawChordNotes[j].pitchClass.pitchClassValue) {
-        htDistance = 12 - Math.abs(rawChordNotes[j].pitchClass.pitchClassValue - rootChromaticIndex);
+      // console.log('porca paletta: ', rawChordNotes[0].value);
+      if (rootChromaticIndex > rawChordNotes[j].value) {
+        htDistance = 12 - Math.abs(rawChordNotes[j].value - rootChromaticIndex);
       } else {
-        htDistance = rawChordNotes[j].pitchClass.pitchClassValue - rootChromaticIndex;
+        htDistance = rawChordNotes[j].value - rootChromaticIndex;
       }
       // calcolo dell'intervallo per identificare etichetta che andrà nella nota
       const diatonicInterval = this.htIntervals[htDistance];
