@@ -12,7 +12,7 @@
               <div class="col-12">
                 <select [(ngModel)]="_activeProgression" (change)="chooseProgression()">
                   <option *ngFor="let progression of _progressionList;" [ngValue]="progression">
-                    {{progression.toUpperCase()}}</option>
+                    {{progression}}</option>
                 </select>
               </div>
             </div>
