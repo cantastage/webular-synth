@@ -118,7 +118,7 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   }
 
   private updateMeasure(index: number): void {
-    console.log('index in update measure: ', index);
+    // console.log('index in update measure: ', index); // TODO REM COMMENTO
     // cancellazione delle note della battuta precedente, creazione del gruppo, draw e chiusura
     this.context.svg.removeChild(this.vf_groups[index]);
     this.vf_groups[index] = this.context.openGroup();

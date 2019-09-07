@@ -213,7 +213,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     this._firstTurnaround = true;
   }
   private updateInternalBeatNumber(): void {
-    this._internalBeatNumber = (this._internalBeatNumber + 1) % this.clockManager.bpm;
+    this._internalBeatNumber = (this._internalBeatNumber + 1) %
+      (6 * (4 * this.progSequencer.progression.chords.length));
   }
   private resetInternalBeatNumber(): void {
     this._internalBeatNumber = 0;
@@ -229,7 +230,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private asyncReset(): void { this.resetWholeState(); this._asyncResetWholeStateNeeded = true; }
 
   private isFirstTurnaround(bn: number): boolean {
-    const ret = bn === 0 && this._firstTurnaround;
+    const ret = (bn === 0) && this._firstTurnaround;
     if (this._firstTurnaround) { this._firstTurnaround = false; }
     return ret;
   }
@@ -240,16 +241,16 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     return bn % 4 === 0;
   }
   private isTurnaround(bn: number): boolean {
-    return bn % (4 * this.progSequencer.progression.chords.length) === 0;
+    return (bn % (4 * this.progSequencer.progression.chords.length)) === 0;
   }
   private onTick(beatNumber: number): void {
     // TODO need to highlight the substituted chord?!
 
+    console.log(this._internalBeatNumber);
     if (!this.isFirstTurnaround(this._internalBeatNumber) &&
       this.isTurnaround(this._internalBeatNumber)) { // apart from the first, til infty
       // usage of the substituted index [3,2,1,1,2,3...]
       // changed at each turnaround
-
       if (!this._rollback) { // substitution
         const tmp = SubstitutionManagerService.substituteChord(
           this.progSequencer.progression.chords[this._substitutedIndex],
@@ -286,18 +287,6 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
       ctx._asyncResetWholeStateNeeded = false;
     }
   }
-  // public morethanChordChange(): void {
-  //   // TODO
-  //   this.syncReset();
-  //   this.clockManager.restart();
-  // }
-  // TODO classification of [] into MidiExtract{channel, isOn, midiNote, velocity}
-  // private onMessage(arg: [number, boolean, number, number]) {
-  //   // HERE remember to check that the channel is not my own!
-  //   if (arg[0] !== this.progSequencer.channel) {
-  //     console.log(arg);
-  //   }
-  // }
 
   private retrieveProgressionNames(progression: { name: string, progression: Progression }[]) {
 
@@ -331,8 +320,6 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
       }
     }
     this.syncReset();
-    console.log('Progressione base cambiata, accordi: ');
-    console.log(this.progSequencer.progression.chords);
   }
 
   getInput(): AudioNode {
