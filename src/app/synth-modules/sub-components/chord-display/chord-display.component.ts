@@ -10,7 +10,7 @@ import { ChordDisplayService } from 'src/app/services/chord-display.service';
 })
 export class ChordDisplayComponent implements OnInit, OnChanges {
   @Input() rythmic_subdivision; // 4/4, 3/4 ecc...
-  @Input() active_chord;  // current playing chord, TODO decide if it is an index or actual chord. MEGLIO index
+  @Input() active_chord_index;  // current playing chord, TODO decide if it is an index or actual chord. MEGLIO index
   @Input() chord_voicings;
 
   public VF; // Vexflow
@@ -24,7 +24,7 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   private vf_voice; // vexflow voice (sequence of notes/chords) can be changed to an array if there are more voices
   private vf_notes: Array<any>; // array of stave notes
   private stave_length = 200; // stave length in pixels
-  private displayChords: Array<Object>; //display chords 
+  private displayChords: Array<any>; // display chords array of StaveNotes 
   private displayVoicings: Array<Array<any>>;
 
   constructor(private chordDisplayService: ChordDisplayService) {
@@ -34,7 +34,6 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   ngOnInit() {
     // init local variables
     this.displayVoicings = [];
-
     this.div = document.getElementById('score');
     this.VF = Vex.Flow;
     this.renderer = new this.VF.Renderer(this.div, this.VF.Renderer.Backends.SVG);
@@ -53,37 +52,14 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
       }
     }
     this.updateSheet(); // TODO spostare nella onchange
-    // const notes = [
-    //   // A quarter-note C.
-    //   new this.VF.StaveNote({ clef: 'treble', keys: ['c/4'], duration: 'q' }),
-
-    //   // A quarter-note D.
-    //   new this.VF.StaveNote({ clef: 'treble', keys: ['d/4'], duration: 'q' }),
-
-    //   // A quarter-note rest. Note that the key (b/4) specifies the vertical
-    //   // position of the rest.
-    //   new this.VF.StaveNote({ clef: 'treble', keys: ['b/4'], duration: 'qr' }),
-
-    //   // A C-Major chord.
-    //   new this.VF.StaveNote({ clef: 'treble', keys: ['c/4', 'e/4', 'g/4'], duration: 'q' })];
-
-    //   // NOTA diesis e bemolli se non in chiave vanno renderizzati esplicitamente con la chiamata addAccidental
-    // let notes2 = [new this.VF.StaveNote({ clef: 'treble', keys: ['d/4', 'f#/4', 'a/4'], duration: 'w' })
-    // .addAccidental(1, new this.VF.Accidental('#'))];
-
-    // let voice = new this.VF.Voice({ num_beats: 4, beat_value: 4 });
-    // voice.addTickables(notes2);
-
-    // let formatter = new this.VF.Formatter().joinVoices([voice]).format([voice], 400);
-    // voice.draw(this.context, this.staves[0]);
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const currentItem: SimpleChange = changes.chord_voicings;
-    if (currentItem) {
-      // console.log('prev value', currentItem.previousValue);
-      // console.log('new value', currentItem.currentValue);
-      // this.updateSheet();
+    const currentItem: SimpleChange = changes.active_chord_index;
+    if (currentItem.currentValue && currentItem.currentValue != currentItem.previousValue) {
+      // const newActiveIndex = currentItem.currentValue;
+      // chiamata al metodo di aggiornamento 
+      this.setActiveChordStyle(currentItem.previousValue, currentItem.currentValue);
     } else {
       console.log('Non cambia una sega');
     }
@@ -96,9 +72,24 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
     let index = 0;
     for (let i = 0; i < this.displayChords.length; i += 2) {
       this.displayVoicings[index] =
-      new Array<any>(new this.VF.StaveNote(this.displayChords[i]), new this.VF.StaveNote(this.displayChords[i + 1]));
+        new Array<any>(this.displayChords[i], this.displayChords[i + 1]);
+      // new Array<any>(new this.VF.StaveNote(this.displayChords[i]), new this.VF.StaveNote(this.displayChords[i + 1]));
       index++;
     }
+    // for (let i = 0; i < this.staves.length; i++) {
+    //   this.VF.Formatter.FormatAndDraw(this.context, this.staves[i], this.displayVoicings[i]);
+    // }
+    this.renderSheet();
+  }
+
+  private setActiveChordStyle(previousIndex: number, currentIndex: number): void {
+    this.displayChords[previousIndex].setStyle({ fillStyle: 'black', strokeStyle: 'black' });
+    this.displayChords[currentIndex].setStyle({ fillStyle: 'tomato', strokeStyle: 'tomato' });
+    // aggiornamento della view con formatanddraw
+    this.renderSheet();
+  }
+
+  private renderSheet(): void {
     for (let i = 0; i < this.staves.length; i++) {
       this.VF.Formatter.FormatAndDraw(this.context, this.staves[i], this.displayVoicings[i]);
     }

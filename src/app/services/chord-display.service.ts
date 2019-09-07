@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Chord } from '../model/modules/sequencer/Chord';
 import { relative } from 'path';
-import { DiatonicNoteInfo } from '../model/chord-display/chord-display-structures';
+import { DiatonicNoteInfo, AccidentalInfo } from '../model/chord-display/chord-display-structures';
 import { runInThisContext } from 'vm';
 import { copyArrayItem } from '@angular/cdk/drag-drop';
 
@@ -36,15 +36,18 @@ export class ChordDisplayService {
    * @param raw_chords The chords from prog sequencer
    */
   public buildChordsForDisplay(raw_chords: Array<Chord>): Array<any> {
-    console.log('Accordi nel metodo: ', raw_chords);
-    const displayVoicings = new Array<Object>();
+    // console.log('Accordi nel metodo: ', raw_chords);
+    const displayVoicings = new Array<Object>(); // Array di StaveNotes
     // per ogni accordo devo creare il voicing da mostrare a schermo 
     for (let i = 0; i < raw_chords.length; i++) {
-      if (i > 0 && raw_chords[i].root.value === raw_chords[i - 1].root.value) {
-        displayVoicings[i] = displayVoicings[i - 1]; // TODO controllare se referenzia lo stesso oggetto o se è una copia
-      } else {
-        displayVoicings.push(this.createDisplayChord(raw_chords[i]));
-      }
+      // TODO optimization to avoid creating two times the same chord
+      // not working right now because you need to copy an object
+      // if (i > 0 && raw_chords[i].root.pitchClassValue === raw_chords[i - 1].root.pitchClassValue) {
+      //   displayVoicings[i] = displayVoicings[i - 1]; //TODO controllare se referenzia lo stesso oggetto o se è una copia
+      // } else {
+      //   displayVoicings.push(this.createDisplayChord(raw_chords[i]));
+      // }
+      displayVoicings.push(this.createDisplayChord(raw_chords[i]));
     }
     return displayVoicings;
   }
@@ -57,6 +60,7 @@ export class ChordDisplayService {
    */
   private createDisplayChord(raw_chord: Chord): Object {
     // analisi della root dell'accordo
+    const accidentals: Array<AccidentalInfo> = [];
     const root = raw_chord.root; // è un IPitchClass
     const size = root.primaryName.length; // length of the string
     const rootChromaticIndex = root.value;
@@ -90,10 +94,10 @@ export class ChordDisplayService {
     if (size > 1) {
       if (root.primaryName[1] === 'b') {
         // caso in cui sia bemolle => allarga l'intervallo
-        offset = offset + 1;
-      } else {
+        offset = 1;
+      } else if (root.pitchClassName[1] === '#') {
         // caso in cui sia # => restringe l'intervallo, dato che contiamo sempre in avanti
-        offset = offset - 1;
+        offset = -1;
       }
     }
     // now calculate intervals between notes of the chord
@@ -124,13 +128,31 @@ export class ChordDisplayService {
         index = (index + 1) % this.diatonicScale.length;
         k++;
       }
+      // se 0 allora si tratta di una prima
+      if (calculatedDistance > 0) {
+        calculatedDistance = calculatedDistance + this.diatonicScale[index].distanceFromPrevDiatonicNote;
+      }
       keys.push(this.diatonicScale[index].label + '/' + rawChordNotes[j].octave); // TODO check if using index is correct
-      // if(htDistance > calculatedDistance ) {
-      //   if (offset = )
-      // }
-      // TODO add b and #
+      const difference = (htDistance + offset) - calculatedDistance;
+      if (difference > 0) {
+        // aggiungo bemolle
+        accidentals.push(new AccidentalInfo((keys.length - 1), 'b'));
+      } else if (difference < 0) {
+        // aggiungo diesis
+        accidentals.push(new AccidentalInfo((keys.length - 1), '#'));
+      }
     }
-    return { clef: 'treble', keys: keys, duration: 'h' };
+    //  deve ritornare stavenote con già gli accidentals
+    const staveNote = new this.VF.StaveNote({ clef: 'treble', keys: keys, duration: 'h' });
+    for (let i = 0; i < accidentals.length; i++) {
+      staveNote.addAccidental(accidentals[i].index, new this.VF.Accidental(accidentals[i].label));
+    }
+    return staveNote;
   }
+
+  // private extractRootLabel(pitchClassName: string): string {
+    
+  //   return '';
+  // }
 
 }
