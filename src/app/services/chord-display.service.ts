@@ -16,6 +16,7 @@ import { Subject } from 'rxjs';
 export class ChordDisplayService {
 
   public subject: Subject<number>; // index of the measure to substitute
+  public chordNotifier: Subject<Array<Chord>>;
 
   private VF; // Vexflow variable
   private htIntervals: Array<number>; // represents the intervals in half tones
@@ -33,6 +34,7 @@ export class ChordDisplayService {
     this.VF = Vex.Flow;
     this.htIntervals = [1, 2, 2, 3, 3, 4, -1, 5, 6, 6, 7, 7, 8];
     this.subject = new Subject();
+    this.chordNotifier = new Subject();
   }
 
   /**

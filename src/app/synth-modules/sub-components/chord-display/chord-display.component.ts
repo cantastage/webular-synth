@@ -38,6 +38,10 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
     this.chordDisplayService.subject.subscribe((indexToSubstitute) => {
       this.updateMeasure(indexToSubstitute);
     });
+    this.chordDisplayService.chordNotifier.subscribe((newChords) => {
+      this.chord_voicings = newChords;
+      this.reinitSheet();
+    })
     // init local variables
     this.displayVoicings = [];
     this.vf_groups = [null, null, null, null];
@@ -123,6 +127,14 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
     // this.context.svg.removeChild(this.group);
     // this.group = null;
     this.renderSheet();
+  }
+
+  private reinitSheet(): void {
+    for (let i = 0; i < this.staves.length; i++) {
+      this.context.svg.removeChild(this.vf_groups[i]);
+    }
+    this.vf_groups = [null, null, null, null];
+    this.initSheet();
   }
 
 }
