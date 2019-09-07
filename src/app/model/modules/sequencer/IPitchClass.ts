@@ -39,7 +39,6 @@ export enum SecondaryNames {
 export interface IPitchClass {
     readonly primaryName: string; // contiene nome come nelle enum sopra
     readonly secondaryName: string; // nome enharmonic (nel nostro caso sempre quello col diesis)
-    name: string;
     readonly value: number;
     readonly frequency: number;
 }

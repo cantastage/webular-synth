@@ -5,7 +5,6 @@ import { EnumHelper } from 'src/app/system2/utilities/EnumHelper';
 @sealed
 class PitchClass implements IPitchClass {
     private _value: PrimaryNames;
-    private _name: string;
 
     // cache fields depending on private ones
     private _frequency: number;
@@ -26,15 +25,6 @@ class PitchClass implements IPitchClass {
     public get value(): number {
         return this._value;
     }
-    public get name(): string {
-        return this._name;
-    }
-    public set name(name: string) {
-        if (name !== this.primaryName && name !== this.secondaryName) {
-            throw new Error('error while assigning the name value');
-        }
-        this._name = name;
-    }
     public get frequency(): number {
         return this._frequency;
     }
@@ -42,7 +32,6 @@ class PitchClass implements IPitchClass {
     public constructor(pitchClass: PrimaryNames) {
         this._value = pitchClass;
         this._frequency = A4 * (SD ** (this.value - 9));
-        this.name = this.primaryName;
     }
 }
 
@@ -72,6 +61,10 @@ export class PitchClassesProvider { // fly-weight pattern
         return ret;
     }
     public static retrieveInstanceByName(name: string): IPitchClass {
-        return this.retrieveInstanceByValue(EnumHelper.getValueOfKey(PrimaryNames, name));
+        let value = EnumHelper.getValueOfKey(PrimaryNames, name);
+        if (value === undefined) {
+            value = EnumHelper.getValueOfKey(SecondaryNames, name);
+        }
+        return this.retrieveInstanceByValue(value);
     }
 }

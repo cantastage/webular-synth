@@ -7,7 +7,7 @@ import { Chord } from '../model/modules/sequencer/Chord';
 export class ChordPipe implements PipeTransform {
 
   transform(chord: Chord): String {
-    const chord_root = chord.root.name;
+    const chord_root = chord.root.primaryName;
     const chord_quality = chord.quality.name;
     let formatted_quality = '';
     switch (chord_quality) {

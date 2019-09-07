@@ -49,14 +49,14 @@ export class Scale {
             );
         }
 
-        let delta: number;
-        for (let i = 1; i < this.diatonicNotes.length - 1; i++) {
-            delta = Math.abs(this.diatonicNotes[i].name.charCodeAt(0) -
-                this.diatonicNotes[i - 1].name.charCodeAt(0));
-            // if (delta !== 1 && delta !== 6) {
-            //     this.diatonicNotes[i].name = this.diatonicNotes[i].secondaryName;
-            // }
-        }
+        // let delta: number;
+        // for (let i = 1; i < this.diatonicNotes.length - 1; i++) {
+        //     delta = Math.abs(this.diatonicNotes[i].name.charCodeAt(0) -
+        //         this.diatonicNotes[i - 1].name.charCodeAt(0));
+        //     if (delta !== 1 && delta !== 6) {
+        //         this.diatonicNotes[i].name = this.diatonicNotes[i].secondaryName;
+        //     }
+        // }
     }
 
     public constructor(key: IPitchClass, harmonization: IHarmonization) {

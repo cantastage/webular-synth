@@ -58,12 +58,12 @@ export class ChordDisplayService {
   private createDisplayChord(raw_chord: Chord): Object {
     // analisi della root dell'accordo
     const root = raw_chord.root; // è un IPitchClass
-    const size = root.name.length; // length of the string
+    const size = root.primaryName.length; // length of the string
     const rootChromaticIndex = root.value;
     let diatonicRoot: DiatonicNoteInfo;
     const keys = [];
-    // let diatonic_name = root.name[0];
-    switch (root.name[0]) {
+    // let diatonic_name = root.primaryName[0];
+    switch (root.primaryName[0]) {
       case 'C':
         diatonicRoot = this.diatonicScale[0];
         break;
@@ -88,7 +88,7 @@ export class ChordDisplayService {
     }
     let offset = 0;
     if (size > 1) {
-      if (root.name[1] === 'b') {
+      if (root.primaryName[1] === 'b') {
         // caso in cui sia bemolle => allarga l'intervallo
         offset = offset + 1;
       } else {
