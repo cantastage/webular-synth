@@ -58,7 +58,7 @@ export class ChordDisplayService {
    * Given a row chord, this method creates its display version
    * @param raw_chord chord from which info are extracted
    */
-  private createDisplayChord(raw_chord: Chord): Object {
+  public createDisplayChord(raw_chord: Chord): Object {
     // analisi della root dell'accordo
     const accidentals: Array<AccidentalInfo> = [];
     const root = raw_chord.root; // è un IPitchClass
@@ -95,7 +95,7 @@ export class ChordDisplayService {
       if (root.name[1] === 'b') {
         // caso in cui sia bemolle => allarga l'intervallo
         offset = 1;
-      } else if (root.pitchClassName[1] === '#') {
+      } else if (root.primaryName[1] === '#') {
         // caso in cui sia # => restringe l'intervallo, dato che contiamo sempre in avanti
         offset = -1;
       }
@@ -149,10 +149,4 @@ export class ChordDisplayService {
     }
     return staveNote;
   }
-
-  // private extractRootLabel(pitchClassName: string): string {
-    
-  //   return '';
-  // }
-
 }

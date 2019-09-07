@@ -9,23 +9,26 @@ import { ChordDisplayService } from 'src/app/services/chord-display.service';
   styleUrls: ['./chord-display.component.scss']
 })
 export class ChordDisplayComponent implements OnInit, OnChanges {
-  @Input() rythmic_subdivision; // 4/4, 3/4 ecc...
+  // @Input() rythmic_subdivision; // 4/4, 3/4 ecc...
   @Input() active_chord_index;  // current playing chord, TODO decide if it is an index or actual chord. MEGLIO index
   @Input() chord_voicings;
+  @Input() substituted_chord_index;
 
   public VF; // Vexflow
   public div: any;
   public renderer: any;
   public context: any;
-  // public stave: any;
-  private staves: Array<any>;
+  private staves: Array<any>; // array di battute, sono 4
   // private chord_voicings: Array<any>;
   private vf_formatter; // Vexflow formatter
   private vf_voice; // vexflow voice (sequence of notes/chords) can be changed to an array if there are more voices
   private vf_notes: Array<any>; // array of stave notes
   private stave_length = 200; // stave length in pixels
-  private displayChords: Array<any>; // display chords array of StaveNotes 
-  private displayVoicings: Array<Array<any>>;
+  private displayChords: Array<any>; // display chords array of StaveNotes of length 8
+  private displayVoicings: Array<Array<any>>; // 4 measures with 2 chords each one
+  // private vf_groups: Array<any>; // Array of vexflow groups where to put notes and to erase old measures notes
+  private group: any; // gruppo svg
+
 
   constructor(private chordDisplayService: ChordDisplayService) {
     this.staves = new Array<any>(4); // assume 4 staves (4 chords)
@@ -34,6 +37,7 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   ngOnInit() {
     // init local variables
     this.displayVoicings = [];
+    // this.vf_groups = [null, null, null, null];
     this.div = document.getElementById('score');
     this.VF = Vex.Flow;
     this.renderer = new this.VF.Renderer(this.div, this.VF.Renderer.Backends.SVG);
@@ -51,37 +55,42 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
         this.staves[i].setContext(this.context).draw();
       }
     }
-    this.updateSheet(); // TODO spostare nella onchange
+    this.initSheet(); // TODO spostare nella onchange
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const currentItem: SimpleChange = changes.active_chord_index;
-    if (currentItem.currentValue && currentItem.currentValue != currentItem.previousValue) {
-      // const newActiveIndex = currentItem.currentValue;
-      // chiamata al metodo di aggiornamento 
-      this.setActiveChordStyle(currentItem.previousValue, currentItem.currentValue);
+    // const currentItem: SimpleChange = changes.active_chord_index;
+    // if (currentItem.currentValue && currentItem.currentValue !== currentItem.previousValue) {
+    //   // const newActiveIndex = currentItem.currentValue;
+    //   // chiamata al metodo di aggiornamento 
+    //   this.setActiveChordStyle(currentItem.previousValue, currentItem.currentValue);
+    // } else {
+    //   console.log('Non cambia una sega');
+    // }
+    if (changes.substituted_chord_index && changes.substituted_chord_index.previousValue !== undefined
+      && changes.substituted_chord_index.currentValue !== changes.substituted_chord_index.previousValue) {
+      // console.log('prev substituted: ', changes.substituted_chord_index.previousValue);
+      // console.log('current substituted: ', changes.substituted_chord_index.currentValue);
+      this.updateMeasure(changes.substituted_chord_index.previousValue);
     } else {
       console.log('Non cambia una sega');
     }
+
   }
 
 
   // re-renders notes in the sheet. TODO check if it is good to render again all notes.
-  private updateSheet() {
+  private initSheet() {
     this.displayChords = this.chordDisplayService.buildChordsForDisplay(this.chord_voicings);
     let index = 0;
     for (let i = 0; i < this.displayChords.length; i += 2) {
-      this.displayVoicings[index] =
-        new Array<any>(this.displayChords[i], this.displayChords[i + 1]);
-      // new Array<any>(new this.VF.StaveNote(this.displayChords[i]), new this.VF.StaveNote(this.displayChords[i + 1]));
+      this.displayVoicings[index] = new Array<any>(this.displayChords[i], this.displayChords[i + 1]);
       index++;
     }
-    // for (let i = 0; i < this.staves.length; i++) {
-    //   this.VF.Formatter.FormatAndDraw(this.context, this.staves[i], this.displayVoicings[i]);
-    // }
     this.renderSheet();
   }
 
+  // TODO debuggare funzionamento
   private setActiveChordStyle(previousIndex: number, currentIndex: number): void {
     this.displayChords[previousIndex].setStyle({ fillStyle: 'black', strokeStyle: 'black' });
     this.displayChords[currentIndex].setStyle({ fillStyle: 'tomato', strokeStyle: 'tomato' });
@@ -90,9 +99,33 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   }
 
   private renderSheet(): void {
+    this.group = this.context.openGroup();
     for (let i = 0; i < this.staves.length; i++) {
+      // this.context.svg.removeChild(this.vf_groups[i]);
+      // this.vf_groups[i] = this.context.openGroup();
       this.VF.Formatter.FormatAndDraw(this.context, this.staves[i], this.displayVoicings[i]);
     }
+    this.context.closeGroup();
+  }
+
+  private updateMeasure(index: number): void {
+    // cancellazione delle note della battuta precedente, creazione del gruppo, draw e chiusura
+    // this.context.svg.removeChild(this.vf_groups[index]);
+    const substitutedChords = [];
+    for (let i = (index * 2); i < (index * 2 + 2); i++) {
+      substitutedChords.push(this.chordDisplayService.createDisplayChord(this.chord_voicings[i]));
+    }
+    this.displayVoicings[index] = substitutedChords;
+    this.updateSheet();
+    // this.vf_groups[index] = this.context.svg.openGroup();
+    // this.VF.Formatter.FormatAndDraw(this.context, this.staves[index], this.displayVoicings[index]);
+    // this.context.closeGroup();
+  }
+
+  private updateSheet(): void {
+    this.context.svg.removeChild(this.group);
+    this.group = null;
+    this.renderSheet();
   }
 
 }
