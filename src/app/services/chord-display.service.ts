@@ -42,7 +42,7 @@ export class ChordDisplayService {
     for (let i = 0; i < raw_chords.length; i++) {
       // TODO optimization to avoid creating two times the same chord
       // not working right now because you need to copy an object
-      // if (i > 0 && raw_chords[i].root.pitchClassValue === raw_chords[i - 1].root.pitchClassValue) {
+      // if (i > 0 && raw_chords[i].root.value === raw_chords[i - 1].root.value) {
       //   displayVoicings[i] = displayVoicings[i - 1]; //TODO controllare se referenzia lo stesso oggetto o se è una copia
       // } else {
       //   displayVoicings.push(this.createDisplayChord(raw_chords[i]));
@@ -62,12 +62,12 @@ export class ChordDisplayService {
     // analisi della root dell'accordo
     const accidentals: Array<AccidentalInfo> = [];
     const root = raw_chord.root; // è un IPitchClass
-    const size = root.name.length; // length of the string
+    const size = root.primaryName.length; // length of the string
     const rootChromaticIndex = root.value;
     let diatonicRoot: DiatonicNoteInfo;
     const keys = [];
-    // let diatonic_name = root.name[0];
-    switch (root.name[0]) {
+    // let diatonic_name = root.primaryName[0];
+    switch (root.primaryName[0]) {
       case 'C':
         diatonicRoot = this.diatonicScale[0];
         break;
@@ -92,7 +92,7 @@ export class ChordDisplayService {
     }
     let offset = 0;
     if (size > 1) {
-      if (root.name[1] === 'b') {
+      if (root.primaryName[1] === 'b') {
         // caso in cui sia bemolle => allarga l'intervallo
         offset = 1;
       } else if (root.primaryName[1] === '#') {

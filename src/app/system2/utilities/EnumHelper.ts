@@ -17,9 +17,17 @@ export class EnumHelper {
     }
 
     public static getValueOfKey(enumino: any, key: string): number {
-        return this.getValues(enumino)[this.getKeys(enumino).indexOf(key)];
+        const tmp = this.getKeys(enumino).indexOf(key);
+        if (tmp < 0) {
+            return undefined;
+        }
+        return this.getValues(enumino)[tmp];
     }
     public static getKeyOfValue(enumino: any, value: number): string {
-        return this.getKeys(enumino)[this.getValues(enumino).indexOf(value)];
+        const tmp = this.getValues(enumino).indexOf(value);
+        if (tmp < 0) {
+            return undefined;
+        }
+        return this.getKeys(enumino)[tmp];
     }
 }

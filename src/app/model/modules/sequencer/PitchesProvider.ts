@@ -19,12 +19,6 @@ class Pitch implements IPitch {
     public get secondaryName(): string {
         return this._pitchClass.secondaryName;
     }
-    public get name(): string {
-        return this._pitchClass.name;
-    }
-    public set name(name: string) {
-        this._pitchClass.name = name;
-    }
     public get value(): number {
         return this._pitchClass.value;
     }
@@ -91,10 +85,8 @@ export class PitchesProvider { // fly-weight pattern
             OCTAVE_DEFAULT + Math.floor(octaValue / NOTE_COUNT));
     }
     public static retrieveInstanceByNameOct(name: string, oct: number): IPitch {
-        let value;
-        if (EnumHelper.getValueOfKey(PrimaryNames, name)) {
-            value = EnumHelper.getValueOfKey(PrimaryNames, name);
-        } else {
+        let value = EnumHelper.getValueOfKey(PrimaryNames, name);
+        if (value === undefined) {
             value = EnumHelper.getValueOfKey(SecondaryNames, name);
         }
         return this.retrieveInstanceByValueOct(value, oct);
