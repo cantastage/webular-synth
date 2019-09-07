@@ -13,21 +13,21 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   @Input() active_chord_index;  // current playing chord, TODO decide if it is an index or actual chord. MEGLIO index
   @Input() chord_voicings;
   @Input() substituted_chord_index;
+  @Input() rollback;
 
   public VF; // Vexflow
   public div: any;
   public renderer: any;
   public context: any;
   private staves: Array<any>; // array di battute, sono 4
-  // private chord_voicings: Array<any>;
   private vf_formatter; // Vexflow formatter
   private vf_voice; // vexflow voice (sequence of notes/chords) can be changed to an array if there are more voices
   private vf_notes: Array<any>; // array of stave notes
   private stave_length = 200; // stave length in pixels
   private displayChords: Array<any>; // display chords array of StaveNotes of length 8
   private displayVoicings: Array<Array<any>>; // 4 measures with 2 chords each one
-  // private vf_groups: Array<any>; // Array of vexflow groups where to put notes and to erase old measures notes
-  private group: any; // gruppo svg
+  private vf_groups: Array<any>; // Array of vexflow groups where to put notes and to erase old measures notes
+  // private group: any; // gruppo svg
 
 
   constructor(private chordDisplayService: ChordDisplayService) {
@@ -35,9 +35,12 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.chordDisplayService.subject.subscribe((indexToSubstitute) => {
+      this.updateMeasure(indexToSubstitute);
+    });
     // init local variables
     this.displayVoicings = [];
-    // this.vf_groups = [null, null, null, null];
+    this.vf_groups = [null, null, null, null];
     this.div = document.getElementById('score');
     this.VF = Vex.Flow;
     this.renderer = new this.VF.Renderer(this.div, this.VF.Renderer.Backends.SVG);
@@ -56,6 +59,7 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
       }
     }
     this.initSheet(); // TODO spostare nella onchange
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -67,15 +71,20 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
     // } else {
     //   console.log('Non cambia una sega');
     // }
-    if (changes.substituted_chord_index && changes.substituted_chord_index.previousValue !== undefined
-      && changes.substituted_chord_index.currentValue !== changes.substituted_chord_index.previousValue) {
-      // console.log('prev substituted: ', changes.substituted_chord_index.previousValue);
-      // console.log('current substituted: ', changes.substituted_chord_index.currentValue);
-      this.updateMeasure(changes.substituted_chord_index.previousValue);
-    } else {
-      console.log('Non cambia una sega');
-    }
-
+    // console.log('changes.substituted_chord_index: ', changes.substituted_chord_index);
+    // console.log('changes.substituted_chord_index.previousValue: ', changes.substituted_chord_index.previousValue);
+    // console.log('changes.substituted_chord_index.currentValue: ', changes.substituted_chord_index.currentValue);
+    // if ((changes.substituted_chord_index && changes.substituted_chord_index.previousValue !== undefined 
+    //   && changes.rollback && changes.rollback.previousValue !== undefined)
+    //   && ((changes.substituted_chord_index.currentValue !== changes.substituted_chord_index.previousValue)
+    //   || (changes.rollback.currentValue !== changes.rollback.previousValue))) {
+    //   // console.log('prev substituted: ', changes.substituted_chord_index.previousValue);
+    //   console.log('battuta da sostituire: ', changes.substituted_chord_index.previousValue);
+    //   console.log('current substituted: ', changes.substituted_chord_index.currentValue);
+    //   this.updateMeasure(changes.substituted_chord_index.previousValue);
+    // } else {
+    //   console.log('Non cambia una sega');
+    // }
   }
 
 
@@ -99,32 +108,34 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   }
 
   private renderSheet(): void {
-    this.group = this.context.openGroup();
+    // this.group = this.context.openGroup();
     for (let i = 0; i < this.staves.length; i++) {
-      // this.context.svg.removeChild(this.vf_groups[i]);
-      // this.vf_groups[i] = this.context.openGroup();
+      this.vf_groups[i] = this.context.openGroup();
       this.VF.Formatter.FormatAndDraw(this.context, this.staves[i], this.displayVoicings[i]);
+      this.context.closeGroup();
     }
-    this.context.closeGroup();
+    // this.context.closeGroup();
   }
 
   private updateMeasure(index: number): void {
+    console.log('index in update measure: ', index);
     // cancellazione delle note della battuta precedente, creazione del gruppo, draw e chiusura
-    // this.context.svg.removeChild(this.vf_groups[index]);
+    this.context.svg.removeChild(this.vf_groups[index]);
+    this.vf_groups[index] = this.context.openGroup();
     const substitutedChords = [];
     for (let i = (index * 2); i < (index * 2 + 2); i++) {
       substitutedChords.push(this.chordDisplayService.createDisplayChord(this.chord_voicings[i]));
     }
     this.displayVoicings[index] = substitutedChords;
-    this.updateSheet();
+    // this.updateSheet();
     // this.vf_groups[index] = this.context.svg.openGroup();
-    // this.VF.Formatter.FormatAndDraw(this.context, this.staves[index], this.displayVoicings[index]);
-    // this.context.closeGroup();
+    this.VF.Formatter.FormatAndDraw(this.context, this.staves[index], this.displayVoicings[index]);
+    this.context.closeGroup();
   }
 
   private updateSheet(): void {
-    this.context.svg.removeChild(this.group);
-    this.group = null;
+    // this.context.svg.removeChild(this.group);
+    // this.group = null;
     this.renderSheet();
   }
 

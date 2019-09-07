@@ -15,6 +15,7 @@ import { Chord } from 'src/app/model/modules/sequencer/Chord';
 import { BasicProgressions } from 'src/app/model/modules/sequencer/prog/BasicProgressions';
 import { Progression } from 'src/app/model/modules/sequencer/Progression';
 import { ProgSequencer } from 'src/app/model/modules/sequencer/prog/ProgSequencer';
+import { ChordDisplayService } from 'src/app/services/chord-display.service';
 
 @Component({
   selector: 'app-prog-sequencer',
@@ -92,8 +93,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
    * @param messageService
    */
   public constructor(private clockManager: ClockManagerService, private midiManager: MidiContextManagerService,
-    private contextManager: AudioContextManagerService, private substitutionManager: SubstitutionManagerService,
-    private messageService: MessageService) {
+    private chordDisplayService: ChordDisplayService) {
     // init observers
     this._clockObserver = {
       next: (value) => { this.onTick(value); },
@@ -107,8 +107,10 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     // };
     // initial prog sequencer oscilator params
     // NB check maxVelocity value to avoid distortions
-    this._oscillatorData = { name: 'PROGSEQOSC', // conforme al ModuleManagerService
-      state: { waveForm: 'sine', maxVelocity: 20, addSemitone: 0, finePitch: 0, active: 0 } };
+    this._oscillatorData = {
+      name: 'PROGSEQOSC', // conforme al ModuleManagerService
+      state: { waveForm: 'sine', maxVelocity: 20, addSemitone: 0, finePitch: 0, active: 0 }
+    };
   }
 
   /**
@@ -258,7 +260,8 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
       } else { // rollback
         this.resetithSubstituting(this._substitutedIndex);
       }
-
+      // chiamata a servizio
+      this.chordDisplayService.subject.next(this._substitutedIndex);
       // update the substituted index
       this.updateSubstitutedIndex();
     }

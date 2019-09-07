@@ -4,6 +4,7 @@ import { relative } from 'path';
 import { DiatonicNoteInfo, AccidentalInfo } from '../model/chord-display/chord-display-structures';
 import { runInThisContext } from 'vm';
 import { copyArrayItem } from '@angular/cdk/drag-drop';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,8 @@ import { copyArrayItem } from '@angular/cdk/drag-drop';
  *
  */
 export class ChordDisplayService {
+
+  public subject: Subject<number>; // index of the measure to substitute
 
   private VF; // Vexflow variable
   private htIntervals: Array<number>; // represents the intervals in half tones
@@ -29,6 +32,7 @@ export class ChordDisplayService {
   constructor() {
     this.VF = Vex.Flow;
     this.htIntervals = [1, 2, 2, 3, 3, 4, -1, 5, 6, 6, 7, 7, 8];
+    this.subject = new Subject();
   }
 
   /**
