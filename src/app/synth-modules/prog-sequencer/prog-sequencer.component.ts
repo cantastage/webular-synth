@@ -179,6 +179,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.progSequencer.progression.chords.length; i++) {
       tmp.push(this.progSequencer.progression.chords[i]);
       tmp.push(this.progSequencer.progression.chords[i]);
+      // this.resetithSubstituting(i);
     }
     this._substitutingChords = tmp;
   }
