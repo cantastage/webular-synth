@@ -71,20 +71,6 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
     // } else {
     //   console.log('Non cambia una sega');
     // }
-    // console.log('changes.substituted_chord_index: ', changes.substituted_chord_index);
-    // console.log('changes.substituted_chord_index.previousValue: ', changes.substituted_chord_index.previousValue);
-    // console.log('changes.substituted_chord_index.currentValue: ', changes.substituted_chord_index.currentValue);
-    // if ((changes.substituted_chord_index && changes.substituted_chord_index.previousValue !== undefined 
-    //   && changes.rollback && changes.rollback.previousValue !== undefined)
-    //   && ((changes.substituted_chord_index.currentValue !== changes.substituted_chord_index.previousValue)
-    //   || (changes.rollback.currentValue !== changes.rollback.previousValue))) {
-    //   // console.log('prev substituted: ', changes.substituted_chord_index.previousValue);
-    //   console.log('battuta da sostituire: ', changes.substituted_chord_index.previousValue);
-    //   console.log('current substituted: ', changes.substituted_chord_index.currentValue);
-    //   this.updateMeasure(changes.substituted_chord_index.previousValue);
-    // } else {
-    //   console.log('Non cambia una sega');
-    // }
   }
 
 
