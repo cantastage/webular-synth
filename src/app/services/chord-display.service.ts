@@ -135,11 +135,11 @@ export class ChordDisplayService {
       keys.push(this.diatonicScale[index].label + '/' + rawChordNotes[j].octave); // TODO check if using index is correct
       const difference = (htDistance + offset) - calculatedDistance;
       if (difference > 0) {
-        // aggiungo bemolle
-        accidentals.push(new AccidentalInfo((keys.length - 1), 'b'));
-      } else if (difference < 0) {
         // aggiungo diesis
         accidentals.push(new AccidentalInfo((keys.length - 1), '#'));
+      } else if (difference < 0) {
+        // aggiungo bemolle
+        accidentals.push(new AccidentalInfo((keys.length - 1), 'b'));
       }
     }
     //  deve ritornare stavenote con già gli accidentals
