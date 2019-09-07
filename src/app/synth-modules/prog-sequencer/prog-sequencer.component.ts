@@ -175,9 +175,12 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   }
   private resetDefaultSubstituting(): void {
     this.resetSubstitutingIndex();
+    const tmp = new Array<Chord>();
     for (let i = 0; i < this.progSequencer.progression.chords.length; i++) {
-      this.resetithSubstituting(i);
+      tmp.push(this.progSequencer.progression.chords[i]);
+      tmp.push(this.progSequencer.progression.chords[i]);
     }
+    this._substitutingChords = tmp;
   }
   private resetRollback(): void {
     this._rollback = false;
