@@ -70,7 +70,7 @@ The UI of the `ProgSequencerComponent` allows the state configuration:
 - Difficulty selector: allows to select the difficulty of the substitutions performed (see 'Chord Substitution section');
 - Play/Pause and Stop buttons: allow to handle the reproduction of the score;
 
-Fasi di riproduzione:
+Reproduction phases:
 - Play: the prog sequencer begins to follow the click and once each 2/4 a chord is orderedly selected from the score. When a chord is selected, each note is sent to the listeners;
 - Pause/Play: the prog sequencer stops the reproduction at the current time instant (it no longer follows the click) or restarts it from the correct chord;
 - Stop: the prog sequencer stops the reproduction and resets the whole state, restarting from the beginning;
@@ -183,18 +183,26 @@ The connection of the synth modules is managed by the "AudioContextManager" serv
 ### Rules
 
 The algorithm used in the Prog Sequencer to implement chord substitution is based on the results provided "Surprising Harmonies" by Francois Pachet, International Journal on Computing Anticipatory Systems, 1999.
+
 The paper addresses the modeling of surprise in Jazz harmonic progressions, and after having proposed some simple rules for substitution, by which combination any other substitution can be modeled, it focuses on how to learn these rules starting from a corpus of jazz chord sequences.
+
 The information are extracted from the corpus using the Lempel-Ziv compression algorithm: this procedure is used to parse a sequence into distinct phrases, such that each phrase is the shortest string which is not a previously parsed one.
 From the dictionary built that way, the LZ-tree is extracted: each node represents a possible substring and the sons of the nodes represent possible continuations of this substring.
+
 In conclusion the number of sons is the probability of occurrence of the substring. This procedure is applied iteratively from the starting sequence comparing it at each step with the LZ-tree, and the chords are used as sequences of chord changes in order to bypass the problem of transposition.
+
 This model is used to train a Machine Learning algorithm to induce chord substitution rules from a corpus of jazz chord changes, build using 76 sequences (52 tunes by Charlie Parker and 24 standard tunes from the Real Book) and creating sequences of changes corrisponding to 1-1, 1-2 and 2-2 rules.
 
 ### Builder
 
 In this didactic program we aimed at building a sequence of continously changing chords starting from a given sequence of 4 chords, by exploiting the results of Francois Pachet's experiment.
+
 The user is asked to select a chord sequence within a set of possibilities offered by a drop-down menu (the sequences are typical jazz progressions or taken from famous jazz standards) and a level of difficulty (easy-mid-pro).
+
 He can also adjust parameters for the reproduction of the chord accompainment on the oscillator built in the component itself.
+
 After pressing the play button the prog sequencer component starts playing the corresponding sequence, 2 chords per bar: at each turnaround one bar of chords is substituted with 1-1 or 1-2 rules taken from the Pachet results (section 4.3.1 and 4.3.2 of the paper) starting from the last bar and getting back till all of the original chords are substituted, except the first bar chord, and then rolling back the procedure until the original sequence is found back again.
+
 Then the procedure is iterated until the user presses the stop button. During the whole process the user is expected to improvise on the chords proposed, using the sound chain of the main synthesizer, to practice improvisation on different chord sequences built by substitution, and to get new ideas on how to elaborate a given sequence. 
 
 The difficulty level represents the likelihood of the substituting chords:
