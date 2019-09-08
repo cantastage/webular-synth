@@ -33,7 +33,7 @@ export class ChordDisplayService {
 
   constructor() {
     this.VF = Vex.Flow;
-    this.htIntervals = [1, 2, 2, 3, 3, 4, 4, 5, 6, 6, 7, 7, 8]; // NB il tritono viene modellato come quarta + 1S
+    this.htIntervals = [1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 7, 8]; // NB il tritono viene modellato come quinta diminuita
     this.subject = new Subject();
     this.chordNotifier = new Subject();
     this.activeIndexNotifier = new Subject();
@@ -122,12 +122,6 @@ export class ChordDisplayService {
       let index = 0;
       // se diatonicInterval è maggiore di una prima
       let calculatedDistance = 0;
-      // if (htDistance !== 6) {
-      //   // caso del tritono => aggiungo già un semitono
-      //   calculatedDistance = 0;
-      // } else {
-      //   calculatedDistance = 1;
-      // }
       if (diatonicInterval > 1) {
         // al primo giro è già settato per beccare la nota diatonica successiva
         index = (diatonicRoot.diatonicIndex + 1) % this.diatonicScale.length;
@@ -157,15 +151,26 @@ export class ChordDisplayService {
       } else if (calculatedDistance !== htDistance) {
         // const difference = (htDistance + offset) - calculatedDistance;
         const difference = (calculatedDistance + offset) - htDistance;
-        if (difference > 0) {
-          // aggiungo diesis
-          accidentals.push(new AccidentalInfo((keys.length - 1), 'b'));
-        } else if (difference < 0) {
-          // aggiungo bemolle
-          accidentals.push(new AccidentalInfo((keys.length - 1), '#'));
+        if (difference !== 0) {
+          const accidentalType = difference > 0 ? 'b' : '#';
+          let newAccidental = '';
+          newAccidental = accidentalType;
+          for (let i = 1; i < difference; i++) {
+            newAccidental += accidentalType;
+          }
+          console.log('new accidental is: ', newAccidental);
+          accidentals.push(new AccidentalInfo((keys.length - 1), newAccidental));
+          // if (difference > 0) {
+          //   // aggiungo diesis
+          //   accidentals.push(new AccidentalInfo((keys.length - 1), 'b'));
+          // } else if (difference < 0) {
+          //   // aggiungo bemolle
+          //   accidentals.push(new AccidentalInfo((keys.length - 1), '#'));
+          // }
         }
+
       }
-      console.log('inserita nota: ', keys[keys.length - 1], 'in accordo ', raw_chord.root.primaryName + raw_chord.quality.name);
+      // console.log('inserita nota: ', keys[keys.length - 1], 'in accordo ', raw_chord.root.primaryName + raw_chord.quality.name);
     }
     //  deve ritornare stavenote con già gli accidentals
     const staveNote = new this.VF.StaveNote({ clef: 'treble', keys: keys, duration: 'h' });
