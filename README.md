@@ -29,7 +29,7 @@ The sound chain is built upon synth modules. Adding a module to the "Synth modul
 
 As in all the most known synthesizers, the clock module is a single instance which can be observed by objects who might desire a synchronization.
 
-In our case, the sole module which needs temporization is the harmonic/melodic sequencer.
+In our case, the sole module which needs temporization is the harmonic sequencer.
 
 The `ClockComponent` builds an `IClock` instance thanks to the `ClockManagerService` service and the `ClockProvider` factory.
 
@@ -45,33 +45,41 @@ The `MidiContextManagerService` exposes methods for a correct communication with
 
 Even in this case, the service sends messages to optional interested listeners containing the most relevant MIDI information.
 
-### Sequencer
+### Prog-Sequencer
 
-The sequencer is both synchronized with the click and, like the MIDI-IN interface, capable of sending messages to listeners.
+#### Data Model
 
-This last action is achieved via the `MidiContextManagerService` itself, following a sort of bus logic, which in future could be extended with MIDI channels discrimination.
+The data model contains the following main data types:
+- `IPitchClass`: this interface represents a pitch class, contains the `primaryName` field with default 'b' for accidental keys. Furthermore, provides a `value` (index) for the position of the pitch class within the chromatic scale starting from C (retrieved via `PitchClassesProvider` factory);
+- `IPitch`: this interface exposes the `octave` related to the pitch class and evaluates the `frequency` of the pitch (retrieved via `PitchesProvider` factory);
+- `IChordQuality`: this interface represents the quality of a chord, its `name` and the associated `value` (which is a binary mask of the quality built upon the chromatic scale);
+
+- `Scale`: this class exploits a stack of intervals starting from the root pitch class in order to expose the `diatonicNotes` field which contains all of the pitch classes within the scale given the interval stack. All the scales start from the 4th octave;
+- `Chord`: this class exploits the binary mask, starts from the root pitch class, generates the chromatic scale starting from the root and applies the mask. The purpose is to expose `chordNotes`: the set of pitches of the chord. All the chords start from the 4th octave and are in their basic form (with no inversions);
+
+#### Features
+
+The prog sequencer is both synchronized with the click and, like the MIDI-IN interface, capable of sending messages to listeners.
+
+This last action is achieved via the `MidiContextManagerService` itself, following a sort of bus logic.
 
 This option has been chosen to have a single source of messages of the same type.
 
-The UI of the `SequencerComponent` allows the state configuration:
-- Key selector: allows the choice of an item `IPitchClass` provided by the fly-weight factory `PitchClassesProvider`;
-- Harmonization selector: allows the choice of an item `IHarmonization` provided by the factory `HarmonizationsProvider` which can be easily extended with new harmonizations via scale pattern;
-- Metric selector: allows to add more and more 4^th subdivisions to the measure.
+The UI of the `ProgSequencerComponent` allows the state configuration:
+- Progression selector: allows to select one of the default progressions (see 'Chord Substitution section');
+- Difficulty selector: allows to select the difficulty of the substitutions performed (see 'Chord Substitution section');
+- Play/Pause and Stop buttons: allow to handle the reproduction of the score;
 
-Depending on Key and Harmonization, a `Scale` object is built.
+Fasi di riproduzione:
+- Play: the prog sequencer begins to follow the click and once each 2/4 a chord is orderedly selected from the score. When a chord is selected, each note is sent to the listeners;
+- Pause/Play: the prog sequencer stops the reproduction at the current time instant (it no longer follows the click) or restarts it from the correct chord;
+- Stop: the prog sequencer stops the reproduction and resets the whole state, restarting from the beginning;
 
-Each `Subdivision` of the `Measure` is characterized by a set of 'octave' values (vertical cells) and the duration. The velocity could be added.
+_To prevent unrealistic behaviours that would compromise the functionality of the following module (an internal poly-phonic oscillator), the duration of each chord is slightly altered. This choice is justified by the asynchronous nature of the 'stop chord' and by the unperceptiveness of such a temporal modification._
 
-(both duration and velocity could be set, with different granularity, on cells or subdivisions)
+#### Chord Rendering
 
-Eventually, the `Sequencer` joins the `Scale` and `Measure` concepts, giving an overall musical acceptation.
-
-We recall the sequencer to follow the click, each beat leads to the 'selection' of a different subdivision.
-
-When a subdivision is selected, each 'active note' is sent to the listeners.
-
-_To prevent unrealistic behaviours that would compromise the functionality of the following module (generally a poly-phonic oscillator), the duration of each note is altered.
-This choice is justified by the asynchronous nature of the 'stop note' and by the unperceptiveness of such a temporal modification._
+~~descrizione dei display~~
 
 ### Oscillator
 
@@ -87,7 +95,7 @@ It implements polyphony using the class `Voice`, which keeps track of every inpu
 Every voice generated contains an oscillatorNode and a gainNode which charaterize a single note.
 The oscillator has a single gainNode as output, to which all the internal voice gainNodes are connected.
 
-~~ The note envelope is generated via `ADSRComponent`
+The note envelope is generated via `ADSRComponent`
 
 ### ADSR Envelope
 
@@ -170,19 +178,28 @@ It is a basic script which exploits a couple of `AudioParameterDescriptors` to c
 
 The connection of the synth modules is managed by the "AudioContextManager" service. This service provides a shared audio context that is accessible from all the components. It also contains methods to add, reorder and delete elements from the sound chain. It automatically updates all the connections everytime the user moves a synth module in the sound chain.
 
+## Chord Substitution
 
-## Chord Substitution rules
+### Rules
 
-The algorithm used in the Prog Sequencer to implement chord substitution is based on the results provided "Surprising Harmonies" by Francois Pachet, International Journal on Computing Anticipatory Systems, 1999. The paper addresses the modeling of surprise in Jazz harmonic progressions, and after having proposed some simple rules for substitution, by which combination any other substitution can be modeled it focuses on how to learn these rules starting from a corpus of jazz chord sequences. The information is extracted from the corpus using the Lempel-Ziv compression algorithm: this procedure is used to parse a sequence into distinct phrases, such that each phrase is the shortest string which is not a previously parsed one. From the dicrionary built that way the LZ-tree is extracted, where each node represents a possible substring and the sons of the nodes represent possible continuations of this substring. In conclusion the number of sons is the probability of occurrence of the substring. This procedure is applied iteratively from the starting sequence comparing it at each step with the LZ-tree, and the chords are used as sequences of chord changes in order to bypass the problem of transposition.
+The algorithm used in the Prog Sequencer to implement chord substitution is based on the results provided "Surprising Harmonies" by Francois Pachet, International Journal on Computing Anticipatory Systems, 1999.
+The paper addresses the modeling of surprise in Jazz harmonic progressions, and after having proposed some simple rules for substitution, by which combination any other substitution can be modeled, it focuses on how to learn these rules starting from a corpus of jazz chord sequences.
+The information are extracted from the corpus using the Lempel-Ziv compression algorithm: this procedure is used to parse a sequence into distinct phrases, such that each phrase is the shortest string which is not a previously parsed one.
+From the dictionary built that way, the LZ-tree is extracted: each node represents a possible substring and the sons of the nodes represent possible continuations of this substring.
+In conclusion the number of sons is the probability of occurrence of the substring. This procedure is applied iteratively from the starting sequence comparing it at each step with the LZ-tree, and the chords are used as sequences of chord changes in order to bypass the problem of transposition.
 This model is used to train a Machine Learning algorithm to induce chord substitution rules from a corpus of jazz chord changes, build using 76 sequences (52 tunes by Charlie Parker and 24 standard tunes from the Real Book) and creating sequences of changes corrisponding to 1-1, 1-2 and 2-2 rules.
 
-## Chord subistitutions builder
+### Builder
 
-In this didactic program we aimed at building a sequence of continously changing chords starting from a given sequence of 4 chords, by exploiting the results of Francois Pachet experiment. The user, drop-down menus, is asked to choose a chord sequence (the sequences are typical jazz progressions or taken from famous jazz standards) and a level of difficulty (1-2-3) and can adjust parameters for the reproduction of the chord accompainment on the oscillator built in the component itself. After pressing the play button the prog sequencer component starts playing the corresponding sequence, 2 chords per bar: at each turn around one bar of chord is substituted with 1-1 or 1-2 rules taken from the Pachet results (section 4.3.1 and 4.3.2 of the paper) starting from the last bar and getting back till all of the original chords are substituted, except the first bar chord, and then rolling back the procedure until the original sequence is found back again. Then the procedure is iterated until the user presses the stop button. During the whole process the user is expected to improvise on the chords proposed, using the sound chain of the main synthesizer, to practice improvisation on different chord sequences built by substitution, and to get new ideas on how to elaborate a given sequence. 
+In this didactic program we aimed at building a sequence of continously changing chords starting from a given sequence of 4 chords, by exploiting the results of Francois Pachet's experiment.
+The user is asked to select a chord sequence within a set of possibilities offered by a drop-down menu (the sequences are typical jazz progressions or taken from famous jazz standards) and a level of difficulty (easy-mid-pro).
+He can also adjust parameters for the reproduction of the chord accompainment on the oscillator built in the component itself.
+After pressing the play button the prog sequencer component starts playing the corresponding sequence, 2 chords per bar: at each turnaround one bar of chords is substituted with 1-1 or 1-2 rules taken from the Pachet results (section 4.3.1 and 4.3.2 of the paper) starting from the last bar and getting back till all of the original chords are substituted, except the first bar chord, and then rolling back the procedure until the original sequence is found back again.
+Then the procedure is iterated until the user presses the stop button. During the whole process the user is expected to improvise on the chords proposed, using the sound chain of the main synthesizer, to practice improvisation on different chord sequences built by substitution, and to get new ideas on how to elaborate a given sequence. 
 
 The difficulty level represents the likelihood of the substituting chords:
--level 1 uses the same chord but with different extensions or chords having 2 common notes with the original one
--level 2 uses all the rules of level 1, plus changes in the chord mode and secondary dominants, even with preparation
--level 3 uses all the other levels rules plus tritone-substitution-like changes, leading to completely different tonal regions.
+-level 1 (easy): uses the same chord but with different extensions or chords having 2 common notes with the original one
+-level 2 (mid): uses all the rules of level 1, plus changes in the chord mode and secondary dominants, even with preparation
+-level 3 (pro): uses all the other levels rules plus tritone-substitution-like changes, leading to completely different tonal regions.
 
 The rules are defined for each chord type proposed in the paper, and are defined in the `SubstitutionRules` file, along with the chord qualities provided in the `IChordQuality` interface.

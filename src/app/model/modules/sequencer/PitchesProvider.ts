@@ -1,6 +1,6 @@
 import { sealed } from '../../../system2/utilities/ClassDecorators';
-import { IPitchClass, PrimaryNames, NOTE_COUNT, OCTAVE_DEFAULT, SecondaryNames } from './IPitchClass';
-import { IPitch } from './IPitch';
+import { IPitchClass, NOTE_COUNT, PrimaryNames, SecondaryNames } from './IPitchClass';
+import { IPitch, A4, OCTAVE_DEFAULT, SD } from './IPitch';
 import { EnumHelper } from 'src/app/system2/utilities/EnumHelper';
 import { PitchClassesProvider } from './PitchClassesProvider';
 
@@ -8,10 +8,8 @@ import { PitchClassesProvider } from './PitchClassesProvider';
 class Pitch implements IPitch {
     private _pitchClass: IPitchClass;
     private _octave: number;
-
-    // cache field depending on private ones
-    private _frequency: number;
     private _octaValue: number;
+    private _frequency: number;
 
     public get primaryName(): string {
         return this._pitchClass.primaryName;
@@ -36,7 +34,7 @@ class Pitch implements IPitch {
     public constructor(pitchClass: IPitchClass, octave: number) {
         this._pitchClass = pitchClass;
         this._octave = octave;
-        this._frequency =  this._pitchClass.frequency * (2 ** (this.octave - 4));
+        this._frequency =  (A4 * (SD ** (this.value - 9))) * (2 ** (this.octave - 4));
         this._octaValue = this.value + (this.octave - 4) * NOTE_COUNT;
     }
 }
