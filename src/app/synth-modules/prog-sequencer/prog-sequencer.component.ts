@@ -253,7 +253,6 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private onTick(beatNumber: number): void {
     // TODO need to highlight the substituted chord?!
 
-    console.log(this._internalBeatNumber);
     if (!this.isFirstTurnaround(this._internalBeatNumber) &&
       this.isTurnaround(this._internalBeatNumber)) { // apart from the first, til infty
       // usage of the substituted index [3,2,1,1,2,3...]

@@ -1,7 +1,4 @@
-export const A4 = 440;
 export const NOTE_COUNT = 12;
-export const OCTAVE_DEFAULT = 4;
-export const SD = (2 ** (1 / NOTE_COUNT));
 
 export enum ChromaticNotes {
     primogrado = 0, //
@@ -40,5 +37,4 @@ export interface IPitchClass {
     readonly primaryName: string; // contiene nome come nelle enum sopra
     readonly secondaryName: string; // nome enharmonic (nel nostro caso sempre quello col diesis)
     readonly value: number;
-    readonly frequency: number;
 }

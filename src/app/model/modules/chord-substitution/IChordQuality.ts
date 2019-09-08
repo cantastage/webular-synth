@@ -2,7 +2,7 @@
 *
 * The enum provides chord types allowed in the chord substitution application. The binary value provides
 * the notes in the chromatic scales by assigning 1 to the notes present in the chord, from root (most significant
-* bit), to the 13th (least significant bit).
+* bit), to the 13th (least significant bit). The voicings are made of 4 notes.
 *
 */
 

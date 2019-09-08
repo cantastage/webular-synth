@@ -1,13 +1,10 @@
 import { sealed } from 'src/app/system2/utilities/ClassDecorators';
-import { IPitchClass, PrimaryNames, SecondaryNames, A4, SD } from './IPitchClass';
+import { IPitchClass, PrimaryNames, SecondaryNames } from './IPitchClass';
 import { EnumHelper } from 'src/app/system2/utilities/EnumHelper';
 
 @sealed
 class PitchClass implements IPitchClass {
     private _value: PrimaryNames;
-
-    // cache fields depending on private ones
-    private _frequency: number;
 
     private get primaryNameKey(): string {
         return EnumHelper.getKeyOfValue(PrimaryNames, this._value);
@@ -25,13 +22,9 @@ class PitchClass implements IPitchClass {
     public get value(): number {
         return this._value;
     }
-    public get frequency(): number {
-        return this._frequency;
-    }
 
     public constructor(pitchClass: PrimaryNames) {
         this._value = pitchClass;
-        this._frequency = A4 * (SD ** (this.value - 9));
     }
 }
 

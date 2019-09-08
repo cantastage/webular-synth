@@ -4,6 +4,7 @@ import { ISequencer } from '../../model/modules/sequencer/basic/ISequencer';
 import { Measure } from '../../model/modules/sequencer/basic/Measure';
 import { PitchClassesProvider } from '../../model/modules/sequencer/PitchClassesProvider';
 import { IPitchClass } from '../../model/modules/sequencer/IPitchClass';
+import { A4, SD } from 'src/app/model/modules/sequencer/IPitch';
 import { IHarmonization } from '../../model/modules/sequencer/IHarmonization';
 import { HarmonizationsProvider } from 'src/app/model/modules/sequencer/HarmonizationsProvider';
 import { Subdivision } from '../../model/modules/sequencer/basic/Subdivision';
@@ -117,7 +118,7 @@ export class SequencerComponent implements OnInit, OnDestroy, SynthModule {
       const upperBound = this.sequencer.scale.diatonicNotes.length - (voiceRepetition ? 1 : 0);
       // SEND AUDIO/MIDI MESSAGE
       for (let i = 0; i < upperBound; i++) {
-        currentReferralFreq = this.sequencer.scale.diatonicNotes[i].frequency;
+        currentReferralFreq = (A4 * (SD ** (this.sequencer.scale.diatonicNotes[i].value - 9)));
         currentOctave = currentSubdivision.octaves[i];
         if (currentOctave !== 0) {
           currentResultingFreq = currentReferralFreq * (2 ** (currentOctave - 4));
