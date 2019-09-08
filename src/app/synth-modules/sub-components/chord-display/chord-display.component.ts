@@ -42,11 +42,11 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
       this.chord_voicings = newChords;
       this.reinitSheet();
     });
-    this.chordDisplayService.activeIndexNotifier.subscribe((newActive => {
-      const oldActive = this.active_index;
-      this.active_index = newActive;
-      this.setActiveChordStyle (oldActive, this.active_index);
-    }));
+    // this.chordDisplayService.activeIndexNotifier.subscribe((newActive => {
+    //   const oldActive = this.active_index;
+    //   this.active_index = newActive;
+    //   // this.setActiveChordStyle (oldActive, this.active_index);
+    // }));
     // init local variables
     this.active_index = 0;
     this.displayVoicings = [];
@@ -96,17 +96,17 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   }
 
   // TODO debuggare funzionamento
-  private setActiveChordStyle(previousIndex: number, currentIndex: number): void {
-    if (previousIndex) {
-      this.displayChords[previousIndex].setStyle({ fillStyle: 'black', strokeStyle: 'black' });
-    }
-    if (currentIndex) {
-      this.displayChords[currentIndex].setStyle({ fillStyle: 'tomato', strokeStyle: 'tomato' });
-    }
-    // aggiornamento della view con formatanddraw
-    // this.renderSheet();
-    this.updateSheet();
-  }
+  // private setActiveChordStyle(previousIndex: number, currentIndex: number): void {
+  //   if (previousIndex) {
+  //     this.displayChords[previousIndex].setStyle({ fillStyle: 'black', strokeStyle: 'black' });
+  //   }
+  //   if (currentIndex) {
+  //     this.displayChords[currentIndex].setStyle({ fillStyle: 'tomato', strokeStyle: 'tomato' });
+  //   }
+  //   // aggiornamento della view con formatanddraw
+  //   // this.renderSheet();
+  //   this.updateSheet();
+  // }
 
   private renderSheet(): void {
     // this.group = this.context.openGroup();
