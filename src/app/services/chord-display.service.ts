@@ -17,6 +17,7 @@ export class ChordDisplayService {
 
   public subject: Subject<number>; // index of the measure to substitute
   public chordNotifier: Subject<Array<Chord>>;
+  public activeIndexNotifier: Subject<number>;
 
   private VF; // Vexflow variable
   private htIntervals: Array<number>; // represents the intervals in half tones
@@ -35,6 +36,7 @@ export class ChordDisplayService {
     this.htIntervals = [1, 2, 2, 3, 3, 4, -1, 5, 6, 6, 7, 7, 8];
     this.subject = new Subject();
     this.chordNotifier = new Subject();
+    this.activeIndexNotifier = new Subject();
   }
 
   /**
@@ -66,13 +68,12 @@ export class ChordDisplayService {
    */
   public createDisplayChord(raw_chord: Chord): Object {
     // analisi della root dell'accordo
-    const accidentals: Array<AccidentalInfo> = [];
-    const root = raw_chord.root; // è un IPitchClass
+    const accidentals: Array<AccidentalInfo> = []; //array of accidentals
+    const root = raw_chord.root; // root dell'accordo, it's an IPitchClass
     const size = root.primaryName.length; // length of the string
-    const rootChromaticIndex = root.value;
-    let diatonicRoot: DiatonicNoteInfo;
-    const keys = [];
-    // let diatonic_name = root.primaryName[0];
+    const rootChromaticIndex = root.value; // indice cromatico della root accordo
+    let diatonicRoot: DiatonicNoteInfo; // nota diatonica della root
+    const keys = []; // note dell'accordo formattate per il display
     switch (root.primaryName[0]) {
       case 'C':
         diatonicRoot = this.diatonicScale[0];
@@ -96,7 +97,8 @@ export class ChordDisplayService {
         diatonicRoot = this.diatonicScale[6];
         break;
     }
-    let offset = 0;
+    let offset = 0; // offset serve a calcolare b e #
+    // caso in cui la nota root sia alterata, ovvero contenga # e bemolli
     if (size > 1) {
       if (root.primaryName[1] === 'b') {
         // caso in cui sia bemolle => allarga l'intervallo
@@ -110,9 +112,7 @@ export class ChordDisplayService {
     const rawChordNotes = raw_chord.chordNotes;
     // let realative_distances = [];
     for (let j = 0; j < rawChordNotes.length; j++) {
-      // realative_distances[j] = Math.abs(raw_chord_notes[j].value - root_chromatic_index);
-      let htDistance = 0;
-      // console.log('porca paletta: ', rawChordNotes[0].value);
+      let htDistance = 0; // distance in half tones between chromatic notes
       if (rootChromaticIndex > rawChordNotes[j].value) {
         htDistance = 12 - Math.abs(rawChordNotes[j].value - rootChromaticIndex);
       } else {

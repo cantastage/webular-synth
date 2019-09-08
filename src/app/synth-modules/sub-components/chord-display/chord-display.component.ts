@@ -10,7 +10,7 @@ import { ChordDisplayService } from 'src/app/services/chord-display.service';
 })
 export class ChordDisplayComponent implements OnInit, OnChanges {
   // @Input() rythmic_subdivision; // 4/4, 3/4 ecc...
-  @Input() active_chord_index;  // current playing chord, TODO decide if it is an index or actual chord. MEGLIO index
+  // @Input() active_chord_index;  // current playing chord, TODO decide if it is an index or actual chord. MEGLIO index
   @Input() chord_voicings;
   @Input() substituted_chord_index;
   @Input() rollback;
@@ -28,7 +28,7 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   private displayVoicings: Array<Array<any>>; // 4 measures with 2 chords each one
   private vf_groups: Array<any>; // Array of vexflow groups where to put notes and to erase old measures notes
   // private group: any; // gruppo svg
-
+  private active_index: number;
 
   constructor(private chordDisplayService: ChordDisplayService) {
     this.staves = new Array<any>(4); // assume 4 staves (4 chords)
@@ -41,8 +41,14 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
     this.chordDisplayService.chordNotifier.subscribe((newChords) => {
       this.chord_voicings = newChords;
       this.reinitSheet();
-    })
+    });
+    this.chordDisplayService.activeIndexNotifier.subscribe((newActive => {
+      const oldActive = this.active_index;
+      this.active_index = newActive;
+      this.setActiveChordStyle (oldActive, this.active_index);
+    }));
     // init local variables
+    this.active_index = 0;
     this.displayVoicings = [];
     this.vf_groups = [null, null, null, null];
     this.div = document.getElementById('score');
@@ -67,11 +73,11 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // const currentItem: SimpleChange = changes.active_chord_index;
-    // if (currentItem.currentValue && currentItem.currentValue !== currentItem.previousValue) {
+    // const newActive: SimpleChange = changes.active_chord_index;
+    // if (newActive && newActive.currentValue !== newActive.previousValue) {
     //   // const newActiveIndex = currentItem.currentValue;
     //   // chiamata al metodo di aggiornamento 
-    //   this.setActiveChordStyle(currentItem.previousValue, currentItem.currentValue);
+    //   this.setActiveChordStyle(newActive.previousValue, newActive.currentValue);
     // } else {
     //   console.log('Non cambia una sega');
     // }
@@ -91,10 +97,15 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
 
   // TODO debuggare funzionamento
   private setActiveChordStyle(previousIndex: number, currentIndex: number): void {
-    this.displayChords[previousIndex].setStyle({ fillStyle: 'black', strokeStyle: 'black' });
-    this.displayChords[currentIndex].setStyle({ fillStyle: 'tomato', strokeStyle: 'tomato' });
+    if (previousIndex) {
+      this.displayChords[previousIndex].setStyle({ fillStyle: 'black', strokeStyle: 'black' });
+    }
+    if (currentIndex) {
+      this.displayChords[currentIndex].setStyle({ fillStyle: 'tomato', strokeStyle: 'tomato' });
+    }
     // aggiornamento della view con formatanddraw
-    this.renderSheet();
+    // this.renderSheet();
+    this.updateSheet();
   }
 
   private renderSheet(): void {
@@ -124,8 +135,9 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
   }
 
   private updateSheet(): void {
-    // this.context.svg.removeChild(this.group);
-    // this.group = null;
+    for (let i = 0; i < this.staves.length; i++) {
+      this.context.svg.removeChild(this.vf_groups[i]);
+    }
     this.renderSheet();
   }
 

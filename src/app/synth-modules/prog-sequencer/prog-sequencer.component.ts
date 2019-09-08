@@ -210,9 +210,11 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   }
   private resetSubstitutingIndex(): void {
     this._substitutingIndex = 0;
+    this.chordDisplayService.activeIndexNotifier.next(this._substitutingIndex);
   }
   private updateSubstitutingIndex(): void {
     this._substitutingIndex = (this._substitutingIndex + 1) % this.substitutingChords.length;
+    this.chordDisplayService.activeIndexNotifier.next(this._substitutingIndex);
   }
   private resetFirstTurnaround(): void {
     this._firstTurnaround = true;
