@@ -54,7 +54,7 @@ export class ChordDisplayComponent implements OnInit, OnChanges {
     this.div = document.getElementById('score');
     this.VF = Vex.Flow;
     this.renderer = new this.VF.Renderer(this.div, this.VF.Renderer.Backends.SVG);
-    this.renderer.resize(1000, 300);
+    this.renderer.resize(1000, 150);
     this.context = this.renderer.getContext();
     this.context.setFont('Arial', 10, '').setBackgroundFillStyle('#eed');
     // Creo tutte le misure in cui mettere i voicing degli accordi
