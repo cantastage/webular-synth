@@ -75,7 +75,7 @@ export class PitchesProvider { // fly-weight pattern
 
         return ret;
     }
-    public static retrieveByIPitchClassOct(iPitchClass: IPitchClass, oct: number): IPitch {
+    public static retrieveInstanceByIPitchClassOct(iPitchClass: IPitchClass, oct: number): IPitch {
         return this.retrieveInstanceByValueOct(iPitchClass.value, oct);
     }
     public static retrieveInstanceByOctaValue(octaValue: number): IPitch {

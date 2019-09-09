@@ -72,7 +72,7 @@ export class Chord {
             if (i > 0 && (this.root.value + i) % NOTE_COUNT === 0) { oct++; }
             if (on) {
                 nip = this._chromaticScale.diatonicNotes[i % NOTE_COUNT];
-                this.chordNotes.push(PitchesProvider.retrieveByIPitchClassOct(nip, oct));
+                this.chordNotes.push(PitchesProvider.retrieveInstanceByIPitchClassOct(nip, oct));
             }
 
             // tslint:disable-next-line:no-bitwise
