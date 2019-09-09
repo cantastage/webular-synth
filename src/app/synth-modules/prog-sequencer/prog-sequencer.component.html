@@ -17,7 +17,7 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-3 prog-seq-options">
+          <div class="col-lg-6 prog-seq-options">
             <div class="row">
               <div class="col-12">DIFFICULTY</div>
               <div class="col-12">
@@ -47,6 +47,28 @@
             <button type="button" (click)="stopSequence()">STOP</button>
           </div>
         </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="mainDisplay">
+              <div id="playing">
+                <div class="section">
+                  Playing
+                </div>
+                <div id="chordPlaying">
+                  {{chordPlaying | chordFormat}}
+                </div>
+              </div>
+              <div id="next">
+                <div class="section">
+                  Next
+                </div>
+                <div id="chordNext">
+                  {{chordNext | chordFormat}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="col-lg-6">
@@ -54,27 +76,6 @@
           [data]="_oscillatorData"></app-prog-seq-oscillator>
       </div>
     </div>
-
-    <!-- NB QUI codice del main display -->
-    <div class="mainDisplay">
-      <div id="playing">
-        <div class="section">
-          Playing
-        </div>
-        <div id="chordPlaying">
-          {{chordPlaying | chordFormat}}
-        </div>
-      </div>
-      <div id="next">
-        <div class="section">
-          Next
-        </div>
-        <div id="chordNext">
-          {{chordNext | chordFormat}}
-        </div>
-      </div>
-    </div>
-
-    <app-chord-display [chord_voicings]="_substitutingChords" [active_chord_index]="_substitutingIndex" [substituted_chord_index]="_substitutedIndex"></app-chord-display>
+    <app-chord-display [chord_voicings]="_substitutingChords"></app-chord-display>
   </div>
 </div>

@@ -17,6 +17,7 @@ export class ChordDisplayService {
 
   public subject: Subject<number>; // index of the measure to substitute
   public chordNotifier: Subject<Array<Chord>>;
+  public activeIndexNotifier: Subject<number>;
 
   private VF; // Vexflow variable
   private htIntervals: Array<number>; // represents the intervals in half tones
@@ -32,9 +33,10 @@ export class ChordDisplayService {
 
   constructor() {
     this.VF = Vex.Flow;
-    this.htIntervals = [1, 2, 2, 3, 3, 4, -1, 5, 6, 6, 7, 7, 8];
+    this.htIntervals = [1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 7, 8]; // NB il tritono viene modellato come quinta diminuita
     this.subject = new Subject();
     this.chordNotifier = new Subject();
+    this.activeIndexNotifier = new Subject();
   }
 
   /**
@@ -66,13 +68,12 @@ export class ChordDisplayService {
    */
   public createDisplayChord(raw_chord: Chord): Object {
     // analisi della root dell'accordo
-    const accidentals: Array<AccidentalInfo> = [];
-    const root = raw_chord.root; // è un IPitchClass
+    const accidentals: Array<AccidentalInfo> = []; //array of accidentals
+    const root = raw_chord.root; // root dell'accordo, it's an IPitchClass
     const size = root.primaryName.length; // length of the string
-    const rootChromaticIndex = root.value;
-    let diatonicRoot: DiatonicNoteInfo;
-    const keys = [];
-    // let diatonic_name = root.primaryName[0];
+    const rootChromaticIndex = root.value; // indice cromatico della root accordo
+    let diatonicRoot: DiatonicNoteInfo; // nota diatonica della root
+    const keys = []; // note dell'accordo formattate per il display
     switch (root.primaryName[0]) {
       case 'C':
         diatonicRoot = this.diatonicScale[0];
@@ -96,7 +97,8 @@ export class ChordDisplayService {
         diatonicRoot = this.diatonicScale[6];
         break;
     }
-    let offset = 0;
+    let offset = 0; // offset serve a calcolare b e #
+    // caso in cui la nota root sia alterata, ovvero contenga # e bemolli
     if (size > 1) {
       if (root.primaryName[1] === 'b') {
         // caso in cui sia bemolle => allarga l'intervallo
@@ -108,11 +110,8 @@ export class ChordDisplayService {
     }
     // now calculate intervals between notes of the chord
     const rawChordNotes = raw_chord.chordNotes;
-    // let realative_distances = [];
     for (let j = 0; j < rawChordNotes.length; j++) {
-      // realative_distances[j] = Math.abs(raw_chord_notes[j].value - root_chromatic_index);
-      let htDistance = 0;
-      // console.log('porca paletta: ', rawChordNotes[0].value);
+      let htDistance = 0; // distance in half tones between chromatic notes
       if (rootChromaticIndex > rawChordNotes[j].value) {
         htDistance = 12 - Math.abs(rawChordNotes[j].value - rootChromaticIndex);
       } else {
@@ -121,32 +120,57 @@ export class ChordDisplayService {
       // calcolo dell'intervallo per identificare etichetta che andrà nella nota
       const diatonicInterval = this.htIntervals[htDistance];
       let index = 0;
+      // se diatonicInterval è maggiore di una prima
+      let calculatedDistance = 0;
       if (diatonicInterval > 1) {
-        index = (diatonicRoot.diatonicIndex + 1) % 12; // al primo giro è già settato per beccare la nota diatonica successiva
+        // al primo giro è già settato per beccare la nota diatonica successiva
+        index = (diatonicRoot.diatonicIndex + 1) % this.diatonicScale.length;
+        let k = 0;
+        while (k < (diatonicInterval - 2)) {
+          calculatedDistance = calculatedDistance + this.diatonicScale[index].distanceFromPrevDiatonicNote;
+          index = (index + 1) % this.diatonicScale.length;
+          k++;
+        }
       } else {
         index = diatonicRoot.diatonicIndex;
       }
-      // let diatonicSteps = diatonicInterval - 1; // passi da fare nella scala diatonica
-      let calculatedDistance = 0;
-      let k = 0;
-      while (k < (diatonicInterval - 2)) {
-        calculatedDistance = calculatedDistance + this.diatonicScale[index].distanceFromPrevDiatonicNote;
-        index = (index + 1) % this.diatonicScale.length;
-        k++;
-      }
-      // se 0 allora si tratta di una prima
+      // se 0 allora si tratta di una prima quindi non c'è bisogno di calcolare la distanza 
       if (calculatedDistance > 0) {
         calculatedDistance = calculatedDistance + this.diatonicScale[index].distanceFromPrevDiatonicNote;
       }
       keys.push(this.diatonicScale[index].label + '/' + rawChordNotes[j].octave); // TODO check if using index is correct
-      const difference = (htDistance + offset) - calculatedDistance;
-      if (difference > 0) {
-        // aggiungo diesis
-        accidentals.push(new AccidentalInfo((keys.length - 1), '#'));
-      } else if (difference < 0) {
-        // aggiungo bemolle
-        accidentals.push(new AccidentalInfo((keys.length - 1), 'b'));
+      // Accidentals calculation
+      // caso in cui stessa distanza ma c'è offset
+      if (calculatedDistance === htDistance && offset !== 0) {
+        if (offset === 1) {
+          accidentals.push(new AccidentalInfo((keys.length - 1), 'b'));
+        } else if (offset === -1) {
+          accidentals.push(new AccidentalInfo((keys.length - 1), '#'));
+        }
+        // caso in cui c'è l'offset e le distanze sono diverse
+      } else if (calculatedDistance !== htDistance) {
+        // const difference = (htDistance + offset) - calculatedDistance;
+        const difference = (calculatedDistance + offset) - htDistance;
+        if (difference !== 0) {
+          const accidentalType = difference > 0 ? 'b' : '#';
+          let newAccidental = '';
+          newAccidental = accidentalType;
+          for (let i = 1; i < difference; i++) {
+            newAccidental += accidentalType;
+          }
+          console.log('new accidental is: ', newAccidental);
+          accidentals.push(new AccidentalInfo((keys.length - 1), newAccidental));
+          // if (difference > 0) {
+          //   // aggiungo diesis
+          //   accidentals.push(new AccidentalInfo((keys.length - 1), 'b'));
+          // } else if (difference < 0) {
+          //   // aggiungo bemolle
+          //   accidentals.push(new AccidentalInfo((keys.length - 1), '#'));
+          // }
+        }
+
       }
+      // console.log('inserita nota: ', keys[keys.length - 1], 'in accordo ', raw_chord.root.primaryName + raw_chord.quality.name);
     }
     //  deve ritornare stavenote con già gli accidentals
     const staveNote = new this.VF.StaveNote({ clef: 'treble', keys: keys, duration: 'h' });
