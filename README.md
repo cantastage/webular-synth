@@ -4,7 +4,7 @@
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.6.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
@@ -79,8 +79,14 @@ _To prevent unrealistic behaviours that would compromise the functionality of th
 
 #### Chord Rendering
 
-Chords are rendered using VexFlow (@http://www.vexflow.com), an open-source online music notation rendering API. It uses SVG as a backend rendering engine.
-Vexflow requires notes to be formatted in a particular way. The `ChordDisplayService` is devoted to this function. In particular, its main job is to find the correct note labels. The problem of note labels comes from the fact that the chromatic scale has twelve notes. Each note can have a different label according to the chord it belongs to. Here we make use of the interval theory. By the time we know a chord root and the notes that compose the chord voicing, we can extract every note label accordingly, including accidentals.
+Chords are rendered using VexFlow (@http://www.vexflow.com), an open-source online music notation rendering API.
+It uses SVG as a backend rendering engine.
+
+Vexflow requires notes to be formatted in a particular way. The `ChordDisplayService` is devoted to this function. In particular, its main job is to find the correct note labels. 
+
+The problem of note labels comes from the fact that the chromatic scale has twelve notes.
+Each note can have a different label according to the chord it belongs to. Here we make use of the interval theory.
+By the time we know a chord root and the notes that compose the chord voicing, we can extract every note label accordingly, including accidentals.
 A separated display is used to show what chord is playing and what's coming next. 
 
 ### Oscillator
