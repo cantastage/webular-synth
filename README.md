@@ -208,8 +208,8 @@ After pressing the play button the prog sequencer component starts playing the c
 Then the procedure is iterated until the user presses the stop button. During the whole process the user is expected to improvise on the chords proposed, using the sound chain of the main synthesizer, to practice improvisation on different chord sequences built by substitution, and to get new ideas on how to elaborate a given sequence. 
 
 The difficulty level represents the likelihood of the substituting chords:
-- level 1 (easy): uses the same chord but with different extensions or chords having 2 common notes with the original one
-- level 2 (mid): uses all the rules of level 1, plus changes in the chord mode and secondary dominants, even with preparation
-- level 3 (pro): uses all the other levels rules plus tritone-substitution-like changes, leading to completely different tonal regions.
+- level 1 (easy): uses the same chord but with different extensions, modal change of the same chord or chords sharing the same scale of the original one;
+- level 2 (mid): uses all the rules of level 1, plus secondary dominants, and preparations;
+- level 3 (pro): uses all the other levels rules plus tritone-substitution-like changes.
 
 The rules are defined for each chord type proposed in the paper, and are defined in the `SubstitutionRules` file, along with the chord qualities provided in the `IChordQuality` interface.
