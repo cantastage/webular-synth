@@ -7,9 +7,9 @@ import { sub_tables, substitutionRulesets } from 'src/app/model/modules/chord-su
 import { Progression } from '../model/modules/sequencer/Progression.js';
 /*
 * This Service provides support for the chord substitution module.
-* The method substituteChord take a Chord and a level as input, and builds a table of possible
+* The method substituteChord takes a Chord and a level as input, and builds a table of possible
 * substitutions that can be made on the input chord. It passes the table to the findChordSubstitution method,
-* which selects the 2 substituted chords (for every input chords a 1:2 substitution is operated) based on the
+* which selects the 2 substituted chords (for every input chord a 1:2 substitution is operated) based on the
 * chosen difficulty level. The transposeChord method is used to traspose the substituted chords (which are based
 * on chord transitions in the C key) in the key of the input chord, and returns the chords to be substituted to the
 * progression sequencer.
@@ -21,20 +21,18 @@ import { Progression } from '../model/modules/sequencer/Progression.js';
 
 export class SubstitutionManagerService {
   constructor() { }
-
+  /*
   // this will be deleted or private?!
   public static funny(message: Progression, difficultyLevel: number): Array<Array<Chord>> {
     const substitutedProgression = new Array<Array<Chord>>();
     for (let i = 0; i < message.chords.length; i++) {
-      // const a = this.convertEnharmonic(message[i]);
       substitutedProgression[i] =
       SubstitutionManagerService.substituteChord(message.chords[i], difficultyLevel);
     }
     return substitutedProgression;
   }
-
+*/
   public static substituteChord(chord: Chord, difficultyLevel: number): Array<Chord> {
-    // console.log(chord);
     const substitution_rules = Array<any>();
     const possible_substitutions = Array<any>();
     let substitutionTable: any[] = new Array<any>();
@@ -49,7 +47,6 @@ export class SubstitutionManagerService {
       }
     }
     const transpositionValue = (chord.root).value;
-    // console.log('trans', transpositionValue);
     const intermediate = SubstitutionManagerService.transposeChord(
       SubstitutionManagerService.findChordSubstitution(substitutionTable, difficultyLevel),
       transpositionValue
@@ -65,7 +62,6 @@ export class SubstitutionManagerService {
       }
     }
     const choice = Math.floor(Math.random() * tableConstraint.length);
-    // console.log(tableConstraint[choice].chord1);
     return [tableConstraint[choice].chord1, tableConstraint[choice].chord2];
   }
 
@@ -75,7 +71,6 @@ export class SubstitutionManagerService {
     const transposedChords = [];
     for (let i = 0; i < arg.length; i++) {
       if (PrimaryNames[arg[i].root.primaryName] === undefined) {
-        // console.log('is enharmonic');
         pitchValue[i] = SecondaryNames[arg[i].root.value];
         if (pitchValue[i] + value >= 12) {
           transposedPitch[i] = SecondaryNames[pitchValue[i] + value - 12];
@@ -83,33 +78,26 @@ export class SubstitutionManagerService {
           transposedPitch[i] = SecondaryNames[pitchValue[i] + value];
         }
       } else {
-        // console.log('is not enharmonic');
         pitchValue[i] = arg[i].root.value;
-        // console.log(arg[i]);
-        // console.log('pitchvalue', pitchValue[i]);
         if (pitchValue[i] + value >= 12) {
           transposedPitch[i] = PrimaryNames[pitchValue[i] + value - 12];
           } else {
             transposedPitch[i] = PrimaryNames[pitchValue[i] + value];
         }
       }
-      // console.log('trans pitch', transposedPitch[i]);
       transposedChords[i] = new Chord(PitchClassesProvider.retrieveInstanceByName(transposedPitch[i]), arg[i].quality);
     }
-    // console.log('transp chords: ', transposedChords);
     return transposedChords;
   }
-
+  /*
   // Is this still used?
   public static buildSubstitutionSequence(arg: Array<Array<Chord>>): Array<Chord> {
     const chordSeq = [];
-    // TODO
     for (let i = 0; i < arg.length; i++) {
       for (let j = 0; j < arg[i].length; j++) {
         chordSeq.push(arg[i][j]);
       }
     }
-    // console.log(chordSeq);
     return chordSeq;
   }
 
@@ -119,19 +107,5 @@ export class SubstitutionManagerService {
       SubstitutionManagerService.funny(message, difficultyLevel)
     );
   }
-/*
-  private convertEnharmonic(chord: Chord): Chord {
-    if (PrimaryNames[chord.root.primaryName] === undefined) {
-      // console.log('is enharmonic');
-      const convertedChord = chord;
-      convertedChord.root = PitchClassesProvider.retrieveInstanceByName(PrimaryNames[SecondaryNames[chord.root.primaryName]]);
-      // console.log('converted', convertedChord);
-      return convertedChord;
-    } else {
-      // console.log('not converted', chord);
-      return chord;
-    }
-
-  }
-*/
+  */
 }
