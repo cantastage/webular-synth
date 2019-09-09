@@ -10,7 +10,7 @@
             <div class="row">
               <div class="col-12">INITIAL PROGRESSION</div>
               <div class="col-12">
-                <select [(ngModel)]="activeProgression" (change)="chooseProgression()">
+                <select [(ngModel)]="_activeProgression" (change)="chooseProgression()">
                   <option *ngFor="let progression of progressionList;" [ngValue]="progression">
                     {{progression}}</option>
                 </select>

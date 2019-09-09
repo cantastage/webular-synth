@@ -33,7 +33,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private _difficultyNames: string[];
   private _progSequencer: IProgSequencer; // model of prog sequencer?
   private _progressionList: Array<string>;
-  private _activeProgression: any;  // current sequence of chords
+  public _activeProgression: any;  // current sequence of chords
   private _oscillatorData: Object;
 
   private _substitutedIndex: number;
@@ -77,13 +77,6 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     return this.substitutingChords[
       (this._substitutingIndex + 1) % this.substitutingChords.length
     ];
-  }
-  public get activeProgression(): any {
-    return this._activeProgression;
-  }
-
-  public set activeProgression(value: any) {
-    this.activeProgression = value;
   }
 
   public get oscillatorData(): Object {
