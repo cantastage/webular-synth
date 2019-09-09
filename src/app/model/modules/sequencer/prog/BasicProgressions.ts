@@ -95,7 +95,7 @@ export const BasicProgressions: {name: string, progression: Progression}[] = [
         ])
     },
     {
-        name: 'Emaj7 - Cmin7 - Fmin7 - Dmaj7',
+        name: 'Emaj7 - Cm7 - Fm7 - Dmaj7',
         progression: new Progression([
             new Chord(PitchClassesProvider.retrieveInstanceByName('E'), ChordQualitiesProvider.retrieveInstanceByName('maj7')),
             new Chord(PitchClassesProvider.retrieveInstanceByName('C'), ChordQualitiesProvider.retrieveInstanceByName('min7')),
@@ -104,7 +104,7 @@ export const BasicProgressions: {name: string, progression: Progression}[] = [
         ])
     },
     {
-        name: 'Bbmaj7 - Cmin7 - Db°7 - Cm7',
+        name: 'Bbmaj7 - Cm7 - Db°7 - Cm7',
         progression: new Progression([
             new Chord(PitchClassesProvider.retrieveInstanceByName('Bb'), ChordQualitiesProvider.retrieveInstanceByName('maj7')),
             new Chord(PitchClassesProvider.retrieveInstanceByName('C'), ChordQualitiesProvider.retrieveInstanceByName('min7')),
