@@ -10,8 +10,8 @@
             <div class="row">
               <div class="col-12">INITIAL PROGRESSION</div>
               <div class="col-12">
-                <select [(ngModel)]="_activeProgression" (change)="chooseProgression()">
-                  <option *ngFor="let progression of _progressionList;" [ngValue]="progression">
+                <select [(ngModel)]="activeProgression" (change)="chooseProgression()">
+                  <option *ngFor="let progression of progressionList;" [ngValue]="progression">
                     {{progression}}</option>
                 </select>
               </div>
@@ -70,9 +70,9 @@
 
       <div class="col-lg-6">
         <app-prog-seq-oscillator [isInSoundChain]="false" [midiChannel]="progSequencer.channel"
-          [data]="_oscillatorData"></app-prog-seq-oscillator>
+          [data]="oscillatorData"></app-prog-seq-oscillator>
       </div>
     </div>
-    <app-chord-display [chord_voicings]="_substitutingChords"></app-chord-display>
+    <app-chord-display [chord_voicings]="substitutingChords"></app-chord-display>
   </div>
 </div>

@@ -78,6 +78,26 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
       (this._substitutingIndex + 1) % this.substitutingChords.length
     ];
   }
+  public get activeProgression(): any {
+    return this._activeProgression;
+  }
+
+  public set activeProgression(value: any) {
+    this.activeProgression = value;
+  }
+
+  public get oscillatorData(): Object {
+    return this._oscillatorData;
+  }
+
+  public set oscillatorData(value: Object) {
+    this._oscillatorData = value;
+  }
+
+  public get progressionList(): Array<string> {
+    return this._progressionList;
+  }
+  
 
   /**
    * Component constructor

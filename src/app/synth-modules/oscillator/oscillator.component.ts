@@ -54,9 +54,23 @@ export class OscillatorComponent implements OnInit, OnDestroy, SynthModule {
   public get finePitch(): number {
     return this._finePitch;
   }
+
+  public get channels(): number[] {
+    return this._channels;
+  }
+
+  public get selectedChannel(): number {
+    return this._selectedChannel;
+  }
+
   public set finePitch(value: number) {
     this._finePitch = value;
   }
+  
+  public set selectedChannel(value: number) {
+    this._selectedChannel = value;
+  }
+
   constructor(
     private contextManager: AudioContextManagerService,
     private messageService: MessageService,

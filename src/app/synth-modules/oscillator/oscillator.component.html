@@ -16,8 +16,8 @@
   <div class="channel">
     <div>CH</div>
           <div>
-            <select class="ch" [(ngModel)]="_selectedChannel" (change)="checkActive()">
-              <option *ngFor="let channel of _channels;" [ngValue]="channel">{{channel}}</option>
+            <select class="ch" [(ngModel)]="selectedChannel" (change)="checkActive()">
+              <option *ngFor="let channel of channels;" [ngValue]="channel">{{channel}}</option>
             </select>
           </div>
   </div>
