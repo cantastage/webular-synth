@@ -59,7 +59,6 @@ export class SubstitutionManagerService {
 
   private static findChordSubstitution(substitutionTable: any[], difficultyLevel: number): Array<Chord> {
     const tableConstraint = [];
-    // console.log(this.substitutionTable);
     for (let i = 0; i < substitutionTable.length; i++) {
       if ( substitutionTable[i].difficulty <= difficultyLevel) {
         tableConstraint.push(substitutionTable[i]);
