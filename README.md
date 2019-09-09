@@ -29,7 +29,7 @@ The sound chain is built upon synth modules. Adding a module to the "Synth modul
 
 As in all the most known synthesizers, the clock module is a single instance which can be observed by objects who might desire a synchronization.
 
-In our case, the sole module which needs temporization is the harmonic sequencer.
+In our case, the only module which needs temporization is the harmonic sequencer.
 
 The `ClockComponent` builds an `IClock` instance thanks to the `ClockManagerService` service and the `ClockProvider` factory.
 
@@ -79,7 +79,9 @@ _To prevent unrealistic behaviours that would compromise the functionality of th
 
 #### Chord Rendering
 
-~~descrizione dei display~~
+Chords are rendered using VexFlow (@http://www.vexflow.com), an open-source online music notation rendering API. It uses SVG as a backend rendering engine.
+Vexflow requires notes to be formatted in a particular way. The `ChordDisplayService` is devoted to this function. In particular, its main job is to find the correct note labels. The problem of note labels comes from the fact that the chromatic scale has twelve notes. Each note can have a different label according to the chord it belongs to. Here we make use of the interval theory. By the time we know a chord root and the notes that compose the chord voicing, we can extract every note label accordingly, including accidentals.
+A separated display is used to show what chord is playing and what's coming next. 
 
 ### Oscillator
 

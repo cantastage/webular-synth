@@ -24,8 +24,6 @@ import { ChordDisplayService } from 'src/app/services/chord-display.service';
 })
 export class ProgSequencerComponent implements OnInit, OnDestroy {
   @Input() data: any;
-  // @Input() isInSoundChain: boolean;
-  // @Input() position: number;
 
   // UI selections
   private _channels: number[];
@@ -44,14 +42,11 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
   private _rollback: boolean;
   private _firstTurnaround: boolean;
   private _internalBeatNumber: number;
-  // private _playing: boolean;
   private _isStopped: boolean;
   private _isPaused: boolean;
   private _asyncResetWholeStateNeeded: boolean;
 
   private _clockObserver: Observer<number>;
-  // private _midiObserver: Observer<[number, boolean, number, number]>;
-  // public stocazzo = 'STOCAZZO';
 
   public get channels(): number[] {
     return this._channels;
@@ -100,13 +95,6 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
       error: () => { return; },
       complete: () => { return; }
     };
-    // this._midiObserver = {
-    //   next: (value) => { this.onMessage(value); },
-    //   error: () => { return; },
-    //   complete: () => { return; }
-    // };
-    // initial prog sequencer oscilator params
-    // NB check maxVelocity value to avoid distortions
     this._oscillatorData = {
       name: 'PROGSEQOSC', // conforme al ModuleManagerService
       state: { waveForm: 'sine', maxVelocity: 20, addSemitone: 0, finePitch: 0, active: 0 }
@@ -146,14 +134,7 @@ export class ProgSequencerComponent implements OnInit, OnDestroy {
     // each chord is repeated twice
     this._substitutingChords = new Array<Chord>(2 * this.progSequencer.progression.chords.length);
     this.syncReset();
-    // console.log('I cazzo di accordi sono: ', this.substitutingChords);
 
-    // mettere la condizione if (this.play)
-    // this.clockManager.attach(this._clockObserver);
-    // this.midiManager.attach(this._midiObserver);
-    // this.contextManager.addSynthModule(this, this.position); // Adds the module to the audio context manager service
-
-    // this._playing = false;
     this._isPaused = false;
     this._isStopped = true;
     this._asyncResetWholeStateNeeded = false;

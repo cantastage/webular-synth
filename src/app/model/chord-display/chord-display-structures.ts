@@ -19,7 +19,6 @@ export class DiatonicNoteInfo {
         this._distance_from_prev_diatonic_note = distance_from_prev_diatonic_note;
     }
 
-    // TODO aggiungere getters
     /**
      * Returns note label (ex: C, D, E, F ecc...)
      */
